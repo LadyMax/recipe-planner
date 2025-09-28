@@ -35,6 +35,12 @@
     "src/test*",
     "src*.test.tsx",
     "src/test*",
+    "src*.test.tsx",
+    "src/test*",
+    "src*.test.tsx",
+    "src/test*",
+    "src*.test.tsx",
+    "src/test*",
     "src/**/*.test.tsx",
     "src/test/**/*"
   ]
