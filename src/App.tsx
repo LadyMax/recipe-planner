@@ -1,22 +1,21 @@
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import Header from "./partials/Header";
-import Main from './partials/Main';
-import Footer from './partials/Footer';
-import BootstrapBreakpoints from './parts/BootstrapBreakpoints';
-
-// turn off when not needed for debugging
-const showBootstrapBreakpoints = true;
+import { AuthProvider } from './contexts/AuthContext';
+import Header from './partials/Header.tsx';
+import Main from './partials/Main.tsx';
+import Footer from './partials/Footer.tsx';
 
 export default function App() {
+  const loc = useLocation();
+  useEffect(() => {
+    (window as any).scrollTo?.({ top: 0, left: 0, behavior: 'instant' });
+  }, [loc.pathname]);
 
-  // scroll to top when the route changes
-  useLocation();
-  window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
-
-  return <>
-    <Header />
-    <Main />
-    <Footer />
-    {showBootstrapBreakpoints ? <BootstrapBreakpoints /> : null}
-  </>;
-};
+  return (
+    <AuthProvider>
+      <Header />
+      <Main />
+      <Footer />
+    </AuthProvider>
+  );
+}

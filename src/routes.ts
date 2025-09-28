@@ -1,21 +1,33 @@
 import type Route from './interfaces/Route.ts';
-import { createElement } from 'react';
-
-// page components
-import AboutPage from './pages/AboutPage.tsx';
+import { createElement, type ComponentType } from 'react';
+import PlannerPage from './pages/PlannerPage.tsx';
+import ShoppingListPage from './pages/ShoppingListPage.tsx';
+import RecipeDetailPage from './pages/RecipeDetailPage.tsx';
+import FavoritesPage from './pages/FavoritesPage.tsx';
 import NotFoundPage from './pages/NotFoundPage.tsx';
-import OurVisionPage from './pages/OurVisionPage.tsx';
-import ProductDetailsPage from './pages/ProductDetailsPage.tsx';
-import ProductsPage from './pages/ProductsPage.tsx';
 
-export default [
-  AboutPage,
-  NotFoundPage,
-  OurVisionPage,
-  ProductDetailsPage,
-  ProductsPage
-]
-  // map the route property of each page component to a Route
-  .map(x => (({ element: createElement(x), ...x.route }) as Route))
-  // sort by index (and if an item has no index, sort as index 0)
-  .sort((a, b) => (a.index || 0) - (b.index || 0));
+type RoutedComponent = ComponentType & { route?: Omit<Route, 'element'> };
+
+const pages: RoutedComponent[] = [
+  PlannerPage as RoutedComponent,
+  ShoppingListPage as RoutedComponent,
+  RecipeDetailPage as RoutedComponent,
+  FavoritesPage as RoutedComponent,
+  NotFoundPage as RoutedComponent,
+];
+
+function toRoute(Comp: RoutedComponent): Route {
+  const meta = (Comp as any).route;
+  if (!meta?.path) {
+    throw new Error(
+      `${
+        Comp.displayName || Comp.name || 'Anonymous'
+      } missing static route meta`
+    );
+  }
+  return { element: createElement(Comp), ...meta };
+}
+
+export default pages
+  .sort((a, b) => (a.route?.index ?? 0) - (b.route?.index ?? 0))
+  .map(toRoute);

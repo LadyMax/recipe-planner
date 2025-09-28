@@ -1,10 +1,11 @@
-import type { JSX } from 'react';
+import type React from "react";
 
 export default interface Route {
-  element: JSX.Element;
   path: string;
-  loader?: Function;
-  menuLabel?: string;
+  element: React.ReactNode;
   index?: number;
+  children?: Route[];
+  // 给 Header 用的可选字段
+  menuLabel?: string;
   parent?: string;
 }
