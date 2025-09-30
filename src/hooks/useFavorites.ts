@@ -5,7 +5,7 @@ const FAVORITES_KEY = 'recipe-favorites';
 
 export function useFavorites() {
   const { user } = useAuth();
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<number[]>([]);
 
   useEffect(() => {
     if (user) {
@@ -25,7 +25,7 @@ export function useFavorites() {
     }
   }, [user]);
 
-  const saveFavorites = (newFavorites: string[]) => {
+  const saveFavorites = (newFavorites: number[]) => {
     if (user) {
       localStorage.setItem(
         `${FAVORITES_KEY}-${user.id}`,
@@ -35,17 +35,17 @@ export function useFavorites() {
     }
   };
 
-  const addToFavorites = (recipeId: string) => {
+  const addToFavorites = (recipeId: number) => {
     if (!favorites.includes(recipeId)) {
       saveFavorites([...favorites, recipeId]);
     }
   };
 
-  const removeFromFavorites = (recipeId: string) => {
+  const removeFromFavorites = (recipeId: number) => {
     saveFavorites(favorites.filter(id => id !== recipeId));
   };
 
-  const toggleFavorite = (recipeId: string) => {
+  const toggleFavorite = (recipeId: number) => {
     if (favorites.includes(recipeId)) {
       removeFromFavorites(recipeId);
     } else {
@@ -53,7 +53,7 @@ export function useFavorites() {
     }
   };
 
-  const isFavorite = (recipeId: string) => {
+  const isFavorite = (recipeId: number) => {
     return favorites.includes(recipeId);
   };
 

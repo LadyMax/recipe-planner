@@ -55,8 +55,16 @@ export function usePWA() {
     const registerServiceWorker = async () => {
       if ('serviceWorker' in navigator) {
         try {
-          const registration = await navigator.serviceWorker.register('/sw.js');
-          console.log('Service Worker registered successfully:', registration);
+          // Unregister ALL existing service workers first
+          const existingRegistrations = await navigator.serviceWorker.getRegistrations();
+          for (let registration of existingRegistrations) {
+            await registration.unregister();
+            console.log('Unregistered old service worker');
+          }
+          
+          // SERVICE WORKER COMPLETELY DISABLED
+          console.log('Service Worker completely disabled to fix API issues');
+          return;
 
           // Check for updates
           registration.addEventListener('updatefound', () => {

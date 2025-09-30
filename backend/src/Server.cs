@@ -4,7 +4,26 @@ public static class Server
     public static void Start()
     {
         var builder = WebApplication.CreateBuilder();
+        
+        // Add CORS services
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("AllowAll", policy =>
+            {
+                policy.AllowAnyOrigin()
+                      .AllowAnyMethod()
+                      .AllowAnyHeader();
+            });
+        });
+        
         App = builder.Build();
+        
+        // Use CORS
+        App.UseCors("AllowAll");
+        
+        // Initialize database tables
+        InitializeDatabase();
+        
         Middleware();
         DebugLog.Start();
         Acl.Start();
@@ -58,5 +77,44 @@ public static class Server
             }
             DebugLog.Add(context, info);
         });
+    }
+
+    // Initialize database tables by executing SQL files
+    private static void InitializeDatabase()
+    {
+        try
+        {
+            var sqlFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "create_tables.sql");
+            if (File.Exists(sqlFile))
+            {
+                var sqlContent = File.ReadAllText(sqlFile);
+                var statements = sqlContent.Split(';', StringSplitOptions.RemoveEmptyEntries);
+                
+                foreach (var statement in statements)
+                {
+                    var trimmedStatement = statement.Trim();
+                    if (!string.IsNullOrEmpty(trimmedStatement) && !trimmedStatement.StartsWith("--"))
+                    {
+                        try
+                        {
+                            SQLQueryOne(trimmedStatement);
+                        }
+                        catch (Exception ex)
+                        {
+                            Log("Database initialization warning:", ex.Message);
+                        }
+                    }
+                }
+                Log("Database tables initialized successfully");
+            }
+            else
+            {
+                Log("SQL file not found:", sqlFile);
+            }
+        }
+        catch (Exception ex)
+        {
+            Log("Database initialization error:", ex.Message);
+        }
     }
 }

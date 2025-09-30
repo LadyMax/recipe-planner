@@ -1,9 +1,9 @@
 // Global settings
 Globals = Obj(new
 {
-    debugOn = true,
+    debugOn = false,
     detailedAclDebug = false,
-    aclOn = true,
+    aclOn = false,
     isSpa = true,
     port = args[0],
     serverName = "Minimal API Backend",

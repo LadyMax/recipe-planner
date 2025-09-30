@@ -13,9 +13,31 @@ export function useRecipes() {
       try {
         setLoading(true);
         const data = await recipeStore.list();
-        setRecipes(data);
-      } catch (e: any) {
-        setError(e?.message || 'Failed to load');
+        
+        // Get ingredients data for each recipe
+        const recipesWithIngredients = await Promise.all(
+          data.map(async (recipe: Recipe) => {
+            try {
+              const ingredientsResponse = await fetch(`http://localhost:5001/api/ingredients?where=recipe_id=${recipe.id}&orderby=position`);
+              if (ingredientsResponse.ok) {
+                const ingredientsData = await ingredientsResponse.json();
+                recipe.ingredients = ingredientsData.map((ing: {id: number; name: string; amount: string; unit: string}) => ({
+                  id: ing.id,
+                  name: ing.name,
+                  amount: ing.amount,
+                  unit: ing.unit
+                }));
+              }
+            } catch (error) {
+              console.warn(`Failed to fetch ingredients for recipe ${recipe.id}:`, error);
+            }
+            return recipe;
+          })
+        );
+        
+        setRecipes(recipesWithIngredients);
+      } catch (e: unknown) {
+        setError((e as Error)?.message || 'Failed to load');
       } finally {
         setLoading(false);
       }
@@ -28,24 +50,37 @@ export function useRecipes() {
 
     const exists = recipes.some(x => x.id === r.id);
     if (exists) {
-      await recipeStore.update(r);
+      // Update existing recipe - only send database fields
+      const dbRecipe = {
+        id: r.id,
+        user_id: r.user_id,
+        title: r.title,
+        description: r.description,
+        category: r.category,
+        cook_time_min: r.cook_time_min,
+        difficulty: r.difficulty,
+        image_url: r.image_url,
+        created_at: r.created_at,
+        updated_at: r.updated_at
+      };
+      await recipeStore.update(dbRecipe);
       setRecipes(prev => prev.map(x => (x.id === r.id ? r : x)));
     } else {
-      const created = await recipeStore.create(r);
-      console.log('Created recipe:', created.name, 'at position 0');
+      // New recipe - add directly to local state since RecipeFormModal already created it via API
+      console.log('Adding recipe to local state:', r.title);
       setRecipes(prev => {
-        const newRecipes = [created, ...prev];
+        const newRecipes = [r, ...prev];
         console.log(
           'New recipes order:',
-          newRecipes.map(r => r.name)
+          newRecipes.map(r => r.title)
         );
         return newRecipes;
       });
     }
   }
 
-  async function remove(id: string) {
-    await recipeStore.remove(id);
+  async function remove(id: number) {
+    await recipeStore.remove(id.toString());
     setRecipes(prev => prev.filter(x => x.id !== id));
   }
 

@@ -1,7 +1,7 @@
 import type { IRecipeStore } from "./IRecipeStore.ts";
 import type { Recipe } from "../types/recipe.ts";
 
-const base = ""; // 走 Vite 代理时留空
+const base = "http://localhost:5001"; // Direct connection to backend
 
 export class ApiRecipeStore implements IRecipeStore {
   async list() {
@@ -32,5 +32,5 @@ export class ApiRecipeStore implements IRecipeStore {
   async importMany(rs: Recipe[]) {
     await Promise.all(rs.map(x => this.create(x)));
   }
-  async clear() { /* 可按需实现 */ }
+  async clear() { /* Can be implemented as needed */ }
 }

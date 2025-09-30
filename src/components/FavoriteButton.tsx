@@ -2,7 +2,7 @@ import { useFavorites } from '../hooks/useFavorites';
 import { useAuth } from '../contexts/AuthContext';
 
 interface FavoriteButtonProps {
-  recipeId: string;
+  recipeId: number;
   size?: 'sm' | 'lg';
 }
 
@@ -21,7 +21,7 @@ export default function FavoriteButton({
 
   const isFavorited = isFavorite(recipeId);
 
-  // 如果未登录，不显示收藏按钮
+  // If not logged in, do not show favorite button
   if (!isAuthenticated) {
     return null;
   }

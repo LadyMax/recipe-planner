@@ -44,7 +44,12 @@ export default function startBackend(app) {
   // Start .NET backend from Node.js
   setTimeout(async function starter(initialStart = true) {
 
-    while (!await isFreePort(startPort)) { startPort++; }
+    // Check if port 5001 is available, if not, show error
+    if (!await isFreePort(startPort)) {
+      console.error(`❌ Port ${startPort} is already in use! Please stop the process using this port or change the port in backend/index.js`);
+      console.error(`You can check which process is using the port with: netstat -ano | findstr :${startPort}`);
+      process.exit(1);
+    }
     let backendProcess = spawn(
       `dotnet run ${startPort} "${distFolder}" "${dbPath}"`,
       { cwd: import.meta.dirname, stdio: 'inherit', shell: true }
@@ -76,10 +81,12 @@ export default function startBackend(app) {
     // Extra message (info about ports)
     initialStart && setTimeout(() => {
       console.log(
-        'Started C#/.NET based Minimal API\n' +
-        '\nNote:\nStill visit the Vite Dev Port for all requests,\n' +
-        'unless you want to check a build,\n' +
-        `in that case visit the server port (${startPort}) directly.\n`);
+        '✅ Started C#/.NET based Minimal API\n' +
+        '\n📋 Port Configuration:\n' +
+        `   Frontend (Vite): http://localhost:5173\n` +
+        `   Backend (API):   http://localhost:${startPort}\n` +
+        '\n💡 Note: Visit the Vite Dev Port (5173) for all requests,\n' +
+        '   unless you want to check a build, then visit the backend port directly.\n');
     }, 3000);
   }, 1);
 

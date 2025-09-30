@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { Card, Badge, Row, Col, Button } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
-import RecipeRating from './RecipeRating';
 import RecipeComments from './RecipeComments';
 import FavoriteButton from './FavoriteButton';
 import type { Recipe, RecipeComment } from '../types/recipe';
@@ -21,13 +20,12 @@ export default function RecipeDetail({
 }: RecipeDetailProps) {
   const { user } = useAuth();
   const [comments, setComments] = useState<RecipeComment[]>([]);
-  const [rating, setRating] = useState(recipe.rating || 0);
 
   const handleAddComment = async (content: string) => {
     if (!user) return;
 
     const newComment: RecipeComment = {
-      id: `comment-${Date.now()}`,
+      id: Date.now(),
       recipeId: recipe.id,
       userId: user.id,
       userName: user.name || user.email,
@@ -38,15 +36,14 @@ export default function RecipeDetail({
     setComments(prev => [newComment, ...prev]);
   };
 
-  const handleRatingChange = (newRating: number) => {
-    setRating(newRating);
-  };
 
   return (
     <Card className="mb-4">
       <Card.Header className="d-flex justify-content-between align-items-start">
         <div>
-          <Card.Title className="mb-2">{recipe.name}</Card.Title>
+          <Card.Title className="mb-2">
+            {recipe.title}
+          </Card.Title>
           <div className="d-flex flex-wrap gap-2 align-items-center">
             {recipe.category && <Badge bg="primary">{recipe.category}</Badge>}
             {recipe.tags?.map((tag, index) => (
@@ -57,8 +54,10 @@ export default function RecipeDetail({
             {recipe.servings && (
               <small className="text-muted">{recipe.servings} servings</small>
             )}
-            {recipe.durationMins && (
-              <small className="text-muted">{recipe.durationMins} min</small>
+            {(recipe.cook_time_min || recipe.durationMins) && (
+              <small className="text-muted">
+                {recipe.cook_time_min || recipe.durationMins} min
+              </small>
             )}
           </div>
         </div>
@@ -86,7 +85,7 @@ export default function RecipeDetail({
           <Col md={6}>
             <h6>Ingredients</h6>
             <ul className="list-unstyled">
-              {recipe.ingredients.map((ingredient, index) => (
+              {(recipe.ingredients || []).map((ingredient, index) => (
                 <li key={index} className="mb-1">
                   <strong>{ingredient.name}</strong>
                   {ingredient.amount && (
@@ -97,30 +96,24 @@ export default function RecipeDetail({
             </ul>
           </Col>
           <Col md={6}>
-            <h6>Instructions</h6>
-            <div style={{ whiteSpace: 'pre-wrap' }}>{recipe.instructions}</div>
+            <h6>Description</h6>
+            <div style={{ whiteSpace: 'pre-wrap' }}>
+              {recipe.description || recipe.instructions}
+            </div>
           </Col>
         </Row>
 
-        {recipe.imageUrl && (
+        {(recipe.image_url || recipe.imageUrl) && (
           <div className="mt-3">
             <img
-              src={recipe.imageUrl}
-              alt={recipe.name}
+              src={recipe.image_url || recipe.imageUrl}
+              alt={recipe.title}
               className="img-fluid rounded"
               style={{ maxHeight: '300px' }}
             />
           </div>
         )}
 
-        <div className="mt-4">
-          <h6>Rating</h6>
-          <RecipeRating
-            recipeId={recipe.id}
-            currentRating={rating}
-            onRatingChange={handleRatingChange}
-          />
-        </div>
       </Card.Body>
 
       <RecipeComments

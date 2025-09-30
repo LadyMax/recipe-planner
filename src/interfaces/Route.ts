@@ -5,7 +5,7 @@ export default interface Route {
   element: React.ReactNode;
   index?: number;
   children?: Route[];
-  // 给 Header 用的可选字段
+  // Optional fields for Header
   menuLabel?: string;
   parent?: string;
 }

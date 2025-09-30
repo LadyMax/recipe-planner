@@ -4,7 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import type { RecipeComment } from '../types/recipe';
 
 interface RecipeCommentsProps {
-  recipeId: string;
+  recipeId: number;
   comments: RecipeComment[];
   onAddComment?: (content: string) => void;
 }

@@ -4,7 +4,6 @@ import PlannerPage from './pages/PlannerPage.tsx';
 import ShoppingListPage from './pages/ShoppingListPage.tsx';
 import RecipeDetailPage from './pages/RecipeDetailPage.tsx';
 import FavoritesPage from './pages/FavoritesPage.tsx';
-import NotFoundPage from './pages/NotFoundPage.tsx';
 
 type RoutedComponent = ComponentType & { route?: Omit<Route, 'element'> };
 
@@ -13,7 +12,6 @@ const pages: RoutedComponent[] = [
   ShoppingListPage as RoutedComponent,
   RecipeDetailPage as RoutedComponent,
   FavoritesPage as RoutedComponent,
-  NotFoundPage as RoutedComponent,
 ];
 
 function toRoute(Comp: RoutedComponent): Route {

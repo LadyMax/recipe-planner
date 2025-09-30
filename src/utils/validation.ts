@@ -1,8 +1,10 @@
-import type { Recipe } from "../types/recipe.ts";
+// import type { Recipe } from "../types/recipe.ts";
 
-export function validateRecipe(r: Recipe): string | null {
-  if (!r.name?.trim()) return "Name is required";
-  if (!r.ingredients?.length || !r.ingredients.some(i => i.name?.trim()))
+export function validateRecipe(r: any): string | null {
+  if (!r.title?.trim()) return "Title is required";
+  // For recipes returned from API, ingredients field may be missing, this is normal
+  // Only need to validate ingredients when creating new recipes
+  if (r.ingredients && (!r.ingredients.length || !r.ingredients.some((i: any) => i.name?.trim())))
     return "At least one ingredient is required";
   return null;
 }

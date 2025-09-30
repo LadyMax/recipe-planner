@@ -20,22 +20,22 @@ import { uuid } from '../utils/ids.ts';
 
 const STARTER: Recipe[] = [
   {
-    id: 'r-1',
-    name: 'Tomato Pasta',
+    id: 1,
+    title: 'Tomato Pasta',
     ingredients: [
-      { id: 'i-1', name: 'Pasta', amount: '200g' },
-      { id: 'i-2', name: 'Tomato sauce', amount: '150ml' },
-      { id: 'i-3', name: 'Olive oil', amount: '1 tbsp' },
+      { id: 1, name: 'Pasta', amount: '200g' },
+      { id: 2, name: 'Tomato sauce', amount: '150ml' },
+      { id: 3, name: 'Olive oil', amount: '1 tbsp' },
     ],
     instructions: 'Boil pasta. Heat sauce with oil. Mix and serve.',
   },
   {
-    id: 'r-2',
-    name: 'Chicken Salad',
+    id: 2,
+    title: 'Chicken Salad',
     ingredients: [
-      { id: 'i-4', name: 'Chicken breast', amount: '200g' },
-      { id: 'i-5', name: 'Lettuce', amount: '1 head' },
-      { id: 'i-6', name: 'Vinaigrette', amount: '2 tbsp' },
+      { id: 4, name: 'Chicken breast', amount: '200g' },
+      { id: 5, name: 'Lettuce', amount: '1 head' },
+      { id: 6, name: 'Vinaigrette', amount: '2 tbsp' },
     ],
     instructions: 'Cook chicken. Chop lettuce. Toss with vinaigrette.',
   },
@@ -113,9 +113,9 @@ const PlannerPage: React.FC & {
       const query = searchFilters.query.toLowerCase();
       list = list.filter(
         r =>
-          r.name.toLowerCase().includes(query) ||
-          r.ingredients.some(i => i.name.toLowerCase().includes(query)) ||
-          r.instructions.toLowerCase().includes(query)
+          (r.title || '').toLowerCase().includes(query) ||
+          (r.ingredients || []).some(i => i.name.toLowerCase().includes(query)) ||
+          (r.instructions || '').toLowerCase().includes(query)
       );
     }
 
@@ -157,14 +157,14 @@ const PlannerPage: React.FC & {
         // Keep original order (newest first, as they are added to the beginning of the array)
         break;
       case 'name-asc':
-        list = [...list].sort((a, b) => a.name.localeCompare(b.name));
+        list = [...list].sort((a, b) => (a.title || '').localeCompare(b.title || ''));
         break;
       case 'name-desc':
-        list = [...list].sort((a, b) => b.name.localeCompare(a.name));
+        list = [...list].sort((a, b) => (b.title || '').localeCompare(a.title || ''));
         break;
       case 'ingr-count':
         list = [...list].sort(
-          (a, b) => b.ingredients.length - a.ingredients.length
+          (a, b) => (b.ingredients || []).length - (a.ingredients || []).length
         );
         break;
     }
@@ -271,8 +271,14 @@ const PlannerPage: React.FC & {
           show={showForm}
           initial={editing}
           onSubmit={async r => {
-            await upsert(r);
-            setShowForm(false);
+            try {
+              await upsert(r);
+              setShowForm(false);
+            } catch (error) {
+              console.error('Failed to add recipe to list:', error);
+              // Close form even if upsert fails, since recipe was already created in database
+              setShowForm(false);
+            }
           }}
           onClose={() => setShowForm(false)}
         />
@@ -286,7 +292,7 @@ const PlannerPage: React.FC & {
             <Modal.Title>Delete recipe</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Delete <strong>{confirmTarget?.name}</strong>?
+            Delete <strong>{confirmTarget?.title}</strong>?
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setConfirmTarget(null)}>

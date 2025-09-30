@@ -1,39 +1,39 @@
 export type Ingredient = {
-  id: string;
+  id: number;
   name: string;
   amount?: string;
   unit?: string;
 };
 
 export type Recipe = {
-  id: string;
-  name: string;
-  ingredients: Ingredient[];
-  instructions: string;
+  id: number;
+  title: string;
+  description?: string;
+  category?: string;
+  cook_time_min?: number;
+  difficulty?: string;
+  image_url?: string;
+  user_id?: number;
+  created_at?: string;
+  updated_at?: string;
+  // Compatibility fields
+  ingredients?: Ingredient[];
+  instructions?: string;
   tags?: string[];
   imageUrl?: string;
   servings?: number;
   durationMins?: number;
-  category?: string;
-  rating?: number;
-  authorId?: string;
+  authorId?: number;
   createdAt?: string;
   updatedAt?: string;
 };
 
 export type RecipeComment = {
-  id: string;
-  recipeId: string;
-  userId: string;
+  id: number;
+  recipeId: number;
+  userId: number;
   userName: string;
   content: string;
   createdAt: string;
 };
 
-export type RecipeRating = {
-  id: string;
-  recipeId: string;
-  userId: string;
-  rating: number; // 1-5
-  createdAt: string;
-};

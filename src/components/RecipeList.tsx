@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom';
+import { useState, useMemo } from 'react';
+import { Form, Row, Col } from 'react-bootstrap';
 import FavoriteButton from './FavoriteButton';
 import type { Recipe } from '../types/recipe.ts';
 
@@ -15,17 +17,82 @@ export default function RecipeList({
   onRequestDelete,
   canEdit = false,
 }: Props) {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState('');
+
+  // Get all unique categories
+  const categories = useMemo(() => {
+    const uniqueCategories = [...new Set(recipes.map(r => r.category).filter(Boolean))];
+    return uniqueCategories.sort();
+  }, [recipes]);
+
+  // Filter recipes
+  const filteredRecipes = useMemo(() => {
+    return recipes.filter(recipe => {
+      const matchesSearch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                           recipe.description?.toLowerCase().includes(searchTerm.toLowerCase());
+      const matchesCategory = !selectedCategory || recipe.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [recipes, searchTerm, selectedCategory]);
+
   if (recipes.length === 0) return <p>No recipes yet. Add one!</p>;
 
   console.log(
     'RecipeList rendering with recipes:',
-    recipes.map(r => r.name)
+    recipes.map(r => r.title)
   );
 
   return (
-    <div className="row">
-      {recipes.map((r, index) => {
-        console.log(`Rendering recipe ${index}: ${r.name} (ID: ${r.id})`);
+    <div>
+      {/* Search and filter controls */}
+      <Row className="mb-4">
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Search Recipes</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder="Enter recipe name or description..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+          </Form.Group>
+        </Col>
+        <Col md={6}>
+          <Form.Group>
+            <Form.Label>Category Filter</Form.Label>
+            <Form.Select
+              value={selectedCategory}
+              onChange={(e) => setSelectedCategory(e.target.value)}
+            >
+              <option value="">All Categories</option>
+              {categories.map(category => (
+                <option key={category} value={category}>
+                  {category}
+                </option>
+              ))}
+            </Form.Select>
+          </Form.Group>
+        </Col>
+      </Row>
+
+      {/* Show filtered results count */}
+      {filteredRecipes.length !== recipes.length && (
+        <div className="mb-3">
+          <small className="text-muted">
+            Showing {filteredRecipes.length} / {recipes.length} recipes
+          </small>
+        </div>
+      )}
+
+      {/* Recipe list */}
+      <div className="row">
+        {filteredRecipes.map((r, index) => {
+        console.log(
+          `Rendering recipe ${index}: ${
+            r.title
+          } (ID: ${r.id})`
+        );
         return (
           <div
             key={r.id}
@@ -39,11 +106,11 @@ export default function RecipeList({
               >
                 <FavoriteButton recipeId={r.id} size="sm" />
               </div>
-              {r.imageUrl && (
+              {(r.image_url || r.imageUrl) && (
                 <img
-                  src={r.imageUrl}
+                  src={r.image_url || r.imageUrl}
                   className="card-img-top"
-                  alt={r.name}
+                  alt={r.title}
                   style={{ height: '200px', objectFit: 'cover' }}
                 />
               )}
@@ -53,7 +120,7 @@ export default function RecipeList({
                     to={`/recipes/${r.id}`}
                     className="text-decoration-none"
                   >
-                    {r.name}
+                    {r.title}
                   </Link>
                 </h5>
 
@@ -74,21 +141,19 @@ export default function RecipeList({
                       <i className="bi bi-people"></i> {r.servings} servings
                     </small>
                   )}
-                  {r.durationMins && (
+                  {(r.cook_time_min || r.durationMins) && (
                     <small className="text-muted">
-                      <i className="bi bi-clock"></i> {r.durationMins} min
+                      <i className="bi bi-clock"></i>{' '}
+                      {r.cook_time_min || r.durationMins} min
                     </small>
                   )}
                 </div>
 
                 <p className="card-text flex-grow-1">
-                  <strong>Ingredients:</strong>{' '}
-                  {r.ingredients
-                    .slice(0, 3)
-                    .map(i => i.name)
-                    .join(', ')}
-                  {r.ingredients.length > 3 &&
-                    ` and ${r.ingredients.length - 3} more`}
+                  <strong>Description:</strong>{' '}
+                  {(r.description || r.instructions || '').substring(0, 100)}
+                  {(r.description || r.instructions || '').length > 100 &&
+                    '...'}
                 </p>
 
                 <div className="mt-auto">
@@ -128,6 +193,7 @@ export default function RecipeList({
           </div>
         );
       })}
+      </div>
     </div>
   );
 }

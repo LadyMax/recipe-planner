@@ -17,7 +17,7 @@ const RecipeDetailPage: React.FC & {
 
   useEffect(() => {
     if (id && recipes.length > 0) {
-      const foundRecipe = recipes.find(r => r.id === id);
+      const foundRecipe = recipes.find(r => r.id === parseInt(id));
       if (foundRecipe) {
         setRecipe(foundRecipe);
       } else {
@@ -35,7 +35,7 @@ const RecipeDetailPage: React.FC & {
   const handleDelete = async () => {
     if (
       recipe &&
-      window.confirm(`Are you sure you want to delete "${recipe.name}"?`)
+      window.confirm(`Are you sure you want to delete "${recipe.title}"?`)
     ) {
       // Delete logic would go here
       navigate('/recipes');
@@ -73,9 +73,11 @@ const RecipeDetailPage: React.FC & {
           <p>
             The recipe you're looking for doesn't exist or has been removed.
           </p>
-          <Button as={Link} to="/recipes" variant="primary">
-            Back to Recipes
-          </Button>
+          <Link to="/recipes">
+            <Button variant="primary">
+              Back to Recipes
+            </Button>
+          </Link>
         </Alert>
       </Container>
     );
@@ -84,9 +86,11 @@ const RecipeDetailPage: React.FC & {
   return (
     <Container className="py-4">
       <div className="d-flex justify-content-between align-items-center mb-4">
-        <Button as={Link} to="/recipes" variant="outline-secondary">
-          ← Back to Recipes
-        </Button>
+        <Link to="/recipes">
+          <Button variant="outline-secondary">
+            ← Back to Recipes
+          </Button>
+        </Link>
         {isAuthenticated && (
           <div className="d-flex gap-2">
             <Button variant="outline-primary" onClick={handleEdit}>

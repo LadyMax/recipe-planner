@@ -3,6 +3,17 @@ public static class RestApi
 {
     public static void Start()
     {
+        // Handle OPTIONS requests for CORS
+        App.MapMethods("/api/{table}", new[] { "OPTIONS" }, (HttpContext context, string table) =>
+        {
+            return Results.Ok();
+        });
+
+        App.MapMethods("/api/{table}/{id}", new[] { "OPTIONS" }, (HttpContext context, string table, string id) =>
+        {
+            return Results.Ok();
+        });
+
         App.MapPost("/api/{table}", (
             HttpContext context, string table, JsonElement bodyJson
         ) =>

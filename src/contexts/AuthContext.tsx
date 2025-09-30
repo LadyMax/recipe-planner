@@ -69,7 +69,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
       // Create mock user data
       const user = {
-        id: `user-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+        id: Date.now(), // Use timestamp as number ID
         email: credentials.email,
         name: credentials.email.split('@')[0], // Use email prefix as name
         role: 'user' as const,

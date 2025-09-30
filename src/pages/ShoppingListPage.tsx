@@ -7,7 +7,7 @@ const ShoppingListPage: React.FC & { route?: { path: string; index?: number; men
   const { recipes, loading, error } = useRecipes();
   const [q, setQ] = useState("");
 
-  // 明确标注为 AggregatedItem[]，避免推断问题
+  // Explicitly annotate as AggregatedItem[] to avoid inference issues
   const items: AggregatedItem[] = useMemo(() => {
     const all = aggregateIngredients(recipes);
     const key = q.trim().toLowerCase();
@@ -21,9 +21,9 @@ const ShoppingListPage: React.FC & { route?: { path: string; index?: number; men
       return `• ${i.name}${amt}${cnt}`;
     }).join("\n");
 
-    // 兜底：navigator.clipboard 不可用时使用旧方案
+    // Fallback: use old method when navigator.clipboard is not available
     try {
-      // 某些 TS 环境会对 clipboard 报类型错，这里断言 any 规避
+      // Some TS environments report type errors for clipboard, use any assertion to avoid
       await (navigator as any).clipboard?.writeText(text);
     } catch {
       const ta = document.createElement("textarea");
