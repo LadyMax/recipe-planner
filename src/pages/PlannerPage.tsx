@@ -97,10 +97,10 @@ const PlannerPage: React.FC & {
           })),
         }));
         await importMany(fixed);
-      } catch (err: any) {
-        setError?.(err?.message || 'Invalid JSON');
+      } catch (err: unknown) {
+        setError?.(err instanceof Error ? err.message : 'Invalid JSON');
       }
-      (e.target as any).value = '';
+      (e.target as HTMLInputElement).value = '';
     };
     fr.readAsText(file);
   }
@@ -174,15 +174,6 @@ const PlannerPage: React.FC & {
   return (
     <Container className="pt-1 pb-4">
       <div className="fade-in">
-        <Alert variant="info" className="mb-4 mt-1">
-          <Alert.Heading>Welcome to Recipe Master!</Alert.Heading>
-          <p>
-            {isAuthenticated
-              ? 'Welcome back! You can create, edit, and manage your recipes.'
-              : 'You can browse all recipes, but you need to log in to create, edit, or delete recipes.'}
-          </p>
-        </Alert>
-
         <AdvancedSearch
           onSearch={setSearchFilters}
           onClear={() => setSearchFilters({ query: '', tags: [] })}
@@ -232,6 +223,15 @@ const PlannerPage: React.FC & {
                     setShowForm(true);
                   }}
                   size="sm"
+                  style={{ backgroundColor: '#6b950e', borderColor: '#6b950e', color: 'white' }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#5a7d0c';
+                    e.currentTarget.style.borderColor = '#5a7d0c';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#6b950e';
+                    e.currentTarget.style.borderColor = '#6b950e';
+                  }}
                 >
                   <i className="bi bi-plus-circle me-1"></i>
                   New
@@ -311,7 +311,11 @@ const PlannerPage: React.FC & {
         </Modal>
 
         <div className="mt-4">
-          <Button variant="link" onClick={seedStarter}>
+          <Button 
+            variant="link" 
+            onClick={seedStarter}
+            style={{ color: '#5a7d0c' }}
+          >
             Load starter data
           </Button>
         </div>
@@ -320,7 +324,7 @@ const PlannerPage: React.FC & {
   );
 };
 
-(PlannerPage as any).route = {
+(PlannerPage as React.ComponentType & { route?: { path: string; menuLabel: string } }).route = {
   path: '/recipes',
   menuLabel: 'Recipes',
 };

@@ -56,6 +56,19 @@ export default function RecipeComments({
               variant="primary"
               size="sm"
               disabled={!newComment.trim() || isSubmitting}
+              style={{
+                backgroundColor: '#6b950e',
+                borderColor: '#6b950e',
+                color: 'white',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#5a7d0c';
+                e.currentTarget.style.borderColor = '#5a7d0c';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = '#6b950e';
+                e.currentTarget.style.borderColor = '#6b950e';
+              }}
             >
               {isSubmitting ? 'Posting...' : 'Post Comment'}
             </Button>

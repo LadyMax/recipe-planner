@@ -66,7 +66,26 @@ export default function RecipeDetail({
           {canEdit && (onEdit || onDelete) && (
             <>
               {onEdit && (
-                <Button variant="outline-primary" size="sm" onClick={onEdit}>
+                <Button 
+                  variant="outline-primary" 
+                  size="sm" 
+                  onClick={onEdit}
+                  style={{
+                    backgroundColor: 'transparent',
+                    borderColor: '#5a7d0c',
+                    color: '#5a7d0c',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#6b950e';
+                    e.currentTarget.style.borderColor = '#6b950e';
+                    e.currentTarget.style.color = 'white';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'transparent';
+                    e.currentTarget.style.borderColor = '#5a7d0c';
+                    e.currentTarget.style.color = '#5a7d0c';
+                  }}
+                >
                   Edit
                 </Button>
               )}

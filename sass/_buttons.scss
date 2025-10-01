@@ -19,11 +19,8 @@
   color: white;
 }
 
-// simulate hover color on button when hovering card
-// (since the whole card is clickable)
-.card:hover .btn-primary {
-  background-color: #0c5c12;
-}
+// Removed card hover effect on buttons for better UX
+// Buttons should only change color when directly hovered
 
 // Form-switch make bigger + witdh of text overlay
 .form-switch input {

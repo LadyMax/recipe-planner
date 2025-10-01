@@ -93,7 +93,25 @@ const RecipeDetailPage: React.FC & {
         </Link>
         {isAuthenticated && (
           <div className="d-flex gap-2">
-            <Button variant="outline-primary" onClick={handleEdit}>
+            <Button 
+              variant="outline-primary" 
+              onClick={handleEdit}
+              style={{
+                backgroundColor: 'transparent',
+                borderColor: '#5a7d0c',
+                color: '#5a7d0c',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.backgroundColor = '#6b950e';
+                e.currentTarget.style.borderColor = '#6b950e';
+                e.currentTarget.style.color = 'white';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.backgroundColor = 'transparent';
+                e.currentTarget.style.borderColor = '#5a7d0c';
+                e.currentTarget.style.color = '#5a7d0c';
+              }}
+            >
               Edit Recipe
             </Button>
             <Button variant="outline-danger" onClick={handleDelete}>

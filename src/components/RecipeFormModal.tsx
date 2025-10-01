@@ -233,11 +233,10 @@ const RecipeFormModal: React.FC<Props> = ({
     }
   }, [initial, show]);
 
-  const addIngredient = () =>
-    setIngredients(prev => [
-      ...prev,
-      { id: uuid(), name: '', amount: '', unit: '' },
-    ]);
+  const addIngredient = () => {
+    const newIngredient = { id: uuid(), name: '', amount: '', unit: '' };
+    setIngredients(prev => [...prev, newIngredient]);
+  };
 
   const updateIngredient = (
     id: number,
@@ -315,6 +314,16 @@ const RecipeFormModal: React.FC<Props> = ({
     const trimmedCategory = category.trim();
     if (!trimmedTitle || !trimmedCategory) return;
 
+    // Validate ingredients - all fields are required
+    const invalidIngredients = ingredients.filter(i => 
+      !i.name.trim() || !i.amount?.trim() || !i.unit?.trim()
+    );
+    
+    if (invalidIngredients.length > 0) {
+      alert('Please fill in all ingredient fields (name, amount, and unit)');
+      return;
+    }
+
     const clean = ingredients
       .filter(i => i.name.trim())
       .map(i => ({ ...i, amount: i.amount?.trim() || undefined }));
@@ -366,57 +375,28 @@ const RecipeFormModal: React.FC<Props> = ({
             />
           </Form.Group>
 
-          <Form.Label>Ingredients</Form.Label>
-          {ingredients.map(i => (
-            <Row key={i.id} className="g-2 align-items-center mb-2">
+          <Form.Label>Ingredients *</Form.Label>
+          <div className="ingredients-list">
+            {ingredients.map((i, index) => (
+              <Row key={`ingredient-${i.id}-${index}`} className="g-2 align-items-center mb-2">
               <Col sm={6}>
                 <div className="position-relative">
                   <Dropdown>
                     <Dropdown.Toggle
                       as={Form.Control}
                       variant="outline-secondary"
-                      placeholder="Select ingredient"
+                      placeholder="Select ingredient *"
                       value={i.name}
                       readOnly
-                      style={{
-                        paddingRight: '30px',
-                        cursor: 'pointer',
-                        backgroundImage:
-                          "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e\")",
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'right 8px center',
-                        backgroundSize: '16px 12px',
-                      }}
+                      required
+                      className="dropdown-toggle-custom"
                     />
-                     <Dropdown.Menu
-                       style={{ maxHeight: '300px', overflowY: 'auto' }}
-                     >
+                     <Dropdown.Menu className="dropdown-menu-custom">
                        {Object.entries(INGREDIENT_CATEGORIES).map(
                          ([category, items]) => (
                           <React.Fragment key={category}>
                             <Dropdown.Header
-                              style={{
-                                cursor: 'pointer',
-                                userSelect: 'none',
-                                display: 'flex',
-                                alignItems: 'center',
-                                justifyContent: 'space-between',
-                                backgroundColor: '#f8f9fa',
-                                borderBottom: '1px solid #dee2e6',
-                                padding: '8px 12px',
-                                margin: '0',
-                                fontWeight: '600',
-                                color: '#495057',
-                                transition: 'background-color 0.2s ease',
-                              }}
-                              onMouseEnter={e => {
-                                e.currentTarget.style.backgroundColor =
-                                  '#e9ecef';
-                              }}
-                              onMouseLeave={e => {
-                                e.currentTarget.style.backgroundColor =
-                                  '#f8f9fa';
-                              }}
+                              className="dropdown-header-custom"
                               onClick={e => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -424,13 +404,7 @@ const RecipeFormModal: React.FC<Props> = ({
                               }}
                             >
                               <span>{category}</span>
-                              <span
-                                style={{
-                                  fontSize: '12px',
-                                  color: '#6c757d',
-                                  transition: 'transform 0.2s ease',
-                                }}
-                              >
+                              <span className="dropdown-arrow">
                                 {expandedCategories.has(category) ? '▼' : '▶'}
                               </span>
                             </Dropdown.Header>
@@ -439,24 +413,7 @@ const RecipeFormModal: React.FC<Props> = ({
                                  <Dropdown.Item
                                    key={item}
                                    onClick={() => selectIngredient(item, i.id)}
-                                  style={{
-                                    paddingLeft: '24px',
-                                    paddingTop: '6px',
-                                    paddingBottom: '6px',
-                                    fontSize: '14px',
-                                    color: '#495057',
-                                    transition: 'background-color 0.2s ease',
-                                  }}
-                                  onMouseEnter={e => {
-                                    e.currentTarget.style.backgroundColor =
-                                      '#e3f2fd';
-                                    e.currentTarget.style.color = '#1976d2';
-                                  }}
-                                  onMouseLeave={e => {
-                                    e.currentTarget.style.backgroundColor =
-                                      'transparent';
-                                    e.currentTarget.style.color = '#495057';
-                                  }}
+                                   className="dropdown-item-custom"
                                 >
                                   {item}
                                 </Dropdown.Item>
@@ -466,41 +423,15 @@ const RecipeFormModal: React.FC<Props> = ({
                       )}
                       {customIngredients.length > 0 && (
                         <>
-                          <Dropdown.Divider style={{ margin: '4px 0' }} />
-                          <Dropdown.Header
-                            style={{
-                              backgroundColor: '#fff3cd',
-                              borderBottom: '1px solid #ffeaa7',
-                              padding: '8px 12px',
-                              margin: '0',
-                              fontWeight: '600',
-                              color: '#856404',
-                            }}
-                          >
+                          <Dropdown.Divider className="dropdown-divider-custom" />
+                          <Dropdown.Header className="dropdown-header-custom-section">
                             Custom
                           </Dropdown.Header>
                           {customIngredients.map(item => (
                             <Dropdown.Item
                               key={item}
                               onClick={() => selectIngredient(item, i.id)}
-                              style={{
-                                paddingLeft: '12px',
-                                paddingTop: '6px',
-                                paddingBottom: '6px',
-                                fontSize: '14px',
-                                color: '#495057',
-                                transition: 'background-color 0.2s ease',
-                              }}
-                              onMouseEnter={e => {
-                                e.currentTarget.style.backgroundColor =
-                                  '#fff3cd';
-                                e.currentTarget.style.color = '#856404';
-                              }}
-                              onMouseLeave={e => {
-                                e.currentTarget.style.backgroundColor =
-                                  'transparent';
-                                e.currentTarget.style.color = '#495057';
-                              }}
+                              className="dropdown-item-custom-section"
                             >
                               {item}
                             </Dropdown.Item>
@@ -513,19 +444,24 @@ const RecipeFormModal: React.FC<Props> = ({
               </Col>
               <Col sm={3}>
                 <Form.Control
-                  placeholder="Amount"
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder="Amount *"
                   value={i.amount ?? ''}
                   onChange={e =>
                     updateIngredient(i.id, 'amount', e.target.value)
                   }
+                  required
                 />
               </Col>
               <Col sm={2}>
                  <Form.Select
                    value={i.unit ?? ''}
                    onChange={e => updateIngredient(i.id, 'unit', e.target.value)}
+                   required
                  >
-                   <option value="">Unit</option>
+                   <option value="">Unit *</option>
                    {MEASUREMENT_UNITS.map(unit => (
                      <option key={unit} value={unit}>
                        {unit}
@@ -543,7 +479,8 @@ const RecipeFormModal: React.FC<Props> = ({
                 </Button>
               </Col>
             </Row>
-          ))}
+            ))}
+          </div>
 
           <div className="mb-3">
             <Button
@@ -607,7 +544,7 @@ const RecipeFormModal: React.FC<Props> = ({
                   onChange={e => setDifficulty(e.target.value)}
                   required
                 >
-                  <option value="">Select Difficulty</option>
+                  <option value="">-- Select Difficulty --</option>
                   <option value="Easy">Easy</option>
                   <option value="Medium">Medium</option>
                   <option value="Hard">Hard</option>
@@ -668,17 +605,11 @@ const RecipeFormModal: React.FC<Props> = ({
             {/* Image Preview */}
             {(imagePreview || imageUrl) && (
               <div className="mb-3">
-                <img
-                  src={imagePreview || imageUrl}
-                  alt="Recipe preview"
-                  style={{
-                    maxWidth: '200px',
-                    maxHeight: '150px',
-                    objectFit: 'cover',
-                    borderRadius: '8px',
-                    border: '1px solid #dee2e6',
-                  }}
-                />
+                       <img
+                         src={imagePreview || imageUrl}
+                         alt="Recipe preview"
+                         className="image-preview"
+                       />
                 <div className="mt-2">
                   <Button
                     variant="outline-danger"

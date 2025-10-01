@@ -115,15 +115,24 @@ export default function AdvancedSearch({
 
   return (
     <Card className="mb-4 shadow-sm">
-      <Card.Header className="bg-light">
+      <Card.Header style={{ backgroundColor: '#6b950e', color: 'white' }}>
         <div className="d-flex justify-content-between align-items-center">
           <h5 className="mb-0">
             <i className="bi bi-search me-2"></i>
             Search Recipes
           </h5>
           <Button
-            variant="outline-primary"
+            variant="outline-light"
             size="sm"
+            style={{ backgroundColor: '#6b950e', borderColor: '#6b950e', color: 'white' }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.backgroundColor = '#49660a';
+              e.currentTarget.style.borderColor = '#49660a';
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.backgroundColor = '#6b950e';
+              e.currentTarget.style.borderColor = '#6b950e';
+            }}
             onClick={() => setShowAdvanced(!showAdvanced)}
           >
             <i
@@ -137,16 +146,15 @@ export default function AdvancedSearch({
         <Form onSubmit={handleSubmit}>
           <Row className="mb-3">
             <Col md={6}>
-              <div className="position-relative">
+              <div className="search-bar">
                 <Form.Control
                   type="text"
-                  placeholder="Search recipe names or ingredients..."
+                  placeholder="Search anything here..."
                   value={filters.query}
                   onChange={handleInputChange('query')}
-                  className="ps-5"
                   size="sm"
                 />
-                <i className="bi bi-search position-absolute top-50 start-0 translate-middle-y ms-3 text-muted"></i>
+                <i className="bi bi-search search-icon"></i>
               </div>
             </Col>
             <Col md={6} className="mt-2 mt-md-0">
@@ -160,6 +168,16 @@ export default function AdvancedSearch({
                     position: 'static',
                     width: 'auto',
                     bottom: 'auto',
+                    backgroundColor: '#6b950e',
+                    borderColor: '#6b950e',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = '#49660a';
+                    e.currentTarget.style.borderColor = '#49660a';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = '#6b950e';
+                    e.currentTarget.style.borderColor = '#6b950e';
                   }}
                 >
                   <i className="bi bi-search me-1"></i>
@@ -279,37 +297,37 @@ export default function AdvancedSearch({
               <small className="text-muted">Active filters:</small>
               <div className="d-flex flex-wrap gap-1 mt-1">
                 {filters.query && (
-                  <Badge bg="info" style={{ fontSize: '0.7rem' }}>
+                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
                     Search: {filters.query}
                   </Badge>
                 )}
                 {filters.category && (
-                  <Badge bg="secondary" style={{ fontSize: '0.7rem' }}>
+                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
                     Category: {filters.category}
                   </Badge>
                 )}
                 {filters.tags.map(tag => (
-                  <Badge key={tag} bg="success" style={{ fontSize: '0.7rem' }}>
+                  <Badge key={tag} style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
                     {tag}
                   </Badge>
                 ))}
                 {filters.maxDuration && (
-                  <Badge bg="warning" style={{ fontSize: '0.7rem' }}>
+                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
                     ≤{filters.maxDuration}min
                   </Badge>
                 )}
                 {filters.minServings && (
-                  <Badge bg="info" style={{ fontSize: '0.7rem' }}>
+                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
                     ≥{filters.minServings}servings
                   </Badge>
                 )}
                 {filters.maxServings && (
-                  <Badge bg="info" style={{ fontSize: '0.7rem' }}>
+                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
                     ≤{filters.maxServings}servings
                   </Badge>
                 )}
                 {filters.hasImage && (
-                  <Badge bg="primary" style={{ fontSize: '0.7rem' }}>
+                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
                     With Image
                   </Badge>
                 )}

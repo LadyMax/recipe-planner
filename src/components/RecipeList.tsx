@@ -45,36 +45,26 @@ export default function RecipeList({
 
   return (
     <div>
-      {/* Search and filter controls */}
-      <Row className="mb-4">
-        <Col md={6}>
-          <Form.Group>
-            <Form.Label>Search Recipes</Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter recipe name or description..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </Form.Group>
-        </Col>
-        <Col md={6}>
-          <Form.Group>
-            <Form.Label>Category Filter</Form.Label>
-            <Form.Select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="">All Categories</option>
-              {categories.map(category => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </Form.Select>
-          </Form.Group>
-        </Col>
-      </Row>
+      {/* Category tags */}
+      <div className="category-tags">
+        <a href="#" className={`category-tag ${selectedCategory === '' ? 'active' : ''}`} 
+           onClick={(e) => { e.preventDefault(); setSelectedCategory(''); }}>
+          All
+        </a>
+        {categories.map(category => (
+          <a key={category} href="#" 
+             className={`category-tag ${selectedCategory === category ? 'active' : ''}`}
+             onClick={(e) => { e.preventDefault(); setSelectedCategory(category); }}>
+            {category}
+          </a>
+        ))}
+      </div>
+
+      {/* Section header */}
+      <div className="section-header">
+        <h2 className="section-title">Popular Recipes</h2>
+        <a href="#" className="view-all-link">View All</a>
+      </div>
 
       {/* Show filtered results count */}
       {filteredRecipes.length !== recipes.length && (
@@ -99,7 +89,12 @@ export default function RecipeList({
             className="col-12 col-md-6 col-lg-4 mb-4"
             style={{ animationDelay: `${index * 0.1}s` }}
           >
-            <div className="card recipe-card h-100 fade-in position-relative">
+            <Link
+              to={`/recipes/${r.id}`}
+              className="text-decoration-none"
+              style={{ color: 'inherit' }}
+            >
+              <div className="card recipe-card h-100 fade-in position-relative">
               <div
                 className="position-absolute top-0 end-0 m-2"
                 style={{ zIndex: 10 }}
@@ -115,46 +110,32 @@ export default function RecipeList({
                 />
               )}
               <div className="card-body d-flex flex-column">
-                <h5 className="card-title">
-                  <Link
-                    to={`/recipes/${r.id}`}
-                    className="text-decoration-none"
-                  >
-                    {r.title}
-                  </Link>
-                </h5>
-
                 <div className="mb-2">
                   {r.category && (
-                    <span className="badge bg-primary me-1">{r.category}</span>
+                    <span className="category-badge">{r.category}</span>
                   )}
-                  {r.tags?.slice(0, 3).map((tag, index) => (
-                    <span key={index} className="badge bg-secondary me-1">
-                      {tag}
-                    </span>
-                  ))}
                 </div>
 
-                <div className="mb-2">
-                  {r.servings && (
-                    <small className="text-muted me-3">
-                      <i className="bi bi-people"></i> {r.servings} servings
-                    </small>
-                  )}
-                  {(r.cook_time_min || r.durationMins) && (
-                    <small className="text-muted">
-                      <i className="bi bi-clock"></i>{' '}
-                      {r.cook_time_min || r.durationMins} min
-                    </small>
-                  )}
-                </div>
+                <h5 className="card-title" style={{ color: '#5a7d0c' }}>
+                  {r.title}
+                </h5>
 
                 <p className="card-text flex-grow-1">
-                  <strong>Description:</strong>{' '}
-                  {(r.description || r.instructions || '').substring(0, 100)}
-                  {(r.description || r.instructions || '').length > 100 &&
+                  {(r.description || r.instructions || '').substring(0, 80)}
+                  {(r.description || r.instructions || '').length > 80 &&
                     '...'}
                 </p>
+
+                <div className="recipe-meta">
+                  <div className="recipe-rating">
+                    <span className="stars">★★★★★</span>
+                    <span className="rating-text">4.8</span>
+                  </div>
+                  <div className="recipe-time">
+                    <i className="bi bi-clock"></i>
+                    {r.cook_time_min || r.durationMins || 30} min
+                  </div>
+                </div>
 
                 <div className="mt-auto">
                   <div className="d-flex">
@@ -167,6 +148,19 @@ export default function RecipeList({
                           position: 'static',
                           width: 'auto',
                           bottom: 'auto',
+                          backgroundColor: 'transparent',
+                          borderColor: '#5a7d0c',
+                          color: '#5a7d0c',
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.backgroundColor = '#6b950e';
+                          e.currentTarget.style.borderColor = '#6b950e';
+                          e.currentTarget.style.color = 'white';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.backgroundColor = 'transparent';
+                          e.currentTarget.style.borderColor = '#5a7d0c';
+                          e.currentTarget.style.color = '#5a7d0c';
                         }}
                       >
                         Edit
@@ -189,7 +183,8 @@ export default function RecipeList({
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
+            </Link>
           </div>
         );
       })}
