@@ -17,7 +17,9 @@ export function useRecipes() {
       const recipesWithIngredients = await Promise.all(
         data.map(async (recipe: Recipe) => {
           try {
-            const ingredientsResponse = await fetch(`http://localhost:5001/api/ingredients?where=recipe_id=${recipe.id}&orderby=position`);
+            const ingredientsResponse = await fetch(`http://localhost:5001/api/ingredients?where=recipe_id=${recipe.id}&orderby=position`, {
+              credentials: 'include'
+            });
             if (ingredientsResponse.ok) {
               const ingredientsData = await ingredientsResponse.json();
               recipe.ingredients = ingredientsData.map((ing: {id: number; name: string; amount: string; unit: string}) => ({
@@ -74,7 +76,8 @@ export function useRecipes() {
         if (r.ingredients && r.ingredients.length > 0) {
           // First, delete existing ingredients
           await fetch(`http://localhost:5001/api/ingredients?where=recipe_id=${r.id}`, {
-            method: 'DELETE'
+            method: 'DELETE',
+            credentials: 'include'
           }).catch(err => console.warn('Failed to delete old ingredients:', err));
           
           // Then, add new ingredients
@@ -83,6 +86,7 @@ export function useRecipes() {
               await fetch('http://localhost:5001/api/ingredients', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
                 body: JSON.stringify({
                   recipe_id: r.id,
                   name: ingredient.name,
