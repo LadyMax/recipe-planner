@@ -19,7 +19,7 @@ export default function FavoriteButton({
     e.preventDefault();
     e.stopPropagation();
     if (isAuthenticated) {
-      // 立即清除悬停状态，确保颜色立即变化
+      // Immediately clear hover state to ensure color changes instantly
       setIsHovered(false);
       toggleFavorite(recipeId);
     }

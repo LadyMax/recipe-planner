@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import {
   Button,
   Container,
@@ -56,6 +56,7 @@ const PlannerPage: React.FC & {
     remove,
     importMany,
     exportAll,
+    refresh,
   } = useRecipes();
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({
     query: '',
@@ -66,6 +67,20 @@ const PlannerPage: React.FC & {
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Recipe | null>(null);
   const [confirmTarget, setConfirmTarget] = useState<Recipe | null>(null);
+
+  // Refresh recipes when page becomes visible
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        refresh();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [refresh]);
 
   async function seedStarter() {
     const current = recipes?.length ?? 0;

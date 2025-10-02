@@ -1,14 +1,14 @@
 // Global settings
 Globals = Obj(new
 {
-    debugOn = false,
+    debugOn = false,  // OBS! Sätt till false i produktion
     detailedAclDebug = false,
     aclOn = false,
     isSpa = true,
-    port = args[0],
+    port = Environment.GetEnvironmentVariable("APP_PORT") ?? (args.Length > 0 ? args[0] : "5001"),
     serverName = "Minimal API Backend",
-    frontendPath = args[1],
-    dbPath = args[2],
+    frontendPath = Environment.GetEnvironmentVariable("FRONTEND_PATH") ?? (args.Length > 1 ? args[1] : "../dist"),
+    dbPath = Environment.GetEnvironmentVariable("DB_PATH") ?? (args.Length > 2 ? args[2] : "../_db.sqlite3"),
     sessionLifeTimeHours = 2
 });
 

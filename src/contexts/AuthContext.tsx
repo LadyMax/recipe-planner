@@ -35,10 +35,31 @@ export function AuthProvider({ children }: AuthProviderProps) {
     error: null,
   });
 
-  // Check user info in local storage
+  // Check user info from backend session
   useEffect(() => {
     const checkAuth = async () => {
       try {
+        const response = await fetch('/api/login', {
+          method: 'GET',
+          credentials: 'include',
+        });
+
+        if (response.ok) {
+          const user = await response.json();
+          if (!user.error) {
+            // Save user info to local storage
+            localStorage.setItem('user', JSON.stringify(user));
+            setAuthState({
+              user,
+              isAuthenticated: true,
+              isLoading: false,
+              error: null,
+            });
+            return;
+          }
+        }
+        
+        // No valid session, check local storage as fallback
         const storedUser = localStorage.getItem('user');
         if (storedUser) {
           const user = JSON.parse(storedUser);
@@ -53,7 +74,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
         }
       } catch (error) {
         console.error('Auth check failed:', error);
-        setAuthState(prev => ({ ...prev, isLoading: false }));
+        // Fallback to local storage
+        const storedUser = localStorage.getItem('user');
+        if (storedUser) {
+          const user = JSON.parse(storedUser);
+          setAuthState({
+            user,
+            isAuthenticated: true,
+            isLoading: false,
+            error: null,
+          });
+        } else {
+          setAuthState(prev => ({ ...prev, isLoading: false }));
+        }
       }
     };
 
@@ -64,18 +97,20 @@ export function AuthProvider({ children }: AuthProviderProps) {
     setAuthState(prev => ({ ...prev, isLoading: true, error: null }));
 
     try {
-      // Simulate API call with delay
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      const response = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(credentials),
+        credentials: 'include', // Include cookies for session
+      });
 
-      // Create mock user data
-      const user = {
-        id: Date.now(), // Use timestamp as number ID
-        email: credentials.email,
-        name: credentials.email.split('@')[0], // Use email prefix as name
-        role: 'user' as const,
-        createdAt: new Date().toISOString(),
-      };
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Login failed');
+      }
 
+      const user = await response.json();
+      
       // Save user info to local storage
       localStorage.setItem('user', JSON.stringify(user));
 
@@ -95,7 +130,17 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      // Call backend logout endpoint
+      await fetch('/api/login', {
+        method: 'DELETE',
+        credentials: 'include',
+      });
+    } catch (error) {
+      console.warn('Logout API call failed:', error);
+    }
+    
     localStorage.removeItem('user');
     setAuthState({
       user: null,

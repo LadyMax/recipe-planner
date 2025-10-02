@@ -31,11 +31,4 @@ createRoot(document.getElementById('root')!).render(
   </StrictMode>
 );
 
-// Disable SW in development to avoid cache interference (enable in production)
-// if (import.meta.env.PROD && 'serviceWorker' in navigator) {
-//   window.addEventListener('load', () => {
-//     navigator.serviceWorker.register('/sw.js').catch(console.error);
-//   });
-// }
-
 console.log('routes = ', routes);

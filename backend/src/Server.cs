@@ -30,6 +30,7 @@ public static class Server
         ErrorHandler.Start();
         FileServer.Start();
         LoginRoutes.Start();
+        FavoritesRoutes.Start();
         RestApi.Start();
         Session.Start();
         // Start the server on port 3001

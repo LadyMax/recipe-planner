@@ -49,6 +49,17 @@ INSERT OR IGNORE INTO users (id, email, name, password, role) VALUES
 (2, 'user@example.com', 'User', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user'),
 (3, 'thomas@example.com', 'Thomas', '$2a$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'user');
 
+-- 创建收藏表
+CREATE TABLE IF NOT EXISTS favorites (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    recipe_id INTEGER NOT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (recipe_id) REFERENCES recipes(id) ON DELETE CASCADE,
+    UNIQUE(user_id, recipe_id)
+);
+
 -- 插入默认食材分类数据
 INSERT OR IGNORE INTO ingredient_categories (name, category) VALUES 
 ('Tomato', 'Vegetables'),
