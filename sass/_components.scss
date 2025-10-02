@@ -1,0 +1,223 @@
+// Component-specific styles
+// ==========================================
+// These styles replicate the exact inline styles currently used in components
+
+// Recipe List Component
+// ==========================================
+.recipe-card {
+  transition: all 0.3s ease;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px rgba(107, 149, 14, 0.25);
+  
+  &:hover {
+    background: #f0f7e8;
+    box-shadow: 0 8px 25px rgba(107, 149, 14, 0.35);
+    transform: translateY(-2px);
+  }
+}
+
+.recipe-card-title {
+  color: #5a7d0c;
+}
+
+.recipe-card-image {
+  height: 200px;
+  object-fit: cover;
+}
+
+.recipe-card-actions {
+  z-index: 10;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+// Advanced Search Component
+// ==========================================
+.advanced-search-header {
+  background-color: #6b950e;
+  color: white;
+}
+
+.search-button {
+  flex: 1;
+  position: static;
+  width: auto;
+  bottom: auto;
+  background-color: #6b950e;
+  border-color: #6b950e;
+  
+  &:hover {
+    background-color: #4a660a;
+    border-color: #4a660a;
+  }
+}
+
+.clear-button {
+  flex: 1;
+  position: static;
+  width: auto;
+  bottom: auto;
+}
+
+
+.filter-tag {
+  cursor: pointer;
+  font-size: 0.75rem;
+}
+
+.active-filter-badge {
+  font-size: 0.7rem;
+  background-color: #6b950e;
+  color: white;
+}
+
+// Recipe Comments Component
+// ==========================================
+.post-comment-button {
+  background-color: #6b950e;
+  border-color: #6b950e;
+  color: white;
+  
+  &:hover {
+    background-color: #5a7d0c;
+    border-color: #5a7d0c;
+  }
+}
+
+.comment-content {
+  white-space: pre-wrap;
+}
+
+// Recipe Detail Component
+// ==========================================
+.recipe-detail-edit-button {
+  background-color: transparent;
+  border-color: #5a7d0c;
+  color: #5a7d0c;
+  
+  &:hover {
+    background-color: #6b950e;
+    border-color: #6b950e;
+    color: white;
+  }
+}
+
+.recipe-description {
+  white-space: pre-wrap;
+}
+
+.recipe-image-detail {
+  max-height: 300px;
+}
+
+// Recipe Form Modal Component
+// ==========================================
+.ingredient-input-group {
+  flex: 1;
+}
+
+// Planner Page Component
+// ==========================================
+.load-starter-data-button {
+  background-color: #6b950e;
+  border-color: #6b950e;
+  color: white;
+  
+  &:hover {
+    background-color: #5a7d0c;
+    border-color: #5a7d0c;
+  }
+}
+
+.load-starter-data-text {
+  color: #5a7d0c;
+}
+
+// Recipe Detail Page Component
+// ==========================================
+.recipe-detail-loading {
+  min-height: 200px;
+}
+
+.recipe-detail-edit-button-page {
+  background-color: transparent;
+  border-color: #5a7d0c;
+  color: #5a7d0c;
+  
+  &:hover {
+    background-color: #6b950e;
+    border-color: #6b950e;
+    color: white;
+  }
+}
+
+// Modal Components
+// ==========================================
+.modal-no-select {
+  user-select: none;
+}
+
+.modal-title-no-select {
+  user-select: none;
+  pointer-events: none;
+}
+
+.modal-body-no-select {
+  user-select: none;
+}
+
+.form-label-no-select {
+  user-select: none;
+  pointer-events: none;
+}
+
+.text-muted-no-select {
+  user-select: none;
+}
+
+// Favorite Button Component
+// ==========================================
+.favorite-button {
+  z-index: 20;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+  transition: transform 0.2s ease;
+  
+  &.authenticated {
+    cursor: pointer;
+    opacity: 1;
+  }
+  
+  &.not-authenticated {
+    cursor: not-allowed;
+    opacity: 0.6;
+  }
+  
+  &.hovered {
+    transform: scale(1.1);
+  }
+  
+  &.normal {
+    transform: scale(1);
+  }
+}
+
+// Utility Classes
+// ==========================================
+.text-inherit {
+  color: inherit;
+}
+
+.min-height-200 {
+  min-height: 200px;
+}
+
+.padding-16 {
+  padding: 16px;
+}

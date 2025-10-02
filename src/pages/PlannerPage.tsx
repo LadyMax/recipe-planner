@@ -223,15 +223,7 @@ const PlannerPage: React.FC & {
                     setShowForm(true);
                   }}
                   size="sm"
-                  style={{ backgroundColor: '#6b950e', borderColor: '#6b950e', color: 'white' }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#5a7d0c';
-                    e.currentTarget.style.borderColor = '#5a7d0c';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#6b950e';
-                    e.currentTarget.style.borderColor = '#6b950e';
-                  }}
+                  className="load-starter-data-button"
                 >
                   <i className="bi bi-plus-circle me-1"></i>
                   New
@@ -314,7 +306,7 @@ const PlannerPage: React.FC & {
           <Button 
             variant="link" 
             onClick={seedStarter}
-            style={{ color: '#5a7d0c' }}
+            className="load-starter-data-text"
           >
             Load starter data
           </Button>

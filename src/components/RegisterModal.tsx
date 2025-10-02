@@ -92,17 +92,16 @@ export default function RegisterModal({ show, onHide }: RegisterModalProps) {
     >
       <Modal.Header
         closeButton
-        className="bg-success text-white"
-        style={{ userSelect: 'none' }}
+        className="bg-success text-white modal-no-select"
       >
-        <Modal.Title style={{ userSelect: 'none', pointerEvents: 'none' }}>
+        <Modal.Title className="modal-title-no-select">
           <i className="bi bi-person-plus me-2"></i>
           Create Account
         </Modal.Title>
       </Modal.Header>
       <Form onSubmit={handleSubmit}>
         <Modal.Body
-          style={{ userSelect: 'none' }}
+          className="modal-no-select"
           onMouseDown={e => {
             // Only prevent default if not clicking on input elements
             if (!(e.target as HTMLElement).closest('input, textarea, select')) {
@@ -117,7 +116,7 @@ export default function RegisterModal({ show, onHide }: RegisterModalProps) {
           )}
 
           <Form.Group className="mb-3">
-            <Form.Label style={{ userSelect: 'none', pointerEvents: 'none' }}>
+            <Form.Label className="form-label-no-select">
               <i className="bi bi-person me-1"></i>
               Username
             </Form.Label>
@@ -132,7 +131,7 @@ export default function RegisterModal({ show, onHide }: RegisterModalProps) {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label style={{ userSelect: 'none', pointerEvents: 'none' }}>
+            <Form.Label className="form-label-no-select">
               <i className="bi bi-envelope me-1"></i>
               Email
             </Form.Label>
@@ -147,7 +146,7 @@ export default function RegisterModal({ show, onHide }: RegisterModalProps) {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label style={{ userSelect: 'none', pointerEvents: 'none' }}>
+            <Form.Label className="form-label-no-select">
               <i className="bi bi-lock me-1"></i>
               Password
             </Form.Label>
@@ -162,7 +161,7 @@ export default function RegisterModal({ show, onHide }: RegisterModalProps) {
           </Form.Group>
 
           <Form.Group className="mb-3">
-            <Form.Label style={{ userSelect: 'none', pointerEvents: 'none' }}>
+            <Form.Label className="form-label-no-select">
               <i className="bi bi-lock-fill me-1"></i>
               Confirm Password
             </Form.Label>

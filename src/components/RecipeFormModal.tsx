@@ -34,9 +34,30 @@ const RecipeFormModal: React.FC<Props> = ({
   );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
+  const [focusedField, setFocusedField] = useState<string>('');
 
   // Check if there is a local file upload
   const hasLocalFile = imageFile !== null;
+
+  // Helper function to check if a field is completed
+  const isFieldCompleted = (value: string | number | undefined, required: boolean = false) => {
+    if (required) {
+      return value !== undefined && value !== '' && String(value).trim() !== '';
+    }
+    return value !== undefined && value !== '' && String(value).trim() !== '';
+  };
+
+  // Helper function to get field class name
+  const getFieldClassName = (fieldName: string, value: string | number | undefined, required: boolean = false) => {
+    const baseClass = 'form-control';
+    const isCompleted = isFieldCompleted(value, required);
+    const isFocused = focusedField === fieldName;
+    
+    if (isCompleted && !isFocused) {
+      return `${baseClass} field-completed`;
+    }
+    return baseClass;
+  };
 
   // Common measurement units
   const MEASUREMENT_UNITS = [
@@ -316,7 +337,7 @@ const RecipeFormModal: React.FC<Props> = ({
 
     // Validate ingredients - all fields are required
     const invalidIngredients = ingredients.filter(i => 
-      !i.name.trim() || !i.amount?.trim() || !i.unit?.trim()
+      !i.name.trim() || (i.amount !== '0' && !i.amount?.trim()) || !i.unit?.trim()
     );
     
     if (invalidIngredients.length > 0) {
@@ -326,7 +347,7 @@ const RecipeFormModal: React.FC<Props> = ({
 
     const clean = ingredients
       .filter(i => i.name.trim())
-      .map(i => ({ ...i, amount: i.amount?.trim() || undefined }));
+      .map(i => ({ ...i, amount: i.amount === '0' ? '0' : (i.amount?.trim() || undefined) }));
 
     // Create recipe object containing only database fields
     const recipe: Recipe = {
@@ -335,7 +356,7 @@ const RecipeFormModal: React.FC<Props> = ({
       title: trimmedTitle,
       description: description.trim(),
       category: trimmedCategory,
-      cook_time_min: cookTimeMin || 1,
+      cook_time_min: cookTimeMin !== undefined ? cookTimeMin : 1,
       difficulty: difficulty || 'Easy',
       image_url: hasLocalFile ? imagePreview : imageUrl.trim() || undefined,
       created_at: initial?.created_at ?? new Date().toISOString(),
@@ -368,9 +389,12 @@ const RecipeFormModal: React.FC<Props> = ({
           <Form.Group className="mb-3">
             <Form.Label>Title *</Form.Label>
             <Form.Control
+              className={getFieldClassName('title', title, true)}
               placeholder="E.g. Tomato Pasta"
               value={title}
               onChange={e => setTitle(e.target.value)}
+              onFocus={() => setFocusedField('title')}
+              onBlur={() => setFocusedField('')}
               required
             />
           </Form.Group>
@@ -379,17 +403,19 @@ const RecipeFormModal: React.FC<Props> = ({
           <div className="ingredients-list">
             {ingredients.map((i, index) => (
               <Row key={`ingredient-${i.id}-${index}`} className="g-2 align-items-center mb-2">
-              <Col sm={6}>
+              <Col sm={5}>
                 <div className="position-relative">
                   <Dropdown>
                     <Dropdown.Toggle
                       as={Form.Control}
-                      variant="outline-secondary"
+                      variant="outline-primary"
                       placeholder="Select ingredient *"
                       value={i.name}
                       readOnly
                       required
-                      className="dropdown-toggle-custom"
+                      className={`dropdown-toggle-custom ${getFieldClassName(`ingredient-name-${i.id}`, i.name, true)}`}
+                      onFocus={() => setFocusedField(`ingredient-name-${i.id}`)}
+                      onBlur={() => setFocusedField('')}
                     />
                      <Dropdown.Menu className="dropdown-menu-custom">
                        {Object.entries(INGREDIENT_CATEGORIES).map(
@@ -445,23 +471,30 @@ const RecipeFormModal: React.FC<Props> = ({
               <Col sm={3}>
                 <Form.Control
                   type="number"
-                  min="1"
+                  min="0"
                   step="1"
                   placeholder="Amount *"
-                  value={i.amount ?? ''}
-                  onChange={e =>
-                    updateIngredient(i.id, 'amount', e.target.value)
-                  }
+                  value={i.amount === '0' ? '' : (i.amount ?? '')}
+                  onChange={e => {
+                    const value = e.target.value;
+                    updateIngredient(i.id, 'amount', value === '' ? '0' : value);
+                  }}
+                  onFocus={() => setFocusedField(`ingredient-amount-${i.id}`)}
+                  onBlur={() => setFocusedField('')}
+                  className={getFieldClassName(`ingredient-amount-${i.id}`, i.amount, true)}
                   required
                 />
               </Col>
-              <Col sm={2}>
+              <Col sm={3}>
                  <Form.Select
                    value={i.unit ?? ''}
                    onChange={e => updateIngredient(i.id, 'unit', e.target.value)}
+                   onFocus={() => setFocusedField(`ingredient-unit-${i.id}`)}
+                   onBlur={() => setFocusedField('')}
+                   className={getFieldClassName(`ingredient-unit-${i.id}`, i.unit, true)}
                    required
                  >
-                   <option value="">Unit *</option>
+                   <option value="">-- Select Unit --</option>
                    {MEASUREMENT_UNITS.map(unit => (
                      <option key={unit} value={unit}>
                        {unit}
@@ -524,6 +557,9 @@ const RecipeFormModal: React.FC<Props> = ({
                 <Form.Select
                   value={category}
                   onChange={e => setCategory(e.target.value)}
+                  onFocus={() => setFocusedField('category')}
+                  onBlur={() => setFocusedField('')}
+                  className={getFieldClassName('category', category, true)}
                   required
                 >
                   <option value="">-- Select Category --</option>
@@ -542,6 +578,9 @@ const RecipeFormModal: React.FC<Props> = ({
                 <Form.Select
                   value={difficulty}
                   onChange={e => setDifficulty(e.target.value)}
+                  onFocus={() => setFocusedField('difficulty')}
+                  onBlur={() => setFocusedField('')}
+                  className={getFieldClassName('difficulty', difficulty, true)}
                   required
                 >
                   <option value="">-- Select Difficulty --</option>
@@ -558,6 +597,9 @@ const RecipeFormModal: React.FC<Props> = ({
                   placeholder="Separate with commas, e.g.: Simple,Vegetarian,Quick"
                   value={tags}
                   onChange={e => setTags(e.target.value)}
+                  onFocus={() => setFocusedField('tags')}
+                  onBlur={() => setFocusedField('')}
+                  className={getFieldClassName('tags', tags)}
                 />
               </Form.Group>
             </Col>
@@ -569,14 +611,17 @@ const RecipeFormModal: React.FC<Props> = ({
                 <Form.Label>Servings</Form.Label>
                 <Form.Control
                   type="number"
-                  min="1"
+                  min="0"
                   placeholder="How many servings"
-                  value={servings || ''}
+                  value={servings !== undefined ? servings : ''}
                   onChange={e =>
                     setServings(
-                      e.target.value ? parseInt(e.target.value) : undefined
+                      e.target.value !== '' ? parseInt(e.target.value) : undefined
                     )
                   }
+                  onFocus={() => setFocusedField('servings')}
+                  onBlur={() => setFocusedField('')}
+                  className={getFieldClassName('servings', servings)}
                 />
               </Form.Group>
             </Col>
@@ -585,14 +630,17 @@ const RecipeFormModal: React.FC<Props> = ({
                 <Form.Label>Cooking Time (minutes) *</Form.Label>
                 <Form.Control
                   type="number"
-                  min="1"
+                  min="0"
                   placeholder="Cooking time"
-                  value={cookTimeMin || ''}
+                  value={cookTimeMin !== undefined ? cookTimeMin : ''}
                   onChange={e =>
                     setCookTimeMin(
-                      e.target.value ? parseInt(e.target.value) : undefined
+                      e.target.value !== '' ? parseInt(e.target.value) : undefined
                     )
                   }
+                  onFocus={() => setFocusedField('cookTime')}
+                  onBlur={() => setFocusedField('')}
+                  className={getFieldClassName('cookTime', cookTimeMin, true)}
                   required
                 />
               </Form.Group>
@@ -645,6 +693,9 @@ const RecipeFormModal: React.FC<Props> = ({
                   setImagePreview('');
                 }
               }}
+              onFocus={() => setFocusedField('imageUrl')}
+              onBlur={() => setFocusedField('')}
+              className={getFieldClassName('imageUrl', imageUrl)}
             />
 
             <Form.Text className="text-muted">
@@ -660,6 +711,9 @@ const RecipeFormModal: React.FC<Props> = ({
               placeholder="Detailed cooking instructions..."
               value={description}
               onChange={e => setDescription(e.target.value)}
+              onFocus={() => setFocusedField('description')}
+              onBlur={() => setFocusedField('')}
+              className={getFieldClassName('description', description)}
             />
           </Form.Group>
         </Modal.Body>

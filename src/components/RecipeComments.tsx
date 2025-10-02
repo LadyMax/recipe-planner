@@ -56,19 +56,7 @@ export default function RecipeComments({
               variant="primary"
               size="sm"
               disabled={!newComment.trim() || isSubmitting}
-              style={{
-                backgroundColor: '#6b950e',
-                borderColor: '#6b950e',
-                color: 'white',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#5a7d0c';
-                e.currentTarget.style.borderColor = '#5a7d0c';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = '#6b950e';
-                e.currentTarget.style.borderColor = '#6b950e';
-              }}
+              className="post-comment-button"
             >
               {isSubmitting ? 'Posting...' : 'Post Comment'}
             </Button>
@@ -93,7 +81,7 @@ export default function RecipeComments({
                     {new Date(comment.createdAt).toLocaleDateString('zh-CN')}
                   </small>
                 </div>
-                <p className="mb-0" style={{ whiteSpace: 'pre-wrap' }}>
+                <p className="mb-0 comment-content">
                   {comment.content}
                 </p>
               </div>

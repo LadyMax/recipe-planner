@@ -20,8 +20,7 @@ export default function ProtectedRoute({
   if (isLoading) {
     return (
       <div
-        className="d-flex justify-content-center align-items-center"
-        style={{ minHeight: '200px' }}
+        className="d-flex justify-content-center align-items-center recipe-detail-loading"
       >
         <div className="spinner-border" role="status">
           <span className="visually-hidden">Loading...</span>

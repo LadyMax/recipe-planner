@@ -19,7 +19,7 @@ const router = createBrowserRouter([
       ...(routes as RouteObject[]),
       {
         path: '/__ping',
-        element: <div style={{ padding: 16 }}>OK /__ping</div>,
+        element: <div className="padding-16">OK /__ping</div>,
       },
     ],
   },

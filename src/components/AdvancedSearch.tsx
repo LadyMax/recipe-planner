@@ -66,9 +66,9 @@ export default function AdvancedSearch({
             : field === 'minServings' ||
               field === 'maxServings' ||
               field === 'maxDuration'
-            ? value
-              ? parseInt(value)
-              : undefined
+            ? value === '' || value === '0'
+              ? undefined
+              : parseInt(value)
             : prev[field],
       }));
     };
@@ -108,39 +108,18 @@ export default function AdvancedSearch({
     filters.query ||
     filters.category ||
     filters.tags.length > 0 ||
-    filters.minServings ||
-    filters.maxServings ||
-    filters.maxDuration ||
+    (filters.minServings && filters.minServings > 0) ||
+    (filters.maxServings && filters.maxServings > 0) ||
+    (filters.maxDuration && filters.maxDuration > 0) ||
     filters.hasImage;
 
   return (
-    <Card className="mb-4 shadow-sm">
-      <Card.Header style={{ backgroundColor: '#6b950e', color: 'white' }}>
-        <div className="d-flex justify-content-between align-items-center">
-          <h5 className="mb-0">
-            <i className="bi bi-search me-2"></i>
-            Search Recipes
-          </h5>
-          <Button
-            variant="outline-light"
-            size="sm"
-            style={{ backgroundColor: '#6b950e', borderColor: '#6b950e', color: 'white' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#49660a';
-              e.currentTarget.style.borderColor = '#49660a';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = '#6b950e';
-              e.currentTarget.style.borderColor = '#6b950e';
-            }}
-            onClick={() => setShowAdvanced(!showAdvanced)}
-          >
-            <i
-              className={`bi bi-chevron-${showAdvanced ? 'up' : 'down'} me-1`}
-            ></i>
-            {showAdvanced ? 'Collapse' : 'Advanced Search'}
-          </Button>
-        </div>
+    <Card className="mb-4 shadow-sm advanced-search-card">
+      <Card.Header className="advanced-search-header">
+        <h5 className="mb-0">
+          <i className="bi bi-search me-2"></i>
+          Search Recipes
+        </h5>
       </Card.Header>
       <Card.Body>
         <Form onSubmit={handleSubmit}>
@@ -157,28 +136,13 @@ export default function AdvancedSearch({
                 <i className="bi bi-search search-icon"></i>
               </div>
             </Col>
-            <Col md={6} className="mt-2 mt-md-0">
+            <Col md={6}>
               <div className="d-flex gap-2">
                 <Button
                   type="submit"
                   variant="primary"
                   size="sm"
-                  style={{
-                    flex: 1,
-                    position: 'static',
-                    width: 'auto',
-                    bottom: 'auto',
-                    backgroundColor: '#6b950e',
-                    borderColor: '#6b950e',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#49660a';
-                    e.currentTarget.style.borderColor = '#49660a';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = '#6b950e';
-                    e.currentTarget.style.borderColor = '#6b950e';
-                  }}
+                  className="search-button"
                 >
                   <i className="bi bi-search me-1"></i>
                   Search
@@ -189,17 +153,31 @@ export default function AdvancedSearch({
                     variant="outline-secondary"
                     size="sm"
                     onClick={handleClear}
-                    style={{
-                      flex: 1,
-                      position: 'static',
-                      width: 'auto',
-                      bottom: 'auto',
-                    }}
+                    className="clear-button"
                   >
                     <i className="bi bi-x-circle me-1"></i>
                     Clear
                   </Button>
                 )}
+              </div>
+            </Col>
+          </Row>
+          
+          <Row className="mb-0">
+            <Col>
+              <div className="d-flex justify-content-start">
+                <Button
+                  type="button"
+                  variant="outline-primary"
+                  size="sm"
+                  className="advanced-search-toggle-button"
+                  onClick={() => setShowAdvanced(!showAdvanced)}
+                >
+                  <i
+                    className={`bi bi-chevron-${showAdvanced ? 'up' : 'down'} me-1`}
+                  ></i>
+                  {showAdvanced ? 'Collapse' : 'Advanced Search'}
+                </Button>
               </div>
             </Col>
           </Row>
@@ -228,7 +206,7 @@ export default function AdvancedSearch({
                   </Form.Label>
                   <Form.Control
                     type="number"
-                    min="1"
+                    min="0"
                     placeholder="No limit"
                     value={filters.maxDuration || ''}
                     onChange={handleInputChange('maxDuration')}
@@ -240,7 +218,7 @@ export default function AdvancedSearch({
                   <div className="d-flex gap-2">
                     <Form.Control
                       type="number"
-                      min="1"
+                      min="0"
                       placeholder="Min"
                       value={filters.minServings || ''}
                       onChange={handleInputChange('minServings')}
@@ -248,7 +226,7 @@ export default function AdvancedSearch({
                     />
                     <Form.Control
                       type="number"
-                      min="1"
+                      min="0"
                       placeholder="Max"
                       value={filters.maxServings || ''}
                       onChange={handleInputChange('maxServings')}
@@ -267,8 +245,7 @@ export default function AdvancedSearch({
                         key={tag}
                         bg={filters.tags.includes(tag) ? 'primary' : 'light'}
                         text={filters.tags.includes(tag) ? 'white' : 'dark'}
-                        className="filter-badge"
-                        style={{ cursor: 'pointer', fontSize: '0.75rem' }}
+                        className="filter-badge filter-tag"
                         onClick={() => handleTagToggle(tag)}
                       >
                         {tag}
@@ -293,41 +270,41 @@ export default function AdvancedSearch({
           )}
 
           {hasActiveFilters && (
-            <div className="mt-3 mb-4">
+            <div className="mt-3 mb-0">
               <small className="text-muted">Active filters:</small>
               <div className="d-flex flex-wrap gap-1 mt-1">
                 {filters.query && (
-                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
+                  <Badge className="active-filter-badge">
                     Search: {filters.query}
                   </Badge>
                 )}
                 {filters.category && (
-                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
+                  <Badge className="active-filter-badge">
                     Category: {filters.category}
                   </Badge>
                 )}
                 {filters.tags.map(tag => (
-                  <Badge key={tag} style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
+                  <Badge key={tag} className="active-filter-badge">
                     {tag}
                   </Badge>
                 ))}
-                {filters.maxDuration && (
-                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
+                {filters.maxDuration && filters.maxDuration > 0 && (
+                  <Badge className="active-filter-badge">
                     ≤{filters.maxDuration}min
                   </Badge>
                 )}
-                {filters.minServings && (
-                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
+                {filters.minServings && filters.minServings > 0 && (
+                  <Badge className="active-filter-badge">
                     ≥{filters.minServings}servings
                   </Badge>
                 )}
-                {filters.maxServings && (
-                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
+                {filters.maxServings && filters.maxServings > 0 && (
+                  <Badge className="active-filter-badge">
                     ≤{filters.maxServings}servings
                   </Badge>
                 )}
                 {filters.hasImage && (
-                  <Badge style={{ fontSize: '0.7rem', backgroundColor: '#6b950e', color: 'white' }}>
+                  <Badge className="active-filter-badge">
                     With Image
                   </Badge>
                 )}

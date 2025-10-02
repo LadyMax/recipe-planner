@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useState, useMemo } from 'react';
-import { Form, Row, Col } from 'react-bootstrap';
 import FavoriteButton from './FavoriteButton';
 import type { Recipe } from '../types/recipe.ts';
 
@@ -9,6 +8,7 @@ type Props = {
   onEdit?: (recipe: Recipe) => void;
   onRequestDelete?: (recipe: Recipe) => void;
   canEdit?: boolean;
+  showTitle?: boolean;
 };
 
 export default function RecipeList({
@@ -16,8 +16,8 @@ export default function RecipeList({
   onEdit,
   onRequestDelete,
   canEdit = false,
+  showTitle = true,
 }: Props) {
-  const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
 
   // Get all unique categories
@@ -29,12 +29,10 @@ export default function RecipeList({
   // Filter recipes
   const filteredRecipes = useMemo(() => {
     return recipes.filter(recipe => {
-      const matchesSearch = recipe.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                           recipe.description?.toLowerCase().includes(searchTerm.toLowerCase());
       const matchesCategory = !selectedCategory || recipe.category === selectedCategory;
-      return matchesSearch && matchesCategory;
+      return matchesCategory;
     });
-  }, [recipes, searchTerm, selectedCategory]);
+  }, [recipes, selectedCategory]);
 
   if (recipes.length === 0) return <p>No recipes yet. Add one!</p>;
 
@@ -54,17 +52,19 @@ export default function RecipeList({
         {categories.map(category => (
           <a key={category} href="#" 
              className={`category-tag ${selectedCategory === category ? 'active' : ''}`}
-             onClick={(e) => { e.preventDefault(); setSelectedCategory(category); }}>
+             onClick={(e) => { e.preventDefault(); setSelectedCategory(category || ''); }}>
             {category}
           </a>
         ))}
       </div>
 
       {/* Section header */}
-      <div className="section-header">
-        <h2 className="section-title">Popular Recipes</h2>
-        <a href="#" className="view-all-link">View All</a>
-      </div>
+      {showTitle && (
+        <div className="section-header">
+          <h2 className="section-title">Popular Recipes</h2>
+          <a href="#" className="view-all-link">View All</a>
+        </div>
+      )}
 
       {/* Show filtered results count */}
       {filteredRecipes.length !== recipes.length && (
@@ -91,22 +91,20 @@ export default function RecipeList({
           >
             <Link
               to={`/recipes/${r.id}`}
-              className="text-decoration-none"
-              style={{ color: 'inherit' }}
+              className="text-decoration-none text-inherit"
             >
               <div className="card recipe-card h-100 fade-in position-relative">
               <div
-                className="position-absolute top-0 end-0 m-2"
-                style={{ zIndex: 10 }}
+                className="position-absolute top-0 end-0 m-2 recipe-card-actions"
+                onClick={(e) => e.stopPropagation()}
               >
                 <FavoriteButton recipeId={r.id} size="sm" />
               </div>
               {(r.image_url || r.imageUrl) && (
                 <img
                   src={r.image_url || r.imageUrl}
-                  className="card-img-top"
+                  className="card-img-top recipe-card-image"
                   alt={r.title}
-                  style={{ height: '200px', objectFit: 'cover' }}
                 />
               )}
               <div className="card-body d-flex flex-column">
@@ -116,7 +114,7 @@ export default function RecipeList({
                   )}
                 </div>
 
-                <h5 className="card-title" style={{ color: '#5a7d0c' }}>
+                <h5 className="card-title recipe-card-title">
                   {r.title}
                 </h5>
 
@@ -137,12 +135,16 @@ export default function RecipeList({
                   </div>
                 </div>
 
-                <div className="mt-auto">
+                <div className="mt-auto" onClick={(e) => e.stopPropagation()}>
                   <div className="d-flex">
                     {canEdit && onEdit && (
                       <button
                         className="btn btn-outline-primary btn-sm me-2"
-                        onClick={() => onEdit(r)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onEdit(r);
+                        }}
                         style={{
                           flex: 1,
                           position: 'static',
@@ -169,7 +171,11 @@ export default function RecipeList({
                     {canEdit && onRequestDelete && (
                       <button
                         className="btn btn-outline-danger btn-sm"
-                        onClick={() => onRequestDelete(r)}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          onRequestDelete(r);
+                        }}
                         style={{
                           flex: 1,
                           position: 'static',

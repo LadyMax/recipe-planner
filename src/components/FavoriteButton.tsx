@@ -15,8 +15,12 @@ export default function FavoriteButton({
   const { isFavorite, toggleFavorite } = useFavorites();
   const [isHovered, setIsHovered] = useState(false);
 
-  const handleClick = () => {
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     if (isAuthenticated) {
+      // 立即清除悬停状态，确保颜色立即变化
+      setIsHovered(false);
       toggleFavorite(recipeId);
     }
   };
@@ -31,6 +35,7 @@ export default function FavoriteButton({
   // Determine fill color based on favorite status and hover state
   const getFillColor = () => {
     if (isFavorited) {
+      // When favorited, always show red regardless of hover state
       return 'var(--heart-favorited)'; // Red for favorited items
     }
     if (isHovered) {
@@ -47,14 +52,7 @@ export default function FavoriteButton({
       width={size === 'sm' ? '32' : '40'}
       height={size === 'sm' ? '32' : '40'}
       viewBox="0 0 16 16"
-      style={{
-        cursor: isAuthenticated ? 'pointer' : 'not-allowed',
-        opacity: isAuthenticated ? 1 : 0.6,
-        zIndex: 20,
-        filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))',
-        transition: 'transform 0.2s ease',
-        transform: isHovered ? 'scale(1.1)' : 'scale(1)',
-      }}
+      className={`favorite-button ${isAuthenticated ? 'authenticated' : 'not-authenticated'} ${isHovered ? 'hovered' : 'normal'}`}
     >
       <path
         fill={getFillColor()}

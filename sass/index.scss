@@ -4,6 +4,8 @@
 @use 'buttons';
 @use 'images';
 @use 'sticky-footer';
+@use 'components';
+@use 'migrated-styles';
 
 // Import fonts from Google Fonts
 @import url('https://fonts.googleapis.com/css2?family=Chewy&family=Inter:wght@300;400;500;600;700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
@@ -33,25 +35,24 @@ header, main, section, div {
 :root {
   // Modern color palette - inspired by mobile app design
   --primary-color: #6b950e;
-  --primary-hover: #16a34a;
+  --primary-hover: #4a660a;
   --primary-light: #dcfce7;
   --secondary-color: #64748b;
   --secondary-hover: #475569;
-  --success-color: #10b981;
-  --success-hover: #059669;
+  //--success-color: #10b981;
+  //--success-hover: #059669;
   --danger-color: #d04555;
-  --danger-hover: #b73d4a;
+  --danger-hover: #f98693;
   --bs-danger: #d04555;
   --bs-danger-rgb: 208, 69, 85;
   
-  // Heart button colors
   --heart-favorited: #d04555;
   --heart-unfavorited: #cdd8b5 ;
-  --heart-hover: #d04555;
+  --heart-hover: #f98693;
   --warning-color: #f59e0b;
   --warning-hover: #d97706;
-  --info-color: #06b6d4;
-  --info-hover: #0891b2;
+  --info-color: #6b950e;
+  --info-hover: #4a660a;
   --light-color: #f8fafc;
   --dark-color: #1e293b;
   --gray-50: #f8fafc;
@@ -328,7 +329,7 @@ body {
 .btn:focus,
 .form-control:focus,
 .form-select:focus {
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 0.2rem #4a660a;
 }
 
 // Loading states
@@ -522,6 +523,56 @@ body {
   background: var(--primary-hover);
 }
 
+.btn-outline-primary {
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-primary:hover {
+  color: white !important;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.btn-outline-primary:focus {
+  color: white !important;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 0.25rem rgba(107, 149, 14, 0.25) !important;
+}
+
+.btn-outline-primary:active {
+  color: white !important;
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+
+.btn-outline-success {
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  background-color: transparent !important;
+}
+
+.btn-outline-success:hover {
+  color: white !important;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.btn-outline-success:focus {
+  color: white !important;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 0.25rem rgba(107, 149, 14, 0.25) !important;
+}
+
+.btn-outline-success:active {
+  color: white !important;
+  background-color: var(--primary-hover) !important;
+  border-color: var(--primary-hover) !important;
+}
+
 .btn-success {
   background: var(--success-color);
   border: none;
@@ -552,18 +603,92 @@ body {
 .form-control,
 .form-select {
   border-radius: 25px; // More rounded like mobile apps
-  border: 2px solid var(--gray-200);
+  border: 2px solid #6b950e !important;
   transition: var(--transition);
   background-color: white;
   font-weight: 500;
   padding: 12px 20px; // More padding for better touch experience
+  color: #5a7d0c !important;
+  --bs-form-select-bg-img: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b950e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e") !important;
 }
 
 
+.form-control:focus,
+.form-select:focus {
+  border-color: #4a660a !important;
+  box-shadow: 0 0 0 0.2rem rgba(107, 149, 14, 0.25) !important;
+}
 
-.form-control:hover,
-.form-select:hover {
-  border-color: var(--gray-300);
+// Placeholder text color
+.form-control::placeholder,
+.form-select::placeholder {
+  color: #5a7d0c !important;
+  opacity: 0.7;
+}
+
+// Button styles for modal
+.btn-outline-secondary {
+  color: #5a7d0c !important;
+  border-color: #6b950e !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6b950e !important;
+  border-color: #6b950e !important;
+  color: white !important;
+}
+
+.btn-outline-danger {
+  color: #d04555 !important;
+  border-color: #d04555 !important;
+}
+
+.btn-outline-danger:hover {
+  background-color: #d04555 !important;
+  border-color: #d04555 !important;
+  color: white !important;
+}
+
+// File input styling
+.form-control[type="file"] {
+  color: #5a7d0c !important;
+}
+
+.form-control[type="file"]::file-selector-button {
+  background-color: #f8f9fa !important;
+  color: #6b950e !important;
+  border: 2px solid #6b950e !important;
+  border-radius: 6px !important;
+  padding: 0.375rem 0.75rem !important;
+  margin: -0.375rem -0.75rem !important;
+  margin-inline-end: 0.75rem !important;
+  margin-right: 0.5rem !important;
+  cursor: pointer !important;
+  transition: all 0.2s ease !important;
+  font-weight: 600 !important;
+  pointer-events: auto !important;
+  border-width: 2px !important;
+  border-inline-end-width: 2px !important;
+  position: relative !important;
+}
+
+.form-control[type="file"]::file-selector-button::after {
+  content: "📁" !important;
+  margin-left: 0.25rem !important;
+  font-size: 0.9em !important;
+}
+
+.form-control[type="file"]:hover:not(:disabled):not([readonly])::file-selector-button {
+  background-color: #6b950e !important;
+  color: white !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px rgba(107, 149, 14, 0.3) !important;
+}
+
+// Text muted color for help text
+.text-muted {
+  color: #5a7d0c !important;
+  opacity: 0.7;
 }
 
 // Search bar specific styling
@@ -572,17 +697,20 @@ body {
 }
 
 .search-bar .form-control {
-  padding-left: 50px; // Space for search icon
-  border-radius: 25px;
-  border: 2px solid var(--gray-200);
-  background-color: #f8f9fa;
-  font-size: 16px; // Prevent zoom on mobile
+  padding-left: 50px !important; // Space for search icon
+  border-radius: 25px !important;
+  border: 2px solid #6b950e !important;
+  background-color: #f8f9fa !important;
+  font-size: 0.875rem !important; // Match button font size
+  color: #5a7d0c !important;
+  padding: 0.25rem 0.5rem !important; // Match button padding
+  height: auto !important; // Let it size naturally
 }
 
 .search-bar .form-control:focus {
   background-color: white;
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 0.2rem rgba(34, 197, 94, 0.15);
+  border-color: #4a660a !important;
+  box-shadow: 0 0 0 0.2rem rgba(107, 149, 14, 0.25) !important;
 }
 
 .search-icon {
@@ -597,7 +725,7 @@ body {
 
 .form-label {
   font-weight: 600;
-  color: var(--gray-700);
+  color: #5a7d0c !important;
   margin-bottom: 0.5rem;
 }
 
@@ -607,13 +735,26 @@ body {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
   border-radius: 0.375rem;
+  border: 2px solid #6b950e !important;
+  color: #5a7d0c !important;
+}
+
+.form-control-sm:hover,
+.form-select-sm:hover {
+  border-color: #4a660a !important;
+}
+
+.form-control-sm:focus,
+.form-select-sm:focus {
+  border-color: #4a660a !important;
+  box-shadow: 0 0 0 0.2rem rgba(107, 149, 14, 0.25) !important;
 }
 
 .form-label.small {
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: 0.25rem;
-  color: #6c757d;
+  color: #5a7d0c !important;
 }
 
 // Rating stars
@@ -676,14 +817,15 @@ body {
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
-.navbar-nav .nav-link {
-  color: rgba(255, 255, 255, 0.9) !important;
+.navbar .navbar-nav .nav-link {
+  color: white !important;
   font-weight: 500;
   transition: var(--transition);
 }
 
-.navbar-nav .nav-link:hover,
-.navbar-nav .nav-link.active {
+.navbar .navbar-nav .nav-link:hover,
+.navbar .navbar-nav .nav-link.active,
+.navbar .navbar-nav .nav-link:focus {
   color: white !important;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: var(--border-radius-sm);
@@ -691,15 +833,26 @@ body {
 
 // Improved modal
 .modal-content {
-  border: none;
-  border-radius: var(--border-radius);
-  box-shadow: var(--box-shadow-lg);
+  border: 2px solid #6b950e !important;
+  border-radius: var(--border-radius) !important;
+  box-shadow: 0 8px 32px rgba(107, 149, 14, 0.2) !important;
 }
 
 .modal-header {
-  border-bottom: 1px solid #dee2e6;
-  background-color: var(--light-color);
-  border-radius: var(--border-radius) var(--border-radius) 0 0;
+  border-bottom: 2px solid #6b950e !important;
+  background-color: #f0f7e8 !important;
+  border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+}
+
+.modal-title {
+  color: #5a7d0c !important;
+  font-weight: 600;
+}
+
+.modal-footer {
+  border-top: 2px solid #6b950e !important;
+  background-color: #f0f7e8 !important;
+  border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
 }
 
 // Enhanced alerts
@@ -775,7 +928,80 @@ body {
 .form-control:focus,
 .form-select:focus,
 .nav-link:focus {
-  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+  box-shadow: 0 0 0 0.2rem #4a660a;
+}
+
+// Form control hover effects
+.form-control:hover,
+.form-select:hover {
+  border-color: var(--primary-color) !important;
+  background-color: rgba(107, 149, 14, 0.02) !important;
+  transition: all 0.2s ease;
+}
+
+// Form select option hover effects
+.form-select option:hover {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.form-select option:focus {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.form-select option:checked {
+  background-color: var(--primary-color) !important;
+  color: white !important;
+}
+
+.form-control:hover:not(:focus),
+.form-select:hover:not(:focus) {
+  box-shadow: 0 1px 4px rgba(107, 149, 14, 0.1);
+}
+
+// Textarea hover effects
+.form-control[as="textarea"]:hover {
+  border-color: var(--primary-color) !important;
+  background-color: rgba(107, 149, 14, 0.02) !important;
+  transition: all 0.2s ease;
+}
+
+.form-control[as="textarea"]:hover:not(:focus) {
+  box-shadow: 0 1px 4px rgba(107, 149, 14, 0.1);
+}
+
+// Number input hover effects
+.form-control[type="number"]:hover {
+  border-color: var(--primary-color) !important;
+  background-color: rgba(107, 149, 14, 0.02) !important;
+  transition: all 0.2s ease;
+}
+
+.form-control[type="number"]:hover:not(:focus) {
+  box-shadow: 0 1px 4px rgba(107, 149, 14, 0.1);
+}
+
+// URL input hover effects
+.form-control[type="url"]:hover {
+  border-color: var(--primary-color) !important;
+  background-color: rgba(107, 149, 14, 0.02) !important;
+  transition: all 0.2s ease;
+}
+
+.form-control[type="url"]:hover:not(:focus) {
+  box-shadow: 0 1px 4px rgba(107, 149, 14, 0.1);
+}
+
+// File input hover effects
+.form-control[type="file"]:hover {
+  border-color: var(--primary-color) !important;
+  background-color: rgba(107, 149, 14, 0.02) !important;
+  transition: all 0.2s ease;
+}
+
+.form-control[type="file"]:hover:not(:focus) {
+  box-shadow: 0 1px 4px rgba(107, 149, 14, 0.1);
 }
 
 // Improved spacing
@@ -788,9 +1014,6 @@ body {
 }
 
 // Enhanced text styles
-.text-muted {
-  color: #6c757d !important;
-}
 
 // Custom utilities
 .shadow-sm {
@@ -820,10 +1043,28 @@ body {
 .dropdown-toggle-custom {
   padding-right: 30px;
   cursor: pointer;
-  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%2322c55e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b950e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
   background-repeat: no-repeat;
   background-position: right 8px center;
   background-size: 16px 12px;
+  transition: all 0.2s ease;
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  background-color: transparent !important;
+}
+
+.dropdown-toggle-custom:hover {
+  border-color: var(--primary-color) !important;
+  background-color: rgba(107, 149, 14, 0.05) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234a660a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(107, 149, 14, 0.15);
+}
+
+.dropdown-toggle-custom:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 0.25rem rgba(107, 149, 14, 0.25) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234a660a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
 }
 
 .dropdown-menu-custom {
@@ -842,32 +1083,32 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: var(--gray-50);
-  border-bottom: 1px solid var(--gray-200);
+  background: rgba(107, 149, 14, 0.1);
+  border-bottom: 1px solid rgba(107, 149, 14, 0.2);
   padding: 12px 16px;
   margin: 0;
   font-weight: 600;
-  color: var(--gray-700);
+  color: var(--primary-color);
   transition: var(--transition);
 }
 
 .dropdown-header-custom:hover {
-  background: var(--gray-100);
-  color: var(--gray-800);
+  background: rgba(107, 149, 14, 0.15);
+  color: var(--primary-hover);
 }
 
 .dropdown-item-custom {
   padding: 10px 16px 10px 32px;
   font-size: 14px;
-  color: var(--gray-600);
+  color: var(--primary-color);
   transition: var(--transition);
   border: none;
   background: none;
 }
 
 .dropdown-item-custom:hover {
-  background: var(--primary-light);
-  color: var(--primary-color);
+  background: rgba(107, 149, 14, 0.1);
+  color: var(--primary-hover);
   transform: translateX(4px);
 }
 
@@ -888,15 +1129,15 @@ body {
 .dropdown-item-custom-section {
   padding: 10px 16px;
   font-size: 14px;
-  color: var(--gray-600);
+  color: var(--primary-color);
   transition: var(--transition);
   border: none;
   background: none;
 }
 
 .dropdown-item-custom-section:hover {
-  background: #fef3c7;
-  color: #92400e;
+  background: rgba(107, 149, 14, 0.1);
+  color: var(--primary-hover);
   transform: translateX(4px);
 }
 
@@ -919,7 +1160,7 @@ body {
 
 .dropdown-arrow {
   font-size: 12px;
-  color: var(--gray-500);
+  color: var(--primary-color);
   transition: var(--transition);
 }
 
@@ -932,9 +1173,9 @@ body {
 }
 
 .section-title {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 700;
-  color: var(--gray-800);
+  color: var(--primary-color);
   margin: 0;
 }
 
@@ -962,7 +1203,7 @@ body {
 .category-tag {
   background: white;
   border: 2px solid var(--gray-200);
-  color: var(--gray-600);
+  color: #5a7d0c;
   padding: 8px 16px;
   border-radius: 20px;
   font-size: 0.9rem;
@@ -970,14 +1211,25 @@ body {
   cursor: pointer;
   transition: var(--transition);
   text-decoration: none;
+  box-shadow: 0 2px 8px rgba(107, 149, 14, 0.15);
 }
 
-.category-tag:hover,
-.category-tag.active {
-  background: var(--primary-color);
-  border-color: var(--primary-color);
-  color: white;
+.category-tag:hover {
+  background: #7ba51a !important;  
+  border-color: #7ba51a !important;
+  color: white !important;
   text-decoration: none;
+  box-shadow: 0 4px 12px rgba(107, 149, 14, 0.25) !important;
+}
+
+.category-tag:active,
+.category-tag.active,
+.category-tag:focus {
+  background: #5a7d0c !important;  
+  border-color: #5a7d0c !important;
+  color: white !important;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(107, 149, 14, 0.3) !important;
 }
 
 // Enhanced badges
@@ -1141,6 +1393,36 @@ footer .text-bg-primary {
   background: #fffbeb;
   border-left-color: var(--warning-color);
   color: #92400e;
+}
+
+// Field completion styles
+.field-completed {
+  background-color: #f0f7e8 !important; // Light green background
+  border-color: #7ba51a !important; // Slightly darker green border
+  position: relative;
+}
+
+.field-completed::after {
+  content: "✓";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #7ba51a;
+  font-weight: bold;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+// Special handling for dropdown toggles
+.dropdown-toggle-custom.field-completed::after {
+  right: 35px; // Account for dropdown arrow
+}
+
+// Special handling for form selects
+.form-select.field-completed::after {
+  right: 35px; // Account for select arrow
 }
 
 // Animation classes

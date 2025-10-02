@@ -31,8 +31,7 @@ const FavoritesPage: React.FC & {
     return (
       <Container className="py-4">
         <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ minHeight: '200px' }}
+          className="d-flex justify-content-center align-items-center recipe-detail-loading"
         >
           <div className="spinner-border" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -55,11 +54,11 @@ const FavoritesPage: React.FC & {
       <div className="fade-in">
         <Row className="mb-4">
           <Col>
-            <h2>
+            <div className="d-flex align-items-center mb-2">
               <i className="bi bi-heart-fill text-danger me-2"></i>
-              My Favorite Recipes
-            </h2>
-            <p className="text-muted">
+              <h2 className="section-title mb-0">My Favorite Recipes</h2>
+            </div>
+            <p className="text-muted ms-4">
               {favoriteRecipes.length}{' '}
               {favoriteRecipes.length === 1 ? 'recipe' : 'recipes'} in your
               favorites
@@ -76,7 +75,7 @@ const FavoritesPage: React.FC & {
             </p>
           </Alert>
         ) : (
-          <RecipeList recipes={favoriteRecipes} canEdit={isAuthenticated} />
+          <RecipeList recipes={favoriteRecipes} canEdit={isAuthenticated} showTitle={false} />
         )}
       </div>
     </Container>

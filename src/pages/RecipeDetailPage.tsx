@@ -46,8 +46,7 @@ const RecipeDetailPage: React.FC & {
     return (
       <Container className="py-4">
         <div
-          className="d-flex justify-content-center align-items-center"
-          style={{ minHeight: '200px' }}
+          className="d-flex justify-content-center align-items-center recipe-detail-loading"
         >
           <Spinner animation="border" role="status">
             <span className="visually-hidden">Loading...</span>
@@ -96,21 +95,7 @@ const RecipeDetailPage: React.FC & {
             <Button 
               variant="outline-primary" 
               onClick={handleEdit}
-              style={{
-                backgroundColor: 'transparent',
-                borderColor: '#5a7d0c',
-                color: '#5a7d0c',
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.backgroundColor = '#6b950e';
-                e.currentTarget.style.borderColor = '#6b950e';
-                e.currentTarget.style.color = 'white';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.backgroundColor = 'transparent';
-                e.currentTarget.style.borderColor = '#5a7d0c';
-                e.currentTarget.style.color = '#5a7d0c';
-              }}
+              className="recipe-detail-edit-button-page"
             >
               Edit Recipe
             </Button>

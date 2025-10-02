@@ -1,6 +1,6 @@
 // Positioning of buttons in cards
 // (at the bottom of the column)
-.card {
+.card:not(.advanced-search-card) {
   .col:has(button) {
     position: relative;
     padding-bottom: 40px;
