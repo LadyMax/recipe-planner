@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { Container, Button, Alert, Spinner } from 'react-bootstrap';
+import { Container, Button, Alert, Spinner, Modal } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import { useRecipes } from '../hooks/useRecipes';
 import RecipeDetail from '../components/RecipeDetail';
+import RecipeFormModal from '../components/RecipeFormModal';
 import type { Recipe } from '../types/recipe';
 
 const RecipeDetailPage: React.FC & {
@@ -12,8 +13,11 @@ const RecipeDetailPage: React.FC & {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { isAuthenticated } = useAuth();
-  const { recipes, loading, error } = useRecipes();
+  const { recipes, loading, error, upsert, remove } = useRecipes();
   const [recipe, setRecipe] = useState<Recipe | null>(null);
+  const [showForm, setShowForm] = useState(false);
+  const [editing, setEditing] = useState<Recipe | null>(null);
+  const [confirmTarget, setConfirmTarget] = useState<Recipe | null>(null);
 
   useEffect(() => {
     if (id && recipes.length > 0) {
@@ -27,18 +31,15 @@ const RecipeDetailPage: React.FC & {
   }, [id, recipes]);
 
   const handleEdit = () => {
-    // Navigate to edit mode - could be a modal or separate page
-    // For now, we'll go back to recipes page
-    navigate('/recipes');
+    if (recipe) {
+      setEditing(recipe);
+      setShowForm(true);
+    }
   };
 
-  const handleDelete = async () => {
-    if (
-      recipe &&
-      window.confirm(`Are you sure you want to delete "${recipe.title}"?`)
-    ) {
-      // Delete logic would go here
-      navigate('/recipes');
+  const handleDelete = () => {
+    if (recipe) {
+      setConfirmTarget(recipe);
     }
   };
 
@@ -112,6 +113,55 @@ const RecipeDetailPage: React.FC & {
         onDelete={handleDelete}
         canEdit={isAuthenticated}
       />
+
+      <RecipeFormModal
+        show={showForm}
+        initial={editing}
+        onSubmit={async (r) => {
+          try {
+            await upsert(r);
+            setShowForm(false);
+            setEditing(null);
+          } catch (error) {
+            console.error('Failed to update recipe:', error);
+            setShowForm(false);
+          }
+        }}
+        onClose={() => {
+          setShowForm(false);
+          setEditing(null);
+        }}
+      />
+
+      <Modal
+        show={!!confirmTarget}
+        onHide={() => setConfirmTarget(null)}
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Delete recipe</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          Delete <strong>{confirmTarget?.title}</strong>?
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={() => setConfirmTarget(null)}>
+            Cancel
+          </Button>
+          <Button
+            variant="danger"
+            onClick={async () => {
+              if (confirmTarget) {
+                await remove(confirmTarget.id);
+                setConfirmTarget(null);
+                navigate('/recipes');
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </Container>
   );
 };

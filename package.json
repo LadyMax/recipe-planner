@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "clean": "taskkill /F /IM node.exe 2>nul || echo No node processes found",
-    "dev": "npm run clean && node node_modules/react-rapide dev --port 5173",
+    "clean": "echo Cleaning processes...",
+    "dev": "npm run clean && npx vite dev --port 5173",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "node node_modules/react-rapide preview",

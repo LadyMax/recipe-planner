@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
 import type { Ingredient, Recipe } from '../types/recipe.ts';
 import { uuid } from '../utils/ids.ts';
+import { useAuth } from '../contexts/AuthContext';
 
 type Props = {
   show: boolean;
@@ -16,6 +17,7 @@ const RecipeFormModal: React.FC<Props> = ({
   onSubmit,
   onClose,
 }) => {
+  const { user } = useAuth();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [ingredients, setIngredients] = useState<Ingredient[]>([
@@ -337,7 +339,7 @@ const RecipeFormModal: React.FC<Props> = ({
 
     // Validate ingredients - all fields are required
     const invalidIngredients = ingredients.filter(i => 
-      !i.name.trim() || (i.amount !== '0' && !i.amount?.trim()) || !i.unit?.trim()
+      !i.name?.trim() || (i.amount !== '0' && !i.amount && i.amount !== 0) || !i.unit?.trim()
     );
     
     if (invalidIngredients.length > 0) {
@@ -346,22 +348,28 @@ const RecipeFormModal: React.FC<Props> = ({
     }
 
     const clean = ingredients
-      .filter(i => i.name.trim())
-      .map(i => ({ ...i, amount: i.amount === '0' ? '0' : (i.amount?.trim() || undefined) }));
+      .filter(i => i.name?.trim())
+      .map(i => ({ 
+        ...i, 
+        amount: i.amount === 0 || i.amount === '0' ? '0' : String(i.amount || '')
+      }));
 
-    // Create recipe object containing only database fields
-    const recipe: Recipe = {
-      id: initial?.id ?? Date.now(),
-      user_id: 3, // Hardcoded to use Thomas account
+    // Create simple recipe object for API call - only database fields
+    const recipeForApi = {
+      user_id: user?.id || 0,
       title: trimmedTitle,
-      description: description.trim(),
+      description: description.trim() || undefined,
       category: trimmedCategory,
-      cook_time_min: cookTimeMin !== undefined ? cookTimeMin : 1,
+      cook_time_min: cookTimeMin !== undefined ? cookTimeMin : undefined,
       difficulty: difficulty || 'Easy',
       image_url: hasLocalFile ? imagePreview : imageUrl.trim() || undefined,
-      created_at: initial?.created_at ?? new Date().toISOString(),
-      updated_at: new Date().toISOString(),
-      // Keep compatibility fields
+    };
+
+    // Create full recipe object with all fields for component compatibility
+    const recipe: Recipe = {
+      id: initial?.id ?? Date.now(),
+      ...recipeForApi,
+      // Keep compatibility fields for ingredient handling
       ingredients: clean,
       instructions: description.trim(),
       tags: tags.trim()

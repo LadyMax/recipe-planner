@@ -5,16 +5,38 @@ public static class Acl
 
     public static async void Start()
     {
+        // Skip ACL loading if acl is disabled
+        if (!Globals.aclOn)
+        {
+            return;
+        }
+        
         // Read rules from db once a minute
         while (true)
         {
-            UnpackRules(SQLQuery("SELECT * FROM acl ORDER BY allow"));
+            try
+            {
+                UnpackRules(SQLQuery("SELECT * FROM acl ORDER BY allow"));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ACL loading failed: {ex.Message}");
+                // Create empty rules array to prevent null reference
+                rules = Arr();
+            }
             await Task.Delay(60000);
         }
     }
 
     public static void UnpackRules(Arr allRules)
     {
+        // Handle null or empty rules
+        if (allRules == null || allRules.Length == 0)
+        {
+            rules = Arr();
+            return;
+        }
+        
         // Unpack db response -> routes to regexps and userRoles to arrays
         rules = allRules.Map(x => new
         {

@@ -106,16 +106,38 @@ export function useRecipes() {
         throw error;
       }
     } else {
-      // New recipe - add directly to local state since RecipeFormModal already created it via API
-      console.log('Adding recipe to local state:', r.title);
-      setRecipes(prev => {
-        const newRecipes = [r, ...prev];
-        console.log(
-          'New recipes order:',
-          newRecipes.map(r => r.title)
-        );
-        return newRecipes;
-      });
+      // New recipe - create via API first
+      try {
+        console.log('Creating new recipe via API...');
+        const createdRecipe = await recipeStore.create(r);
+        console.log('Recipe created successfully:', createdRecipe);
+        
+        // Add ingredients if they exist
+        if (r.ingredients && r.ingredients.length > 0 && createdRecipe.insertId) {
+          for (const ingredient of r.ingredients) {
+            if (ingredient.name && ingredient.amount && ingredient.unit) {
+              await fetch('http://localhost:5001/api/ingredients', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                  recipe_id: createdRecipe.insertId,
+                  name: ingredient.name,
+                  amount: ingredient.amount,
+                  unit: ingredient.unit,
+                  position: r.ingredients.indexOf(ingredient)
+                })
+              }).catch(err => console.warn('Failed to add ingredient:', err));
+            }
+          }
+        }
+        
+        // Reload recipes to get the complete updated list
+        await loadRecipes();
+      } catch (error) {
+        console.error('Failed to create recipe:', error);
+        throw error;
+      }
     }
   }
 

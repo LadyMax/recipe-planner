@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5173,
+    hmr: false, // 禁用热重载WebSocket
     proxy: {
       '/api': {
         target: 'http://localhost:5001',

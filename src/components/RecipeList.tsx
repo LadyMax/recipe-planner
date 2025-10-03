@@ -89,11 +89,7 @@ export default function RecipeList({
             className="col-12 col-md-6 col-lg-4 mb-4"
             style={{ animationDelay: `${index * 0.1}s` }}
           >
-            <Link
-              to={`/recipes/${r.id}`}
-              className="text-decoration-none text-inherit"
-            >
-              <div className="card recipe-card h-100 fade-in position-relative">
+            <div className="card recipe-card h-100 fade-in position-relative">
               <div
                 className="position-absolute top-0 end-0 m-2 recipe-card-actions"
                 onClick={(e) => e.stopPropagation()}
@@ -147,12 +143,13 @@ export default function RecipeList({
                         }}
                         style={{
                           flex: 1,
-                          position: 'static',
+                          position: 'relative',
                           width: 'auto',
                           bottom: 'auto',
                           backgroundColor: 'transparent',
                           borderColor: '#5a7d0c',
                           color: '#5a7d0c',
+                          zIndex: 10,
                         }}
                         onMouseEnter={(e) => {
                           e.currentTarget.style.backgroundColor = '#6b950e';
@@ -178,9 +175,10 @@ export default function RecipeList({
                         }}
                         style={{
                           flex: 1,
-                          position: 'static',
+                          position: 'relative',
                           width: 'auto',
                           bottom: 'auto',
+                          zIndex: 10,
                         }}
                       >
                         Delete
@@ -189,8 +187,14 @@ export default function RecipeList({
                   </div>
                 </div>
               </div>
-              </div>
-            </Link>
+              <Link
+                to={`/recipes/${r.id}`}
+                className="text-decoration-none text-inherit position-absolute top-0 start-0 w-100 h-100"
+                style={{ zIndex: 1 }}
+              >
+                <div style={{ height: '100%' }} />
+              </Link>
+            </div>
           </div>
         );
       })}

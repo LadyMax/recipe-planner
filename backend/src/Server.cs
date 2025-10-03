@@ -1,7 +1,7 @@
 namespace WebApp;
 public static class Server
 {
-    public static void Start()
+    public static async Task Start()
     {
         var builder = WebApplication.CreateBuilder();
         
@@ -10,7 +10,8 @@ public static class Server
         {
             options.AddPolicy("AllowAll", policy =>
             {
-                policy.AllowAnyOrigin()
+                policy.WithOrigins("http://localhost:5173")  // 明确指定前端域名
+                      .AllowCredentials()  // 允许凭据
                       .AllowAnyMethod()
                       .AllowAnyHeader();
             });
@@ -37,7 +38,42 @@ public static class Server
         var runUrl = "http://localhost:" + Globals.port;
         Log("Server running on:", runUrl);
         Log("With these settings:", Globals);
-        App.Run(runUrl);
+        
+        Log("About to start server with URL:", runUrl);
+        
+        // Start server manually and keep it running
+        try
+        {
+            Log("Starting server on background thread...");
+            
+            // Start server in background
+            Task.Run(async () =>
+            {
+                try
+                {
+                    await App.RunAsync(runUrl);
+                }
+                catch (Exception ex)
+                {
+                    Log("Background server error:", ex.Message);
+                }
+            });
+            
+            Log("Server started successfully!");
+            Log("Waiting forever to keep process alive...");
+            
+            // Keep the main thread alive forever
+            while (true)
+            {
+                await Task.Delay(5000);
+                Log("Server heartbeat:", DateTime.Now.ToString());
+            }
+        }
+        catch (Exception ex)
+        {
+            Log("Server startup error:", ex.Message);
+            Log("Stack trace:", ex.StackTrace);
+        }
     }
 
     // Middleware that changes the server response header,
@@ -86,6 +122,8 @@ public static class Server
         try
         {
             var sqlFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "create_tables.sql");
+            Log("Looking for SQL file at:", sqlFile);
+            Log("Base directory:", AppDomain.CurrentDomain.BaseDirectory);
             if (File.Exists(sqlFile))
             {
                 var sqlContent = File.ReadAllText(sqlFile);
@@ -107,6 +145,7 @@ public static class Server
                     }
                 }
                 Log("Database tables initialized successfully");
+            Log("Total statements executed:", statements.Length);
             }
             else
             {

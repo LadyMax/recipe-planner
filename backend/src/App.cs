@@ -8,8 +8,9 @@ Globals = Obj(new
     port = Environment.GetEnvironmentVariable("APP_PORT") ?? (args.Length > 0 ? args[0] : "5001"),
     serverName = "Minimal API Backend",
     frontendPath = Environment.GetEnvironmentVariable("FRONTEND_PATH") ?? (args.Length > 1 ? args[1] : "../dist"),
-    dbPath = Environment.GetEnvironmentVariable("DB_PATH") ?? (args.Length > 2 ? args[2] : "../_db.sqlite3"),
+    dbPath = Environment.GetEnvironmentVariable("DB_PATH") ?? (args.Length > 2 ? args[2] : "./db_template/_db.sqlite3"),
     sessionLifeTimeHours = 2
 });
 
-Server.Start();
+// Keep the application running
+await Server.Start();
