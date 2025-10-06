@@ -10,42 +10,59 @@ public static class LoginRoutes
     {
         App.MapPost("/api/login", (HttpContext context, JsonElement bodyJson) =>
         {
-            var user = GetUser(context);
-            var body = JSON.Parse(bodyJson.ToString());
-
-            // If there is a user logged in already
-            if (user != null)
+            try
             {
-                var already = new { error = "A user is already logged in." };
-                return RestResult.Parse(context, already);
-            }
+                WebApp.Shared.Log("Login attempt started");
+                
+                var user = GetUser(context);
+                // 使用公共的JSON解析方法
+                var body = ParseJsonElement(bodyJson);
 
-            // Find the user in the DB
-            var dbUser = SQLQueryOne(
-                "SELECT * FROM users WHERE email = $email",
-                new { body.email }
-            );
-            if (dbUser == null)
+                WebApp.Shared.Log($"Login body: email={body["email"]}, password={body["password"]}");
+
+                // If there is a user logged in already
+                if (user != null)
+                {
+                    var already = new { error = "A user is already logged in." };
+                    return RestResult.Parse(context, already);
+                }
+
+                // Find the user in the DB
+                WebApp.Shared.Log($"Searching for user with email: {body["email"]}");
+                var dbUser = SQLQueryOne(
+                    "SELECT * FROM users WHERE email = $email",
+                    new { email = body["email"] }
+                );
+                
+                WebApp.Shared.Log($"Database user found: {dbUser != null}");
+                if (dbUser == null)
+                {
+                    WebApp.Shared.Log("No user found with that email");
+                    return RestResult.Parse(context, new { error = "No such user." });
+                }
+
+                // Simple password comparison
+                if ((string)body["password"] != (string)dbUser.password)
+                {
+                    WebApp.Shared.Log("Password mismatch");
+                    return RestResult.Parse(context,
+                        new { error = "Password mismatch." });
+                }
+
+                // Add the user to the session, without password
+                dbUser.Delete("password");
+                Session.Set(context, "user", dbUser);
+
+                WebApp.Shared.Log("Login successful");
+                // Return the user
+                return RestResult.Parse(context, dbUser!);
+            }
+            catch (Exception ex)
             {
-                return RestResult.Parse(context, new { error = "No such user." });
+                WebApp.Shared.Log($"Login error: {ex.Message}");
+                WebApp.Shared.Log($"Stack trace: {ex.StackTrace}");
+                return RestResult.Parse(context, new { error = $"Login failed: {ex.Message}" });
             }
-
-            // If the password doesn't match
-            if (!Password.Verify(
-                (string)body.password,
-                (string)dbUser.password
-            ))
-            {
-                return RestResult.Parse(context,
-                    new { error = "Password mismatch." });
-            }
-
-            // Add the user to the session, without password
-            dbUser.Delete("password");
-            Session.Set(context, "user", dbUser);
-
-            // Return the user
-            return RestResult.Parse(context, dbUser!);
         });
 
         App.MapGet("/api/login", (HttpContext context) =>

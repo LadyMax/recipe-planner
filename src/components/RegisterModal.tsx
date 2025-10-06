@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Form, Button, Alert } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
+import BaseModal from './BaseModal';
+import FormInput from './FormInput';
 
 interface RegisterCredentials {
   username: string;
@@ -15,7 +15,6 @@ interface RegisterModalProps {
 }
 
 export default function RegisterModal({ show, onHide }: RegisterModalProps) {
-  const { login } = useAuth();
   const [credentials, setCredentials] = useState<RegisterCredentials>({
     username: '',
     email: '',
@@ -68,13 +67,20 @@ export default function RegisterModal({ show, onHide }: RegisterModalProps) {
       // Simulate API call with delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Auto-login after successful registration
-      await login({
-        email: credentials.email,
-        password: credentials.password,
-      });
+      // Show success message instead of actual registration
+      setError('Registration feature is not implemented. Please contact administrator to create an account.');
+      
+      // Clear form after showing message
+      setTimeout(() => {
+        setCredentials({
+          username: '',
+          email: '',
+          password: '',
+          confirmPassword: '',
+        });
+        setError(null);
+      }, 3000);
 
-      onHide();
     } catch (error: any) {
       setError(error.message || 'Registration failed');
     } finally {
@@ -83,122 +89,62 @@ export default function RegisterModal({ show, onHide }: RegisterModalProps) {
   };
 
   return (
-    <Modal
+    <BaseModal
       show={show}
       onHide={onHide}
-      centered
-      backdrop="static"
-      keyboard={false}
+      title="Create Account"
+      icon="bi-person-plus"
+      variant="success"
+      onSubmit={handleSubmit}
+      isLoading={isLoading}
+      error={error}
+      submitText="Create Account"
+      submitIcon="bi-person-plus"
+      submitVariant="success"
     >
-      <Modal.Header
-        closeButton
-        className="bg-success text-white modal-no-select"
-      >
-        <Modal.Title className="modal-title-no-select">
-          <i className="bi bi-person-plus me-2"></i>
-          Create Account
-        </Modal.Title>
-      </Modal.Header>
-      <Form onSubmit={handleSubmit}>
-        <Modal.Body
-          className="modal-no-select"
-          onMouseDown={e => {
-            // Only prevent default if not clicking on input elements
-            if (!(e.target as HTMLElement).closest('input, textarea, select')) {
-              e.preventDefault();
-            }
-          }}
-        >
-          {error && (
-            <Alert variant="danger" className="mb-3">
-              {error}
-            </Alert>
-          )}
+      <FormInput
+        label="Username"
+        icon="bi-person"
+        type="text"
+        placeholder="Enter your username"
+        value={credentials.username}
+        onChange={handleInputChange('username')}
+        required
+        disabled={isLoading}
+      />
 
-          <Form.Group className="mb-3">
-            <Form.Label className="form-label-no-select">
-              <i className="bi bi-person me-1"></i>
-              Username
-            </Form.Label>
-            <Form.Control
-              type="text"
-              placeholder="Enter your username"
-              value={credentials.username}
-              onChange={handleInputChange('username')}
-              required
-              disabled={isLoading}
-            />
-          </Form.Group>
+      <FormInput
+        label="Email"
+        icon="bi-envelope"
+        type="email"
+        placeholder="Enter your email"
+        value={credentials.email}
+        onChange={handleInputChange('email')}
+        required
+        disabled={isLoading}
+      />
 
-          <Form.Group className="mb-3">
-            <Form.Label className="form-label-no-select">
-              <i className="bi bi-envelope me-1"></i>
-              Email
-            </Form.Label>
-            <Form.Control
-              type="email"
-              placeholder="Enter your email"
-              value={credentials.email}
-              onChange={handleInputChange('email')}
-              required
-              disabled={isLoading}
-            />
-          </Form.Group>
+      <FormInput
+        label="Password"
+        icon="bi-lock"
+        type="password"
+        placeholder="Enter your password (min 6 characters)"
+        value={credentials.password}
+        onChange={handleInputChange('password')}
+        required
+        disabled={isLoading}
+      />
 
-          <Form.Group className="mb-3">
-            <Form.Label className="form-label-no-select">
-              <i className="bi bi-lock me-1"></i>
-              Password
-            </Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Enter your password (min 6 characters)"
-              value={credentials.password}
-              onChange={handleInputChange('password')}
-              required
-              disabled={isLoading}
-            />
-          </Form.Group>
-
-          <Form.Group className="mb-3">
-            <Form.Label className="form-label-no-select">
-              <i className="bi bi-lock-fill me-1"></i>
-              Confirm Password
-            </Form.Label>
-            <Form.Control
-              type="password"
-              placeholder="Confirm your password"
-              value={credentials.confirmPassword}
-              onChange={handleInputChange('confirmPassword')}
-              required
-              disabled={isLoading}
-            />
-          </Form.Group>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={onHide} disabled={isLoading}>
-            <i className="bi bi-x-circle me-1"></i>
-            Cancel
-          </Button>
-          <Button variant="success" type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <>
-                <span
-                  className="spinner-border spinner-border-sm me-2"
-                  role="status"
-                  aria-hidden="true"
-                ></span>
-                Creating Account...
-              </>
-            ) : (
-              <>
-                <i className="bi bi-person-plus me-1"></i>
-                Create Account
-              </>
-            )}
-          </Button>
-        </Modal.Footer>
-      </Form>
-    </Modal>
+      <FormInput
+        label="Confirm Password"
+        icon="bi-lock-fill"
+        type="password"
+        placeholder="Confirm your password"
+        value={credentials.confirmPassword}
+        onChange={handleInputChange('confirmPassword')}
+        required
+        disabled={isLoading}
+      />
+    </BaseModal>
   );
 }

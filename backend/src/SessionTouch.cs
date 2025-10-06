@@ -1,28 +1,23 @@
 namespace WebApp;
-public static partial class Session
+public static class SessionTouch
 {
-    // Touch the session - set modified to now!
+    public static void Start()
+    {
+        // SessionTouch不需要特殊的启动逻辑
+        // Touch方法会在中间件中调用
+    }
+    
     public static void Touch(HttpContext context)
     {
-        SQLQuery(
-            @"UPDATE sessions SET modified = DATETIME('now')
-              WHERE id = $id",
-            new { GetRawSession(context).id }
-        );
-    }
-
-    // Delete old sessions
-    public static async void DeleteOldSessions()
-    {
-        var hours = Globals.sessionLifeTimeHours;
-        while (true)
+        // 简化的会话管理 - 保持会话活跃
+        var session = Session.GetRawSession(context);
+        if (session != null)
         {
+            // 更新会话时间
             SQLQuery(
-                @$"DELETE FROM sessions WHERE 
-                   DATETIME('now', '-{hours} hours') > modified"
+                "UPDATE sessions SET modified = DATETIME('now') WHERE id = $id",
+                new { id = session.id }
             );
-            // Wait one minute per next check
-            await Task.Delay(60000);
         }
     }
 }

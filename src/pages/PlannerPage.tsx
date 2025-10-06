@@ -16,7 +16,8 @@ import AdvancedSearch, {
 } from '../components/AdvancedSearch.tsx';
 import type { Recipe } from '../types/recipe.ts';
 import { useRecipes } from '../hooks/useRecipes.ts';
-import { uuid } from '../utils/ids.ts';
+import { downloadJson as downloadJsonFile, uploadJson as uploadJsonFile } from '../utils/fileUtils';
+import { uuid } from '../utils/ids';
 
 const STARTER: Recipe[] = [
   {
@@ -88,36 +89,30 @@ const PlannerPage: React.FC & {
   }
 
   function downloadJson() {
-    const blob = new Blob([exportAll()], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'recipes.json';
-    a.click();
-    URL.revokeObjectURL(url);
+    downloadJsonFile(exportAll(), 'recipes.json');
   }
   function uploadJson(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    const fr = new FileReader();
-    fr.onload = async () => {
-      try {
-        const data = JSON.parse(String(fr.result)) as Recipe[];
-        const fixed = data.map(r => ({
+    
+    uploadJsonFile<Recipe[]>(file, 
+      async (data: Recipe[]) => {
+        const fixed = data.map((r: Recipe) => ({
           ...r,
           id: r.id || uuid(),
-          ingredients: (r.ingredients || []).map(i => ({
+          ingredients: (r.ingredients || []).map((i: any) => ({
             ...i,
             id: i.id || uuid(),
           })),
         }));
         await importMany(fixed);
-      } catch (err: unknown) {
-        setError?.(err instanceof Error ? err.message : 'Invalid JSON');
+      },
+      (error: string) => {
+        setError?.(error);
       }
-      (e.target as HTMLInputElement).value = '';
-    };
-    fr.readAsText(file);
+    );
+    
+    (e.target as HTMLInputElement).value = '';
   }
 
   const filtered = useMemo(() => {

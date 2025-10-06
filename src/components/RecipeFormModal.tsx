@@ -339,7 +339,7 @@ const RecipeFormModal: React.FC<Props> = ({
 
     // Validate ingredients - all fields are required
     const invalidIngredients = ingredients.filter(i => 
-      !i.name?.trim() || (i.amount !== '0' && !i.amount && i.amount !== 0) || !i.unit?.trim()
+      !i.name?.trim() || (i.amount !== '0' && !i.amount) || !i.unit?.trim()
     );
     
     if (invalidIngredients.length > 0) {
@@ -351,7 +351,7 @@ const RecipeFormModal: React.FC<Props> = ({
       .filter(i => i.name?.trim())
       .map(i => ({ 
         ...i, 
-        amount: i.amount === 0 || i.amount === '0' ? '0' : String(i.amount || '')
+        amount: i.amount === '0' ? '0' : String(i.amount || '')
       }));
 
     // Create simple recipe object for API call - only database fields

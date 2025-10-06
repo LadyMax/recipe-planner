@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { Modal, Form, Button, Alert } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import { useAuth } from '../contexts/AuthContext';
 import type { LoginCredentials } from '../types/user';
 import RegisterModal from './RegisterModal';
+import BaseModal from './BaseModal';
+import FormInput from './FormInput';
 
 interface LoginModalProps {
   show: boolean;
@@ -45,124 +47,57 @@ export default function LoginModal({ show, onHide }: LoginModalProps) {
 
   return (
     <>
-      <Modal
+      <BaseModal
         show={show}
         onHide={onHide}
-        centered
-        backdrop="static"
-        keyboard={false}
+        title="Login"
+        icon="bi-person-circle"
+        variant="primary"
+        onSubmit={handleSubmit}
+        isLoading={isLoading}
+        error={error}
+        submitText="Login"
+        submitIcon="bi-box-arrow-in-right"
+        submitVariant="primary"
       >
-        <Modal.Header
-          closeButton
-          className="bg-primary text-white modal-no-select"
-        >
-          <Modal.Title className="modal-title-no-select">
-            <i className="bi bi-person-circle me-2"></i>
-            Login
-          </Modal.Title>
-        </Modal.Header>
-        <Form onSubmit={handleSubmit}>
-          <Modal.Body
-            className="modal-no-select"
-            onMouseDown={e => {
-              // Only prevent default if not clicking on input elements
-              if (
-                !(e.target as HTMLElement).closest('input, textarea, select')
-              ) {
-                e.preventDefault();
-              }
-            }}
-          >
-            {error && (
-              <Alert variant="danger" className="mb-3">
-                {error}
-              </Alert>
-            )}
+        <FormInput
+          label="Email"
+          icon="bi-envelope"
+          type="email"
+          placeholder="Enter your email"
+          value={credentials.email}
+          onChange={handleInputChange('email')}
+          required
+          disabled={isLoading}
+        />
 
-            <Form.Group className="mb-3">
-              <Form.Label className="form-label-no-select">
-                <i className="bi bi-envelope me-1"></i>
-                Email
-              </Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter your email"
-                value={credentials.email}
-                onChange={handleInputChange('email')}
-                required
-                disabled={isLoading}
-              />
-            </Form.Group>
+        <FormInput
+          label="Password"
+          icon="bi-lock"
+          type="password"
+          placeholder="Enter your password"
+          value={credentials.password}
+          onChange={handleInputChange('password')}
+          required
+          disabled={isLoading}
+        />
 
-            <Form.Group className="mb-3">
-              <Form.Label className="form-label-no-select">
-                <i className="bi bi-lock me-1"></i>
-                Password
-              </Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter your password"
-                value={credentials.password}
-                onChange={handleInputChange('password')}
-                required
-                disabled={isLoading}
-              />
-            </Form.Group>
-          </Modal.Body>
-          <Modal.Footer>
-            <div className="w-100">
-              <div className="text-center mb-3">
-                <small className="text-muted text-muted-no-select">
-                  Don't have an account?{' '}
-                  <Button
-                    variant="link"
-                    className="p-0 text-decoration-none"
-                    onClick={() => {
-                      onHide();
-                      setShowRegister(true);
-                    }}
-                  >
-                    Create one here
-                  </Button>
-                </small>
-              </div>
-              <div className="d-flex gap-2">
-                <Button
-                  variant="secondary"
-                  onClick={onHide}
-                  disabled={isLoading}
-                  className="flex-fill"
-                >
-                  <i className="bi bi-x-circle me-1"></i>
-                  Cancel
-                </Button>
-                <Button
-                  variant="primary"
-                  type="submit"
-                  disabled={isLoading}
-                  className="flex-fill"
-                >
-                  {isLoading ? (
-                    <>
-                      <span
-                        className="spinner-border spinner-border-sm me-2"
-                        role="status"
-                        aria-hidden="true"
-                      ></span>
-                      Logging in...
-                    </>
-                  ) : (
-                    <>
-                      <i className="bi bi-box-arrow-in-right me-1"></i>
-                      Login
-                    </>
-                  )}
-                </Button>
-              </div>
-            </div>
-          </Modal.Footer>
-        </Form>
-      </Modal>
+        <div className="text-center mb-3">
+          <small className="text-muted text-muted-no-select">
+            Don't have an account?{' '}
+            <Button
+              variant="link"
+              className="p-0 text-decoration-none"
+              onClick={() => {
+                onHide();
+                setShowRegister(true);
+              }}
+            >
+              Create one here
+            </Button>
+          </small>
+        </div>
+      </BaseModal>
 
       <RegisterModal
         show={showRegister}

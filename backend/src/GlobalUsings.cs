@@ -7,7 +7,6 @@ global using System.Globalization;
 
 // Nuget packages
 global using Microsoft.Data.Sqlite;
-global using BCryptNet = BCrypt.Net.BCrypt;
 global using Dyndata;
 global using static Dyndata.Factory;
 

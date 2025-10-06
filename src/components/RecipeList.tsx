@@ -38,7 +38,7 @@ export default function RecipeList({
 
   console.log(
     'RecipeList rendering with recipes:',
-    recipes.map(r => r.title)
+    recipes.length
   );
 
   return (
@@ -78,18 +78,18 @@ export default function RecipeList({
       {/* Recipe list */}
       <div className="row">
         {filteredRecipes.map((r, index) => {
-        console.log(
-          `Rendering recipe ${index}: ${
-            r.title
-          } (ID: ${r.id})`
-        );
-        return (
-          <div
-            key={r.id}
-            className="col-12 col-md-6 col-lg-4 mb-4"
-            style={{ animationDelay: `${index * 0.1}s` }}
-          >
-            <div className="card recipe-card h-100 fade-in position-relative">
+          if (!r.id) {
+            console.warn('Recipe missing ID:', r);
+            console.warn('Full recipe object:', JSON.stringify(r, null, 2));
+            return null;
+          }
+          return (
+            <div
+              key={`recipe-${r.id}`}
+              className="col-12 col-md-6 col-lg-4 mb-4"
+              style={{ animationDelay: `${index * 0.1}s` }}
+            >
+              <div className="card recipe-card h-100 fade-in position-relative">
               <div
                 className="position-absolute top-0 end-0 m-2 recipe-card-actions"
                 onClick={(e) => e.stopPropagation()}
@@ -196,8 +196,8 @@ export default function RecipeList({
               </Link>
             </div>
           </div>
-        );
-      })}
+          );
+        })}
       </div>
     </div>
   );

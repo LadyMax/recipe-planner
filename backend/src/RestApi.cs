@@ -22,23 +22,8 @@ public static class RestApi
         {
             try 
             {
-                // 创建一个简化的对象，避免复杂的解析
-                var simpleBody = Obj();
-                foreach (var prop in bodyJson.EnumerateObject())
-                {
-                    // 只处理基本类型字段，跳过复杂对象
-                    if (prop.Value.ValueKind == JsonValueKind.String)
-                        simpleBody[prop.Name] = prop.Value.ToString().Trim('"');
-                    else if (prop.Value.ValueKind == JsonValueKind.Number)
-                        simpleBody[prop.Name] = prop.Value.GetDecimal();
-                    else if (prop.Value.ValueKind == JsonValueKind.True)
-                        simpleBody[prop.Name] = true;
-                    else if (prop.Value.ValueKind == JsonValueKind.False)
-                        simpleBody[prop.Name] = false;
-                    else if (prop.Value.ValueKind == JsonValueKind.Null)
-                        simpleBody[prop.Name] = null;
-                    // 跳过复杂对象数组（如ingredients）
-                }
+                // 使用公共的JSON解析方法
+                var simpleBody = ParseJsonElement(bodyJson);
                 
                 // 移除 id（如果有的话）
                 simpleBody.Delete("id");
@@ -71,10 +56,24 @@ public static class RestApi
             HttpContext context, string table
         ) =>
         {
-            var sql = $"SELECT * FROM {table}";
-            var query = RestQuery.Parse(context.Request.Query);
-            sql += query.sql;
-            return RestResult.Parse(context, SQLQuery(sql, query.parameters, context));
+            try
+            {
+                var sql = $"SELECT * FROM {table}";
+                var query = RestQuery.Parse(context.Request.Query);
+                sql += query.sql;
+                var result = SQLQuery(sql, query.parameters, context);
+                
+                // Log the query and result for debugging
+                WebApp.Shared.Log($"Query: {sql}");
+                WebApp.Shared.Log($"Result count: {result.Length}");
+                
+                return RestResult.Parse(context, result);
+            }
+            catch (Exception ex)
+            {
+                WebApp.Shared.Log($"Error in GET /api/{table}: {ex.Message}");
+                return Results.BadRequest(new { error = $"Query failed: {ex.Message}" });
+            }
         });
 
         App.MapGet("/api/{table}/{id}", (
@@ -93,12 +92,8 @@ public static class RestApi
         {
             try
             {
-                // 避免使用Dyndata JSON.Parse，使用简化方法
-                var simpleBody = Obj();
-                foreach (var prop in bodyJson.EnumerateObject())
-                {
-                    simpleBody[prop.Name] = prop.Value.ToString().Trim('"');
-                }
+                // 使用公共的JSON解析方法
+                var simpleBody = ParseJsonElement(bodyJson);
                 
                 // 设置ID
                 simpleBody["id"] = id;

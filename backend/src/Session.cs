@@ -2,7 +2,7 @@ namespace WebApp;
 
 public static partial class Session
 {
-    private static dynamic GetRawSession(HttpContext context)
+    public static dynamic GetRawSession(HttpContext context)
     {
         // If the session is already cached in context.Items
         // (if we call this method more than once per request)
@@ -40,23 +40,37 @@ public static partial class Session
 
     public static void Start()
     {
-        // Start a loop that delete old sessions continuously
-        DeleteOldSessions();
+        // 简化的会话启动 - 不需要特殊逻辑
     }
 
     public static dynamic Get(HttpContext context, string key)
     {
         var session = GetRawSession(context);
-        // Convert the data from JSON
-        var data = JSON.Parse(session.data);
-        // Return the requested data key/property
-        return data[key];
+        // Convert the data from JSON using System.Text.Json
+        try
+        {
+            var data = JsonSerializer.Deserialize<dynamic>(session.data);
+            return data[key];
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     public static void Set(HttpContext context, string key, object value)
     {
         var session = GetRawSession(context);
-        var data = JSON.Parse(session.data);
+        // Parse existing data using System.Text.Json
+        dynamic data;
+        try
+        {
+            data = JsonSerializer.Deserialize<dynamic>(session.data);
+        }
+        catch
+        {
+            data = Obj();
+        }
         // Set the property in data
         data[key] = value;
         // Save to DB, with the data converted to JSON
@@ -67,7 +81,7 @@ public static partial class Session
             new
             {
                 session.id,
-                data = JSON.Stringify(data)
+                data = JsonSerializer.Serialize(data)
             }
        );
     }

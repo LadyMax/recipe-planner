@@ -6,16 +6,25 @@ public static class DbQuery
     private static SqliteConnection db =
         new SqliteConnection("Data Source=" + Globals.dbPath);
 
-    static DbQuery() { db.Open(); }
+    static DbQuery() 
+    { 
+        db.Open(); 
+        Console.WriteLine($"Database opened: {Globals.dbPath}");
+        Console.WriteLine($"Database state: {db.State}");
+    }
 
     // Helper to create an object from the DataReader
     private static dynamic ObjFromReader(SqliteDataReader reader)
     {
         var obj = Obj();
+        Console.WriteLine($"ObjFromReader: FieldCount = {reader.FieldCount}");
+        
         for (var i = 0; i < reader.FieldCount; i++)
         {
             var key = reader.GetName(i);
             var value = reader.GetValue(i);
+            
+            Console.WriteLine($"Field {i}: {key} = {value} (Type: {value?.GetType()})");
 
             // Handle NULL values
             if (value == DBNull.Value)
@@ -27,22 +36,24 @@ public static class DbQuery
             {
                 try
                 {
-                    // Remove "JSON:" prefix and parse the JSON
+                    // Remove "JSON:" prefix and parse the JSON using System.Text.Json
                     var jsonString = strValue.Substring(5);
-                    obj[key] = JSON.Parse(jsonString);
+                    obj[key] = JsonSerializer.Deserialize<dynamic>(jsonString);
                 }
                 catch
                 {
-                    // If parsing fails, keep the original value and try to convert to number
-                    obj[key] = strValue.TryToNum();
+                    // If parsing fails, keep the original value
+                    obj[key] = strValue;
                 }
             }
             else
             {
-                // Normal handling - convert to string and try to parse as number
-                obj[key] = value.ToString().TryToNum();
+                // Keep original value type - no automatic conversion
+                obj[key] = value;
             }
         }
+        
+        Console.WriteLine($"ObjFromReader result: {obj}");
         return obj;
     }
 
@@ -70,10 +81,17 @@ public static class DbQuery
             if (sql.StartsWith("SELECT ", true, null))
             {
                 var reader = command.ExecuteReader();
+                Console.WriteLine($"SQL Query: {sql}");
+                Console.WriteLine($"Reader has rows: {reader.HasRows}");
+                
+                int rowCount = 0;
                 while (reader.Read())
                 {
+                    Console.WriteLine($"Reading row {rowCount}");
                     rows.Push(ObjFromReader(reader));
+                    rowCount++;
                 }
+                Console.WriteLine($"Total rows read: {rowCount}");
             }
             else
             {
@@ -96,6 +114,7 @@ public static class DbQuery
         string sql, object parameters = null, HttpContext context = null
     )
     {
-        return SQLQuery(sql, parameters, context)[0];
+        var results = SQLQuery(sql, parameters, context);
+        return results.Length > 0 ? results[0] : null;
     }
 }

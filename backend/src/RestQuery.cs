@@ -47,7 +47,7 @@ public static class RestQuery
                 while (values.Length > 0)
                 {
                     var key = (string)keys.Shift();
-                    var value = values.Shift().TryToNumber();
+                    var value = values.Shift();
                     sqlWhere += $"{key} {operators.Shift()} ${key}";
                     sqlWhere += operators.Length == 0 ? "" : $" {operators.Shift()} ";
                     parameters[key] = value;

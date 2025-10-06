@@ -1,16 +1,12 @@
 import type { IRecipeStore } from "./IRecipeStore.ts";
 import type { Recipe } from "../types/recipe.ts";
-
-const base = ""; // Use Vite proxy
+import { apiClient } from "./apiClient.ts";
 
 export class ApiRecipeStore implements IRecipeStore {
   async list() {
-    const r = await fetch(`${base}/api/recipes`, {
-      credentials: 'include'
-    });
-    if (!r.ok) throw new Error("GET /api/recipes failed");
-    return r.json();
+    return apiClient.get<Recipe[]>('/api/recipes');
   }
+
   async create(rec: Recipe) {
     // Clean recipe data - only send database fields
     const cleanRecipe = {
@@ -23,35 +19,22 @@ export class ApiRecipeStore implements IRecipeStore {
       image_url: rec.image_url,
     };
 
-    const r = await fetch(`${base}/api/recipes`, {
-      method: "POST", 
-      headers: { "Content-Type": "application/json" },
-      credentials: 'include',
-      body: JSON.stringify(cleanRecipe)
-    });
-    if (!r.ok) throw new Error("POST /api/recipes failed");
-    return r.json();
+    return apiClient.post<Recipe>('/api/recipes', cleanRecipe);
   }
-  async update(rec: Recipe) {
-    const r = await fetch(`${base}/api/recipes/${rec.id}`, {
-      method: "PUT", 
-      headers: { "Content-Type": "application/json" },
-      credentials: 'include',
-      body: JSON.stringify(rec)  
-    });
-    if (!r.ok) throw new Error("PUT /api/recipes failed");
-    return r.json();
-  }
-  async remove(id: string) {
 
-    const r = await fetch(`${base}/api/recipes/${id}`, { 
-      method: "DELETE",
-      credentials: 'include'
-    });
-    if (!r.ok) throw new Error("DELETE /api/recipes failed");
+  async update(rec: Recipe) {
+    return apiClient.put<Recipe>(`/api/recipes/${rec.id}`, rec);
   }
+
+  async remove(id: string): Promise<void> {
+    await apiClient.delete(`/api/recipes/${id}`);
+  }
+
   async importMany(rs: Recipe[]) {
     await Promise.all(rs.map(x => this.create(x)));
   }
-  async clear() { /* Can be implemented as needed */ }
+
+  async clear() { 
+    // Can be implemented as needed 
+  }
 }

@@ -1,69 +1,175 @@
-# React + TypeScript + Vite
+# !!!!!! not implemented "create acount","add favourite recipes","rating"
+# Recipe Management App
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+一个基于React + TypeScript + .NET的现代化食谱管理应用，支持用户认证、食谱创建、搜索、评分和评论功能。
 
-Currently, two official plugins are available:
+## 🚀 功能特性
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **用户管理**：用户注册、登录、会话管理
+- **食谱管理**：创建、编辑、删除、搜索食谱
+- **高级搜索**：按分类、标签、难度、时间等筛选
+- **文件操作**：导入/导出食谱数据
+- **响应式设计**：支持桌面和移动设备
+- **离线支持**：Service Worker缓存
+- **现代化UI**：基于Bootstrap 5的美观界面
 
-## Expanding the ESLint configuration
+## 🛠️ 技术栈
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+### 前端
+- **React 19** - 用户界面框架
+- **TypeScript** - 类型安全的JavaScript
+- **Vite** - 快速构建工具
+- **React Router** - 客户端路由
+- **Bootstrap 5** - UI组件库
+- **React Bootstrap** - React组件封装
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### 后端
+- **.NET 8** - 服务器框架
+- **SQLite** - 轻量级数据库
+- **Dyndata** - 动态数据处理
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+### 开发工具
+- **ESLint** - 代码质量检查
+- **TypeScript ESLint** - TypeScript代码检查
+- **Vitest** - 单元测试框架
+- **Testing Library** - React组件测试
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 📁 项目结构
+
+```
+example/
+├── src/                    # 前端源代码
+│   ├── components/         # React组件
+│   ├── contexts/          # React Context
+│   ├── hooks/             # 自定义Hooks
+│   ├── pages/             # 页面组件
+│   ├── services/          # API服务
+│   ├── types/             # TypeScript类型定义
+│   └── utils/             # 工具函数
+├── backend/               # 后端源代码
+│   ├── src/               # C#源代码
+│   ├── db_template/       # 数据库模板
+│   └── Properties/        # 项目配置
+├── public/                 # 静态资源
+├── sass/                  # 样式文件
+└── dist/                  # 构建输出
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## 🚀 快速开始
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+### 环境要求
+- Node.js 18+
+- .NET 8 SDK
+- Git
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 安装依赖
+```bash
+npm install
 ```
+
+### 开发模式
+```bash
+# 启动开发服务器（前端 + 后端）
+npm run dev
+```
+
+访问 http://localhost:5173 查看应用
+
+### 构建生产版本
+```bash
+npm run build
+```
+
+### 运行测试
+```bash
+npm run test
+```
+
+## 🔧 配置说明
+
+### 端口配置
+- 前端开发服务器：5173
+- 后端API服务器：5001
+- 生产构建：通过后端服务器提供
+
+### 数据库
+- 开发环境：SQLite文件数据库
+- 位置：`backend/db_template/_db.sqlite3`
+- 自动复制到`backend/_db.sqlite3`
+
+### API代理
+开发环境下，前端通过Vite代理访问后端API：
+```typescript
+// vite.config.ts
+proxy: {
+  '/api': {
+    target: 'http://localhost:5001',
+    changeOrigin: true,
+  }
+}
+```
+
+## 📚 API文档
+
+### 认证端点
+- `POST /api/login` - 用户登录
+- `GET /api/login` - 获取当前用户
+- `DELETE /api/login` - 用户登出
+
+### 食谱端点
+- `GET /api/recipes` - 获取食谱列表
+- `POST /api/recipes` - 创建新食谱
+- `PUT /api/recipes/{id}` - 更新食谱
+- `DELETE /api/recipes/{id}` - 删除食谱
+
+### 查询参数
+- `where` - SQL WHERE条件
+- `orderby` - 排序字段
+- `limit` - 限制数量
+- `offset` - 偏移量
+
+## 🎨 组件架构
+
+### BaseModal
+统一的模态框组件，提供：
+- 标准化的头部、内容、底部结构
+- 加载状态管理
+- 错误处理
+- 可自定义的主题和图标
+
+### FormInput
+统一的表单输入组件，支持：
+- 图标显示
+- 验证状态
+- 禁用状态
+- 占位符文本
+
+### API Client
+统一的HTTP客户端，提供：
+- 自动错误处理
+- 请求/响应拦截
+- 类型安全
+- 认证管理
+
+## 🔒 安全特性
+
+- **会话管理**：基于Cookie的安全会话
+- **CORS配置**：限制跨域访问
+- **输入验证**：前后端双重验证
+- **SQL注入防护**：参数化查询
+
+## 🚀 部署
+
+### 生产构建
+```bash
+npm run build
+```
+
+
+```
+
+
+
+
+
+

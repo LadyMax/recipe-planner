@@ -12,12 +12,30 @@ export function useRecipes() {
     try {
       setLoading(true);
       const data = await recipeStore.list();
+      console.log('Raw API response:', data);
+      console.log('Data type:', typeof data);
+      console.log('Data length:', Array.isArray(data) ? data.length : 'Not an array');
       
+      // Ensure data is an array
+      if (!Array.isArray(data)) {
+        console.error('API response is not an array:', data);
+        setRecipes([]);
+        return;
+      }
+
       // Get ingredients data for each recipe
       const recipesWithIngredients = await Promise.all(
-        data.map(async (recipe: Recipe) => {
+        data.map(async (recipe: Recipe, index: number) => {
+          console.log(`Processing recipe ${index}:`, recipe);
+          
+          // Validate recipe has required fields
+          if (!recipe || typeof recipe !== 'object' || !recipe.id) {
+            console.error('Recipe missing ID or invalid:', recipe);
+            return null;
+          }
+          
           try {
-            const ingredientsResponse = await fetch(`http://localhost:5001/api/ingredients?where=recipe_id=${recipe.id}&orderby=position`, {
+            const ingredientsResponse = await fetch(`/api/ingredients?where=recipe_id=${recipe.id}&orderby=position`, {
               credentials: 'include'
             });
             if (ingredientsResponse.ok) {
@@ -36,7 +54,10 @@ export function useRecipes() {
         })
       );
       
-      setRecipes(recipesWithIngredients);
+      // Filter out null recipes
+      const validRecipes = recipesWithIngredients.filter(recipe => recipe !== null);
+      
+      setRecipes(validRecipes);
     } catch (e: unknown) {
       setError((e as Error)?.message || 'Failed to load');
     } finally {
@@ -75,7 +96,7 @@ export function useRecipes() {
         // Update ingredients if they exist
         if (r.ingredients && r.ingredients.length > 0) {
           // First, delete existing ingredients
-          await fetch(`http://localhost:5001/api/ingredients?where=recipe_id=${r.id}`, {
+          await fetch(`/api/ingredients?where=recipe_id=${r.id}`, {
             method: 'DELETE',
             credentials: 'include'
           }).catch(err => console.warn('Failed to delete old ingredients:', err));
@@ -83,7 +104,7 @@ export function useRecipes() {
           // Then, add new ingredients
           for (const ingredient of r.ingredients) {
             if (ingredient.name && ingredient.amount && ingredient.unit) {
-              await fetch('http://localhost:5001/api/ingredients', {
+              await fetch('/api/ingredients', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
@@ -113,15 +134,15 @@ export function useRecipes() {
         console.log('Recipe created successfully:', createdRecipe);
         
         // Add ingredients if they exist
-        if (r.ingredients && r.ingredients.length > 0 && createdRecipe.insertId) {
+        if (r.ingredients && r.ingredients.length > 0 && (createdRecipe as any).insertId) {
           for (const ingredient of r.ingredients) {
             if (ingredient.name && ingredient.amount && ingredient.unit) {
-              await fetch('http://localhost:5001/api/ingredients', {
+              await fetch('/api/ingredients', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 credentials: 'include',
                 body: JSON.stringify({
-                  recipe_id: createdRecipe.insertId,
+                  recipe_id: (createdRecipe as any).insertId,
                   name: ingredient.name,
                   amount: ingredient.amount,
                   unit: ingredient.unit,

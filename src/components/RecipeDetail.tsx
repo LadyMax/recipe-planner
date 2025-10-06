@@ -47,7 +47,7 @@ export default function RecipeDetail({
           <div className="d-flex flex-wrap gap-2 align-items-center">
             {recipe.category && <Badge bg="primary">{recipe.category}</Badge>}
             {recipe.tags?.map((tag, index) => (
-              <Badge key={index} bg="secondary">
+              <Badge key={`${tag}-${index}`} bg="secondary">
                 {tag}
               </Badge>
             ))}
@@ -105,7 +105,7 @@ export default function RecipeDetail({
             <h6>Ingredients</h6>
             <ul className="list-unstyled">
               {(recipe.ingredients || []).map((ingredient, index) => (
-                <li key={index} className="mb-1">
+                <li key={`${ingredient.name}-${index}`} className="mb-1">
                   <strong>{ingredient.name}</strong>
                   {ingredient.amount && (
                     <span className="text-muted"> - {ingredient.amount}</span>

@@ -5,49 +5,67 @@ public static class Server
     {
         var builder = WebApplication.CreateBuilder();
         
-        // Add CORS services
+        // 添加CORS
         builder.Services.AddCors(options =>
         {
             options.AddPolicy("AllowAll", policy =>
             {
-                policy.WithOrigins("http://localhost:5173")  // 明确指定前端域名
-                      .AllowCredentials()  // 允许凭据
+                policy.WithOrigins("http://localhost:5173")
+                      .AllowCredentials()
                       .AllowAnyMethod()
                       .AllowAnyHeader();
             });
         });
         
         App = builder.Build();
-        
-        // Use CORS
         App.UseCors("AllowAll");
         
-        // Initialize database tables
+        // 添加中间件
+        App.Use(async (context, next) =>
+        {
+            // 调试日志
+            DebugLog.Register(context);
+            
+            // 会话管理
+            SessionTouch.Touch(context);
+            
+            // ACL检查
+            if (!Acl.Allow(context))
+            {
+                context.Response.StatusCode = 403;
+                await context.Response.WriteAsJsonAsync(new { error = "Access denied" });
+                return;
+            }
+            
+            await next(context);
+        });
+        
+        // 初始化数据库
         InitializeDatabase();
         
-        Middleware();
+        // 启动服务
         DebugLog.Start();
-        Acl.Start();
         ErrorHandler.Start();
+        Acl.Start();
+        SessionTouch.Start();
         FileServer.Start();
         LoginRoutes.Start();
-        FavoritesRoutes.Start();
         RestApi.Start();
-        Session.Start();
-        // Start the server on port 3001
-        var runUrl = "http://localhost:" + Globals.port;
-        Log("Server running on:", runUrl);
-        Log("With these settings:", Globals);
         
-        Log("About to start server with URL:", runUrl);
+        // 启动服务器
+        var runUrl = "http://localhost:" + Globals.port;
+        WebApp.Shared.Log("Server running on:", runUrl);
+        WebApp.Shared.Log("With these settings:", Globals);
+        
+        WebApp.Shared.Log("About to start server with URL:", runUrl);
         
         // Start server manually and keep it running
         try
         {
-            Log("Starting server on background thread...");
+            WebApp.Shared.Log("Starting server on background thread...");
             
             // Start server in background
-            Task.Run(async () =>
+            _ = Task.Run(async () =>
             {
                 try
                 {
@@ -55,106 +73,72 @@ public static class Server
                 }
                 catch (Exception ex)
                 {
-                    Log("Background server error:", ex.Message);
+                    WebApp.Shared.Log("Background server error:", ex.Message);
                 }
             });
             
-            Log("Server started successfully!");
-            Log("Waiting forever to keep process alive...");
+            WebApp.Shared.Log("Server started successfully!");
+            WebApp.Shared.Log("Waiting forever to keep process alive...");
             
             // Keep the main thread alive forever
             while (true)
             {
-                await Task.Delay(5000);
-                Log("Server heartbeat:", DateTime.Now.ToString());
+                await Task.Delay(30000); // 30秒延迟，但不输出心跳
+                // Log("Server heartbeat:", DateTime.Now.ToString()); // 禁用心跳输出
             }
         }
         catch (Exception ex)
         {
-            Log("Server startup error:", ex.Message);
-            Log("Stack trace:", ex.StackTrace);
+            WebApp.Shared.Log("Server startup error:", ex.Message);
+            WebApp.Shared.Log("Stack trace:", ex.StackTrace);
         }
     }
-
-    // Middleware that changes the server response header,
-    // initiates the debug logging for the request,
-    // keep sessions alive, stops the route if not acl approved
-    // and adds some info for debugging
-    public static void Middleware()
-    {
-        App.Use(async (context, next) =>
-        {
-            context.Response.Headers.Append("Server", (string)Globals.serverName);
-            DebugLog.Register(context);
-            Session.Touch(context);
-            if (!Acl.Allow(context))
-            {
-                // Acl says the route is not allowed
-                context.Response.StatusCode = 405;
-                var error = new { error = "Not allowed." };
-                DebugLog.Add(context, error);
-                await context.Response.WriteAsJsonAsync(error);
-            }
-            else { await next(context); }
-            // Add some extra info for debugging
-            var res = context.Response;
-            var contentLength = res.ContentLength;
-            contentLength = contentLength == null ? 0 : contentLength;
-            var info = Obj(new
-            {
-                statusCode = res.StatusCode,
-                contentType = res.ContentType,
-                contentLengthKB =
-                    Math.Round((double)contentLength / 10.24) / 100,
-                RESPONSE_DONE = Now
-            });
-            if (info.contentLengthKB == null || info.contentLengthKB == 0)
-            {
-                info.Delete("contentLengthKB");
-            }
-            DebugLog.Add(context, info);
-        });
-    }
-
-    // Initialize database tables by executing SQL files
+    
+    // 初始化数据库
     private static void InitializeDatabase()
     {
         try
         {
-            var sqlFile = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "create_tables.sql");
-            Log("Looking for SQL file at:", sqlFile);
-            Log("Base directory:", AppDomain.CurrentDomain.BaseDirectory);
-            if (File.Exists(sqlFile))
+            // 简单验证数据库连接
+            var testQuery = SQLQueryOne("SELECT 1 as test");
+            if (testQuery != null)
             {
-                var sqlContent = File.ReadAllText(sqlFile);
-                var statements = sqlContent.Split(';', StringSplitOptions.RemoveEmptyEntries);
-                
-                foreach (var statement in statements)
-                {
-                    var trimmedStatement = statement.Trim();
-                    if (!string.IsNullOrEmpty(trimmedStatement) && !trimmedStatement.StartsWith("--"))
-                    {
-                        try
-                        {
-                            SQLQueryOne(trimmedStatement);
-                        }
-                        catch (Exception ex)
-                        {
-                            Log("Database initialization warning:", ex.Message);
-                        }
-                    }
-                }
-                Log("Database tables initialized successfully");
-            Log("Total statements executed:", statements.Length);
+                WebApp.Shared.Log("Database connection verified");
             }
-            else
+            
+            // 检查users表是否存在
+            var usersTableCheck = SQLQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='users'");
+            WebApp.Shared.Log($"Users table exists: {usersTableCheck.Length > 0}");
+            
+            if (usersTableCheck.Length > 0)
             {
-                Log("SQL file not found:", sqlFile);
+                // 检查是否有用户
+                var userCountQuery = SQLQuery("SELECT COUNT(*) as count FROM users");
+                var userCount = userCountQuery[0]?.count ?? 0;
+                WebApp.Shared.Log($"Users table count: {userCount}");
+            }
+            
+            // 检查recipes表是否存在以及有多少行
+            var tableCheck = SQLQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='recipes'");
+            WebApp.Shared.Log($"Recipes table exists: {tableCheck.Length > 0}");
+            
+            if (tableCheck.Length > 0)
+            {
+                var countQuery = SQLQuery("SELECT COUNT(*) as count FROM recipes");
+                WebApp.Shared.Log($"Recipes table count: {countQuery[0]?.count ?? 0}");
+                
+                // 显示表结构
+                var schemaQuery = SQLQuery("PRAGMA table_info(recipes)");
+                WebApp.Shared.Log($"Recipes table schema: {schemaQuery.Length} columns");
+                foreach (var column in schemaQuery)
+                {
+                    WebApp.Shared.Log($"Column: {column.name} ({column.type})");
+                }
             }
         }
         catch (Exception ex)
         {
-            Log("Database initialization error:", ex.Message);
+            WebApp.Shared.Log("Database connection error:", ex.Message);
         }
     }
 }

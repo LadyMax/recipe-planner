@@ -10,6 +10,19 @@ import '../sass/index.scss';
 import routes from './routes.ts';
 import App from './App.tsx';
 
+// Register Service Worker
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('SW registered: ', registration);
+      })
+      .catch((registrationError) => {
+        console.log('SW registration failed: ', registrationError);
+      });
+  });
+}
+
 const router = createBrowserRouter([
   {
     path: '/',

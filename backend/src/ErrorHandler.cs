@@ -1,18 +1,16 @@
-// Error Handler for "raw" runtime errors
-// that aren't handled anywhere else
 namespace WebApp;
 public static class ErrorHandler
 {
     public static void Start()
     {
+        // 简化的错误处理
         App.UseExceptionHandler(exceptionApp =>
         {
             exceptionApp.Run(async context =>
             {
                 var feature = context.Features.Get<IExceptionHandlerPathFeature>();
-                DebugLog.Add(context, new { error = feature.Error.Message });
-                var error = new { error = feature.Error.Message };
-                context.Response.Headers.Append("Server", (string)Globals.serverName);
+                var error = new { error = feature?.Error?.Message ?? "Unknown error" };
+                context.Response.StatusCode = 500;
                 await context.Response.WriteAsJsonAsync(error);
             });
         });
