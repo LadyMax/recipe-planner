@@ -1,0 +1,29 @@
+// Badge Styles
+
+@use 'mixins' as *;
+
+// Badge component styling
+.badge {
+  border-radius: var(--border-radius-sm);
+  @include font-weight-bold;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge.bg-primary {
+  background-color: var(--primary-color) !important;
+}
+
+.badge.bg-secondary {
+  background-color: var(--secondary-color) !important;
+}
+
+// Compact badges (unified)
+.badge[style*='font-size: 0.75rem'],
+.badge[style*='font-size: 0.7rem'] {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem !important;
+}
+

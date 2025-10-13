@@ -9,36 +9,37 @@ interface AdvancedSearchProps {
 export interface SearchFilters {
   query: string;
   category?: string;
-  tags: string[];
-  minServings?: number;
-  maxServings?: number;
-  maxDuration?: number;
+  mealType?: string;
+  difficulty?: string;
   hasImage?: boolean;
 }
 
 const CATEGORIES = [
   'Main Course',
+  'Side Dish',
   'Soup',
   'Dessert',
   'Beverage',
   'Snack',
+  'Appetizer',
+  'Salad',
   'Other',
 ];
 
-const COMMON_TAGS = [
-  'Simple',
-  'Vegetarian',
-  'Quick',
-  'Healthy',
-  'Homestyle',
-  'Comfort Food',
-  'Light',
-  'Rich',
-  'Sweet',
-  'Spicy',
-  'Sour',
-  'Aromatic',
+const MEAL_TYPES = [
+  { value: '1', label: 'Breakfast' },
+  { value: '2', label: 'Lunch' },
+  { value: '3', label: 'Dinner' },
+  { value: '4', label: 'Snack' },
+  { value: '5', label: 'Dessert' },
 ];
+
+const DIFFICULTIES = [
+  'Easy',
+  'Medium',
+  'Hard',
+];
+
 
 export default function AdvancedSearch({
   onSearch,
@@ -46,7 +47,6 @@ export default function AdvancedSearch({
 }: AdvancedSearchProps) {
   const [filters, setFilters] = useState<SearchFilters>({
     query: '',
-    tags: [],
   });
   const [showAdvanced, setShowAdvanced] = useState(false);
 
@@ -60,16 +60,7 @@ export default function AdvancedSearch({
       const value = e.target.value;
       setFilters(prev => ({
         ...prev,
-        [field]:
-          field === 'query' || field === 'category'
-            ? value
-            : field === 'minServings' ||
-              field === 'maxServings' ||
-              field === 'maxDuration'
-            ? value === '' || value === '0'
-              ? undefined
-              : parseInt(value)
-            : prev[field],
+        [field]: value,
       }));
     };
 
@@ -82,14 +73,6 @@ export default function AdvancedSearch({
       }));
     };
 
-  const handleTagToggle = (tag: string) => {
-    setFilters(prev => ({
-      ...prev,
-      tags: prev.tags.includes(tag)
-        ? prev.tags.filter(t => t !== tag)
-        : [...prev.tags, tag],
-    }));
-  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -99,7 +82,6 @@ export default function AdvancedSearch({
   const handleClear = () => {
     setFilters({
       query: '',
-      tags: [],
     });
     onClear();
   };
@@ -107,10 +89,8 @@ export default function AdvancedSearch({
   const hasActiveFilters =
     filters.query ||
     filters.category ||
-    filters.tags.length > 0 ||
-    (filters.minServings && filters.minServings > 0) ||
-    (filters.maxServings && filters.maxServings > 0) ||
-    (filters.maxDuration && filters.maxDuration > 0) ||
+    filters.mealType ||
+    filters.difficulty ||
     filters.hasImage;
 
   return (
@@ -201,59 +181,37 @@ export default function AdvancedSearch({
                   </Form.Select>
                 </Col>
                 <Col md={6} lg={4}>
-                  <Form.Label className="small">
-                    Max Cooking Time (minutes)
-                  </Form.Label>
-                  <Form.Control
-                    type="number"
-                    min="0"
-                    placeholder="No limit"
-                    value={filters.maxDuration || ''}
-                    onChange={handleInputChange('maxDuration')}
+                  <Form.Label className="small">Meal Type</Form.Label>
+                  <Form.Select
+                    value={filters.mealType || ''}
+                    onChange={handleInputChange('mealType')}
                     size="sm"
-                  />
+                  >
+                    <option value="">All Meal Types</option>
+                    {MEAL_TYPES.map(meal => (
+                      <option key={meal.value} value={meal.value}>
+                        {meal.label}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Col>
-                <Col md={12} lg={4}>
-                  <Form.Label className="small">Servings Range</Form.Label>
-                  <div className="d-flex gap-2">
-                    <Form.Control
-                      type="number"
-                      min="0"
-                      placeholder="Min"
-                      value={filters.minServings || ''}
-                      onChange={handleInputChange('minServings')}
-                      size="sm"
-                    />
-                    <Form.Control
-                      type="number"
-                      min="0"
-                      placeholder="Max"
-                      value={filters.maxServings || ''}
-                      onChange={handleInputChange('maxServings')}
-                      size="sm"
-                    />
-                  </div>
+                <Col md={6} lg={4}>
+                  <Form.Label className="small">Difficulty</Form.Label>
+                  <Form.Select
+                    value={filters.difficulty || ''}
+                    onChange={handleInputChange('difficulty')}
+                    size="sm"
+                  >
+                    <option value="">All Difficulties</option>
+                    {DIFFICULTIES.map(diff => (
+                      <option key={diff} value={diff}>
+                        {diff}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Col>
               </Row>
 
-              <Row className="mb-3">
-                <Col>
-                  <Form.Label className="small">Tags</Form.Label>
-                  <div className="d-flex flex-wrap gap-1">
-                    {COMMON_TAGS.map(tag => (
-                      <Badge
-                        key={tag}
-                        bg={filters.tags.includes(tag) ? 'primary' : 'light'}
-                        text={filters.tags.includes(tag) ? 'white' : 'dark'}
-                        className="filter-badge filter-tag"
-                        onClick={() => handleTagToggle(tag)}
-                      >
-                        {tag}
-                      </Badge>
-                    ))}
-                  </div>
-                </Col>
-              </Row>
 
               <Row className="mb-3">
                 <Col>
@@ -262,7 +220,7 @@ export default function AdvancedSearch({
                     label="Only show recipes with images"
                     checked={filters.hasImage || false}
                     onChange={handleCheckboxChange('hasImage')}
-                    className="small"
+                    className="small checkbox-with-image-label"
                   />
                 </Col>
               </Row>
@@ -283,24 +241,14 @@ export default function AdvancedSearch({
                     Category: {filters.category}
                   </Badge>
                 )}
-                {filters.tags.map(tag => (
-                  <Badge key={tag} className="active-filter-badge">
-                    {tag}
-                  </Badge>
-                ))}
-                {filters.maxDuration && filters.maxDuration > 0 && (
+                {filters.mealType && (
                   <Badge className="active-filter-badge">
-                    ≤{filters.maxDuration}min
+                    Meal: {MEAL_TYPES.find(m => m.value === filters.mealType)?.label}
                   </Badge>
                 )}
-                {filters.minServings && filters.minServings > 0 && (
+                {filters.difficulty && (
                   <Badge className="active-filter-badge">
-                    ≥{filters.minServings}servings
-                  </Badge>
-                )}
-                {filters.maxServings && filters.maxServings > 0 && (
-                  <Badge className="active-filter-badge">
-                    ≤{filters.maxServings}servings
+                    Difficulty: {filters.difficulty}
                   </Badge>
                 )}
                 {filters.hasImage && (

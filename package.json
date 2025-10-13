@@ -4,8 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "clean": "echo Cleaning processes...",
-    "dev": "npm run clean && npx vite dev --port 5173",
+    "dev": "node node_modules/react-rapide dev",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "node node_modules/react-rapide preview",

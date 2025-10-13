@@ -1,0 +1,98 @@
+// Mixins for common patterns
+// ==========================================
+
+@mixin primary-button {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: #ffffff; // Always use white text on green background for better contrast
+  
+  &:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+  }
+}
+
+@mixin primary-outline-button {
+  background-color: transparent;
+  border-color: var(--primary-hover);
+  color: var(--primary-hover);
+  
+  &:hover {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: #ffffff; // Always use white text on green background for better contrast
+  }
+}
+
+@mixin primary-border {
+  border: 2px solid var(--primary-color) !important;
+}
+
+@mixin primary-background {
+  background-color: var(--primary-color);
+}
+
+@mixin primary-color {
+  color: var(--primary-color);
+}
+
+@mixin primary-hover-color {
+  color: var(--primary-hover);
+}
+
+@mixin card-style {
+  border-radius: var(--border-radius-lg);
+  box-shadow: var(--box-shadow);
+  transition: var(--transition-slow);
+}
+
+@mixin form-control-style {
+  border-radius: 25px;
+  border: 2px solid var(--primary-color) !important;
+  transition: var(--transition);
+}
+
+@mixin rounded-button {
+  border-radius: 25px;
+}
+
+@mixin standard-padding {
+  padding: 12px 20px;
+}
+
+@mixin compact-padding {
+  padding: 8px 16px;
+}
+
+@mixin font-weight-bold {
+  font-weight: 600;
+}
+
+@mixin font-weight-medium {
+  font-weight: 500;
+}
+
+@mixin font-weight-heavy {
+  font-weight: 700;
+}
+
+@mixin white-text {
+  color: #ffffff;
+}
+
+@mixin white-background {
+  background: var(--light-color);
+}
+
+@mixin no-spacing {
+  margin: 0;
+  padding: 0;
+}
+
+@mixin standard-shadow {
+  box-shadow: var(--box-shadow);
+}
+
+@mixin large-shadow {
+  box-shadow: var(--box-shadow-lg);
+}

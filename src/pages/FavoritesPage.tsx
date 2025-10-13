@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Container, Alert, Row, Col } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { useRecipes } from '../hooks/useRecipes';
 import { useFavorites } from '../hooks/useFavorites';
 import RecipeList from '../components/RecipeList';

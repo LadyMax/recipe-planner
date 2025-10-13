@@ -1,196 +1,302 @@
 // Component-specific styles
 // ==========================================
-// These styles replicate the exact inline styles currently used in components
+
+@use 'mixins' as *;
+// Component-specific styles for recipe management application
+
+// Note: Button styles moved to _buttons.scss for consistency
+
+// Common Utility Classes
+// ==========================================
+.no-select {
+  user-select: none;
+}
+
+.no-select-no-pointer {
+  user-select: none;
+  pointer-events: none;
+}
+
+.text-primary-theme {
+  @include primary-hover-color;
+}
+
+.bg-primary-theme {
+  @include primary-background;
+}
+
+.text-pre-wrap {
+  white-space: pre-wrap;
+}
+
+.transition-all {
+  transition: var(--transition-slow);
+}
+
+.transition-transform {
+  transition: var(--transition-transform);
+}
+
+.flex-1 {
+  flex: 1;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+// Simplified button layout utility
+.flex-button-layout {
+  flex: 1;
+  position: static;
+  width: auto;
+  bottom: auto;
+}
+
+.min-height-200 {
+  min-height: 200px;
+}
 
 // Recipe List Component
 // ==========================================
-.recipe-card {
-  transition: all 0.3s ease;
-  border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 6px rgba(107, 149, 14, 0.25);
-  
-  &:hover {
-    background: #f0f7e8;
-    box-shadow: 0 8px 25px rgba(107, 149, 14, 0.35);
-    transform: translateY(-2px);
-  }
-}
+// Main recipe-card styles are defined in index.scss to avoid duplication
 
 .recipe-card-title {
-  color: #5a7d0c;
+  @extend .text-primary-theme;
 }
 
 .recipe-card-image {
-  height: 200px;
-  object-fit: cover;
+  // Styles unified in _cards.scss .recipe-card .card-img-top
 }
 
-.recipe-card-actions {
-  z-index: 10;
+// Note: .recipe-card-actions moved to _cards.scss
+
+// Fade-in animation is defined in index.scss to avoid duplication
+
+// Category tags
+.category-tags {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
-.fade-in {
-  animation: fadeIn 0.5s ease-in;
+.category-tag {
+  background: var(--light-color);
+  border: 2px solid var(--gray-200);
+  color: var(--primary-hover);
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+  text-decoration: none;
+  box-shadow: 0 2px 8px var(--rgba-overlay);
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.category-tag:hover {
+  background-color: var(--primary-color) !important;  
+  border-color: var(--primary-color) !important;
+  color: #ffffff !important;
+  text-decoration: none;
+  box-shadow: 0 4px 12px var(--rgba-overlay) !important;
+}
+
+.category-tag:active,
+.category-tag.active,
+.category-tag:focus {
+  background: var(--primary-hover) !important;  
+  border-color: var(--primary-hover) !important;
+  color: #ffffff !important;
+  text-decoration: none;
+  box-shadow: 0 4px 12px var(--rgba-overlay) !important;
 }
 
 // Advanced Search Component
 // ==========================================
 .advanced-search-header {
-  background-color: #6b950e;
-  color: white;
+  @extend .bg-primary-theme;
+  color: #ffffff; // White text on green background
 }
 
 .search-button {
-  flex: 1;
-  position: static;
-  width: auto;
-  bottom: auto;
-  background-color: #6b950e;
-  border-color: #6b950e;
-  
-  &:hover {
-    background-color: #4a660a;
-    border-color: #4a660a;
-  }
+  @extend .flex-button-layout;
+  @include primary-button;
 }
 
 .clear-button {
-  flex: 1;
-  position: static;
-  width: auto;
-  bottom: auto;
+  @extend .flex-button-layout;
 }
 
 
 .filter-tag {
-  cursor: pointer;
+  @extend .cursor-pointer;
   font-size: 0.75rem;
 }
 
 .active-filter-badge {
   font-size: 0.7rem;
-  background-color: #6b950e;
-  color: white;
+  @extend .bg-primary-theme;
+}
+
+// Search filter badge styles
+.filter-badge {
+  cursor: pointer;
+  transition: var(--transition);
+  border-radius: var(--border-radius);
+  padding: 0.5rem 0.75rem;
+  font-weight: 500;
+  border: 1px solid var(--gray-300);
+}
+
+.filter-badge:hover {
+  transform: scale(1.05);
+  box-shadow: var(--box-shadow);
+}
+
+// Filter badge variants
+.filter-badge.bg-light {
+  background-color: var(--light-color) !important;
+  color: var(--gray-700) !important;
+  border-color: var(--gray-300);
+}
+
+.filter-badge.bg-light:hover {
+  background-color: var(--gray-100) !important;
+  color: var(--gray-800) !important;
+  border-color: var(--gray-400);
+}
+
+.filter-badge.bg-primary {
+  background-color: var(--primary-color) !important;
+  color: #ffffff !important;
+  border-color: var(--primary-hover);
+}
+
+.filter-badge.bg-primary:hover {
+  background-color: var(--primary-hover) !important;
+  color: #ffffff !important;
 }
 
 // Recipe Comments Component
 // ==========================================
 .post-comment-button {
-  background-color: #6b950e;
-  border-color: #6b950e;
-  color: white;
+  @include primary-button;
+}
+
+// Text color consistency
+// ==========================================
+.no-recipes-text {
+  color: var(--primary-hover) !important; // #4a660a
+  text-align: center;
+  font-size: 1.1rem;
+  margin: 2rem 0;
+}
+
+.no-recipes-alert {
+  color: var(--primary-hover) !important; // #4a660a
+  background-color: var(--primary-light) !important;
+  border-color: var(--primary-hover) !important;
+}
+
+.checkbox-with-image-label {
+  color: var(--primary-hover) !important; // #4a660a
   
-  &:hover {
-    background-color: #5a7d0c;
-    border-color: #5a7d0c;
+  .form-check-label {
+    color: var(--primary-hover) !important; // #4a660a
   }
 }
 
 .comment-content {
-  white-space: pre-wrap;
+  @extend .text-pre-wrap;
+}
+
+.comment-item {
+  border-left: 3px solid var(--primary-color);
+  padding-left: 1rem;
+  margin-bottom: 1rem;
+  background-color: var(--rgba-overlay);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  padding: 1rem;
 }
 
 // Recipe Detail Component
 // ==========================================
 .recipe-detail-edit-button {
-  background-color: transparent;
-  border-color: #5a7d0c;
-  color: #5a7d0c;
-  
-  &:hover {
-    background-color: #6b950e;
-    border-color: #6b950e;
-    color: white;
-  }
+  @include primary-outline-button;
 }
 
-.recipe-description {
-  white-space: pre-wrap;
-}
+// Note: recipe-description styles moved to _images.scss
 
-.recipe-image-detail {
-  max-height: 300px;
-}
+// Note: recipe image styles are unified in index.scss
 
 // Recipe Form Modal Component
 // ==========================================
 .ingredient-input-group {
-  flex: 1;
+  @extend .flex-1;
+}
+
+// File input styling (migrated from _migrated-styles.scss)
+.file-input-flex {
+  @extend .flex-1;
+}
+
+// Ingredients list styles
+.ingredients-list {
+  min-height: 50px;
+  transition: var(--transition-slow);
+}
+
+.ingredients-list .row {
+  opacity: 1;
+  transition: opacity 0.3s ease;
 }
 
 // Planner Page Component
 // ==========================================
-.load-starter-data-button {
-  background-color: #6b950e;
-  border-color: #6b950e;
-  color: white;
-  
-  &:hover {
-    background-color: #5a7d0c;
-    border-color: #5a7d0c;
-  }
-}
-
-.load-starter-data-text {
-  color: #5a7d0c;
-}
 
 // Recipe Detail Page Component
 // ==========================================
 .recipe-detail-loading {
-  min-height: 200px;
+  @extend .min-height-200;
 }
 
 .recipe-detail-edit-button-page {
-  background-color: transparent;
-  border-color: #5a7d0c;
-  color: #5a7d0c;
-  
-  &:hover {
-    background-color: #6b950e;
-    border-color: #6b950e;
-    color: white;
-  }
+  @include primary-outline-button;
 }
 
 // Modal Components
 // ==========================================
 .modal-no-select {
-  user-select: none;
+  @extend .no-select;
 }
 
 .modal-title-no-select {
-  user-select: none;
-  pointer-events: none;
+  @extend .no-select-no-pointer;
 }
 
 .modal-body-no-select {
-  user-select: none;
+  @extend .no-select;
 }
 
 .form-label-no-select {
-  user-select: none;
-  pointer-events: none;
+  @extend .no-select-no-pointer;
 }
 
 .text-muted-no-select {
-  user-select: none;
+  @extend .no-select;
 }
 
 // Favorite Button Component
 // ==========================================
 .favorite-button {
   z-index: 20;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
-  transition: transform 0.2s ease;
+  filter: drop-shadow(var(--drop-shadow));
+  @extend .transition-transform;
   
   &.authenticated {
-    cursor: pointer;
+    @extend .cursor-pointer;
     opacity: 1;
   }
   
@@ -203,19 +309,66 @@
     transform: scale(1.1);
   }
   
-  &.normal {
-    transform: scale(1);
+  // Default state - not favorited
+  &.unfavorited {
+    path {
+      fill: var(--heart-unfavorited);
+    }
   }
+  
+  // Not favorited + hover
+  &.unfavorited.hovered {
+    path {
+      fill: var(--heart-hover);
+    }
+  }
+  
+  // Favorited state - favorited
+  &.favorited {
+    path {
+      fill: var(--heart-favorited);
+    }
+  }
+  
+  // Favorited + hover
+  &.favorited.hovered {
+    path {
+      fill: var(--heart-favorited);
+    }
+  }
+}
+
+// Alert Components
+// ==========================================
+.alert {
+  border: none;
+  border-radius: var(--border-radius);
+  @include standard-shadow;
+  border-left: 4px solid;
+}
+
+.alert-success {
+  background: var(--success-color);
+  border-left-color: var(--success-hover);
+  @include white-text;
+}
+
+.alert-danger {
+  background: var(--danger-color);
+  border-left-color: var(--danger-hover);
+  @include white-text;
+}
+
+.alert-warning {
+  background: var(--warning-color);
+  border-left-color: var(--warning-hover);
+  @include white-text;
 }
 
 // Utility Classes
 // ==========================================
 .text-inherit {
   color: inherit;
-}
-
-.min-height-200 {
-  min-height: 200px;
 }
 
 .padding-16 {

@@ -3,7 +3,6 @@ export type User = {
   email: string;
   name?: string;
   role: 'user' | 'admin';
-  createdAt?: string;
 };
 
 export type LoginCredentials = {

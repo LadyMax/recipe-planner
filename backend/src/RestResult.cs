@@ -11,17 +11,10 @@ public static class RestResult
             row ??= Obj(new { error = "Not found." });
             // Delete fields named "password"
             row.Delete("password");
-            // JSON.parse all fields named "data" using System.Text.Json
+            // JSON.parse all fields named "data"
             if (row.HasKey("data"))
             {
-                try
-                {
-                    row.data = JsonSerializer.Deserialize<dynamic>(row.data);
-                }
-                catch
-                {
-                    // If parsing fails, keep as string
-                }
+                row.data = JSON.Parse(row.data);
             }
         }
         catch (Exception) { }
@@ -52,7 +45,7 @@ public static class RestResult
         }
         if (statusCode != 200) { DebugLog.Add(context, result); }
         return Results.Text(
-          JsonSerializer.Serialize(result),
+          JSON.Stringify(result),
           "application/json; charset=utf-8",
           null,
           statusCode

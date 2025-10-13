@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { useState, useMemo } from 'react';
 import FavoriteButton from './FavoriteButton';
 import type { Recipe } from '../types/recipe.ts';
+import { getMealTypeName } from '../utils/mealTypeUtils';
 
 type Props = {
   recipes: Recipe[];
@@ -34,7 +35,7 @@ export default function RecipeList({
     });
   }, [recipes, selectedCategory]);
 
-  if (recipes.length === 0) return <p>No recipes yet. Add one!</p>;
+  if (recipes.length === 0) return <p className="no-recipes-text">No recipes yet. Add one!</p>;
 
   console.log(
     'RecipeList rendering with recipes:',
@@ -76,8 +77,8 @@ export default function RecipeList({
       )}
 
       {/* Recipe list */}
-      <div className="row">
-        {filteredRecipes.map((r, index) => {
+      <div className="row recipe-cards-container">
+        {filteredRecipes.map((r) => {
           if (!r.id) {
             console.warn('Recipe missing ID:', r);
             console.warn('Full recipe object:', JSON.stringify(r, null, 2));
@@ -86,80 +87,54 @@ export default function RecipeList({
           return (
             <div
               key={`recipe-${r.id}`}
-              className="col-12 col-md-6 col-lg-4 mb-4"
-              style={{ animationDelay: `${index * 0.1}s` }}
+              className="col-12 col-md-6 col-lg-4 mb-4 recipe-card-animated"
             >
               <div className="card recipe-card h-100 fade-in position-relative">
-              <div
-                className="position-absolute top-0 end-0 m-2 recipe-card-actions"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <FavoriteButton recipeId={r.id} size="sm" />
-              </div>
-              {(r.image_url || r.imageUrl) && (
+                <div
+                  className="position-absolute top-0 end-0 m-2 recipe-card-actions"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <FavoriteButton recipeId={r.id} size="sm" />
+                </div>
+              {r.image_url && (
                 <img
-                  src={r.image_url || r.imageUrl}
+                  src={r.image_url}
                   className="card-img-top recipe-card-image"
-                  alt={r.title}
+                  alt={r.recipe_name}
                 />
               )}
               <div className="card-body d-flex flex-column">
-                <div className="mb-2">
+                <div className="mb-2 d-flex gap-2">
                   {r.category && (
-                    <span className="category-badge">{r.category}</span>
+                    <span className="category-badge" title="Recipe Type">{r.category}</span>
+                  )}
+                  {r.meal_type_id && (
+                    <span className="meal-type-badge" title="Meal Type">
+                      {getMealTypeName(r.meal_type_id)}
+                    </span>
                   )}
                 </div>
 
                 <h5 className="card-title recipe-card-title">
-                  {r.title}
+                  {r.recipe_name}
                 </h5>
 
                 <p className="card-text flex-grow-1">
-                  {(r.description || r.instructions || '').substring(0, 80)}
-                  {(r.description || r.instructions || '').length > 80 &&
+                  {(r.description || '').substring(0, 80)}
+                  {(r.description || '').length > 80 &&
                     '...'}
                 </p>
 
-                <div className="recipe-meta">
-                  <div className="recipe-rating">
-                    <span className="stars">★★★★★</span>
-                    <span className="rating-text">4.8</span>
-                  </div>
-                  <div className="recipe-time">
-                    <i className="bi bi-clock"></i>
-                    {r.cook_time_min || r.durationMins || 30} min
-                  </div>
-                </div>
 
                 <div className="mt-auto" onClick={(e) => e.stopPropagation()}>
                   <div className="d-flex">
                     {canEdit && onEdit && (
                       <button
-                        className="btn btn-outline-primary btn-sm me-2"
+                        className="btn btn-outline-primary btn-sm me-2 recipe-card-edit-btn"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
                           onEdit(r);
-                        }}
-                        style={{
-                          flex: 1,
-                          position: 'relative',
-                          width: 'auto',
-                          bottom: 'auto',
-                          backgroundColor: 'transparent',
-                          borderColor: '#5a7d0c',
-                          color: '#5a7d0c',
-                          zIndex: 10,
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.backgroundColor = '#6b950e';
-                          e.currentTarget.style.borderColor = '#6b950e';
-                          e.currentTarget.style.color = 'white';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.backgroundColor = 'transparent';
-                          e.currentTarget.style.borderColor = '#5a7d0c';
-                          e.currentTarget.style.color = '#5a7d0c';
                         }}
                       >
                         Edit
@@ -167,18 +142,11 @@ export default function RecipeList({
                     )}
                     {canEdit && onRequestDelete && (
                       <button
-                        className="btn btn-outline-danger btn-sm"
+                        className="btn btn-outline-danger btn-sm recipe-card-delete-btn"
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
                           onRequestDelete(r);
-                        }}
-                        style={{
-                          flex: 1,
-                          position: 'relative',
-                          width: 'auto',
-                          bottom: 'auto',
-                          zIndex: 10,
                         }}
                       >
                         Delete
@@ -189,13 +157,12 @@ export default function RecipeList({
               </div>
               <Link
                 to={`/recipes/${r.id}`}
-                className="text-decoration-none text-inherit position-absolute top-0 start-0 w-100 h-100"
-                style={{ zIndex: 1 }}
+                className="text-decoration-none text-inherit position-absolute top-0 start-0 w-100 h-100 recipe-card-link"
               >
-                <div style={{ height: '100%' }} />
+                <div className="recipe-card-link-overlay" />
               </Link>
+              </div>
             </div>
-          </div>
           );
         })}
       </div>

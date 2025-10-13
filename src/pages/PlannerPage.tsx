@@ -8,7 +8,6 @@ import {
   Col,
   Alert,
 } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
 import RecipeFormModal from '../components/RecipeFormModal.tsx';
 import RecipeList from '../components/RecipeList.tsx';
 import AdvancedSearch, {
@@ -16,52 +15,23 @@ import AdvancedSearch, {
 } from '../components/AdvancedSearch.tsx';
 import type { Recipe } from '../types/recipe.ts';
 import { useRecipes } from '../hooks/useRecipes.ts';
-import { downloadJson as downloadJsonFile, uploadJson as uploadJsonFile } from '../utils/fileUtils';
-import { uuid } from '../utils/ids';
 
-const STARTER: Recipe[] = [
-  {
-    id: 1,
-    title: 'Tomato Pasta',
-    ingredients: [
-      { id: 1, name: 'Pasta', amount: '200g' },
-      { id: 2, name: 'Tomato sauce', amount: '150ml' },
-      { id: 3, name: 'Olive oil', amount: '1 tbsp' },
-    ],
-    instructions: 'Boil pasta. Heat sauce with oil. Mix and serve.',
-  },
-  {
-    id: 2,
-    title: 'Chicken Salad',
-    ingredients: [
-      { id: 4, name: 'Chicken breast', amount: '200g' },
-      { id: 5, name: 'Lettuce', amount: '1 head' },
-      { id: 6, name: 'Vinaigrette', amount: '2 tbsp' },
-    ],
-    instructions: 'Cook chicken. Chop lettuce. Toss with vinaigrette.',
-  },
-];
 
 type SortKey = 'newest-first' | 'name-asc' | 'name-desc' | 'ingr-count';
 
 const PlannerPage: React.FC & {
   route?: { path: string; index?: number; menuLabel?: string };
 } = () => {
-  const { isAuthenticated } = useAuth();
   const {
     recipes,
     loading,
     error,
-    setError,
     upsert,
     remove,
-    importMany,
-    exportAll,
     refresh,
   } = useRecipes();
   const [searchFilters, setSearchFilters] = useState<SearchFilters>({
     query: '',
-    tags: [],
   });
   const [sort, setSort] = useState<SortKey>('newest-first');
 
@@ -83,37 +53,8 @@ const PlannerPage: React.FC & {
     };
   }, [refresh]);
 
-  async function seedStarter() {
-    const current = recipes?.length ?? 0;
-    if (current === 0) await importMany(STARTER);
-  }
 
-  function downloadJson() {
-    downloadJsonFile(exportAll(), 'recipes.json');
-  }
-  function uploadJson(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    
-    uploadJsonFile<Recipe[]>(file, 
-      async (data: Recipe[]) => {
-        const fixed = data.map((r: Recipe) => ({
-          ...r,
-          id: r.id || uuid(),
-          ingredients: (r.ingredients || []).map((i: any) => ({
-            ...i,
-            id: i.id || uuid(),
-          })),
-        }));
-        await importMany(fixed);
-      },
-      (error: string) => {
-        setError?.(error);
-      }
-    );
-    
-    (e.target as HTMLInputElement).value = '';
-  }
+
 
   const filtered = useMemo(() => {
     let list = recipes;
@@ -123,9 +64,9 @@ const PlannerPage: React.FC & {
       const query = searchFilters.query.toLowerCase();
       list = list.filter(
         r =>
-          (r.title || '').toLowerCase().includes(query) ||
+          (r.recipe_name || '').toLowerCase().includes(query) ||
           (r.ingredients || []).some(i => i.name.toLowerCase().includes(query)) ||
-          (r.instructions || '').toLowerCase().includes(query)
+          (r.description || '').toLowerCase().includes(query)
       );
     }
 
@@ -133,32 +74,20 @@ const PlannerPage: React.FC & {
       list = list.filter(r => r.category === searchFilters.category);
     }
 
-    if (searchFilters.tags.length > 0) {
-      list = list.filter(
-        r => r.tags && searchFilters.tags.some(tag => r.tags!.includes(tag))
-      );
+    if (searchFilters.mealType) {
+      list = list.filter(r => r.meal_type_id?.toString() === searchFilters.mealType);
     }
 
-    if (searchFilters.minServings) {
-      list = list.filter(
-        r => r.servings && r.servings >= searchFilters.minServings!
-      );
+    if (searchFilters.difficulty) {
+      list = list.filter(r => r.difficulty === searchFilters.difficulty);
     }
 
-    if (searchFilters.maxServings) {
-      list = list.filter(
-        r => r.servings && r.servings <= searchFilters.maxServings!
-      );
-    }
 
-    if (searchFilters.maxDuration) {
-      list = list.filter(
-        r => r.durationMins && r.durationMins <= searchFilters.maxDuration!
-      );
-    }
+
+
 
     if (searchFilters.hasImage) {
-      list = list.filter(r => r.imageUrl);
+      list = list.filter(r => r.image_url);
     }
 
     // Apply sorting
@@ -167,10 +96,10 @@ const PlannerPage: React.FC & {
         // Keep original order (newest first, as they are added to the beginning of the array)
         break;
       case 'name-asc':
-        list = [...list].sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+        list = [...list].sort((a, b) => (a.recipe_name || '').localeCompare(b.recipe_name || ''));
         break;
       case 'name-desc':
-        list = [...list].sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+        list = [...list].sort((a, b) => (b.recipe_name || '').localeCompare(a.recipe_name || ''));
         break;
       case 'ingr-count':
         list = [...list].sort(
@@ -186,7 +115,7 @@ const PlannerPage: React.FC & {
       <div className="fade-in">
         <AdvancedSearch
           onSearch={setSearchFilters}
-          onClear={() => setSearchFilters({ query: '', tags: [] })}
+          onClear={() => setSearchFilters({ query: '' })}
         />
 
         <Row className="align-items-end g-2 mb-3">
@@ -207,39 +136,18 @@ const PlannerPage: React.FC & {
             md={4}
             className="text-md-end d-flex gap-2 justify-content-end mt-2 mt-md-0"
           >
-            {isAuthenticated && (
-              <>
-                <Button
-                  variant="outline-secondary"
-                  onClick={downloadJson}
-                  size="sm"
-                >
-                  <i className="bi bi-download me-1"></i>
-                  Export
-                </Button>
-                <Button as="label" variant="outline-secondary" size="sm">
-                  <i className="bi bi-upload me-1"></i>
-                  Import
-                  <input
-                    type="file"
-                    accept="application/json"
-                    hidden
-                    onChange={uploadJson}
-                  />
-                </Button>
-                <Button
-                  onClick={() => {
-                    setEditing(null);
-                    setShowForm(true);
-                  }}
-                  size="sm"
-                  className="load-starter-data-button"
-                >
-                  <i className="bi bi-plus-circle me-1"></i>
-                  New
-                </Button>
-              </>
-            )}
+            <>
+              <Button
+                onClick={() => {
+                  setEditing(null);
+                  setShowForm(true);
+                }}
+                size="sm"
+              >
+                <i className="bi bi-plus-circle me-1"></i>
+                New
+              </Button>
+            </>
           </Col>
         </Row>
 
@@ -250,23 +158,17 @@ const PlannerPage: React.FC & {
         ) : null}
         {loading ? <div>Loading…</div> : null}
         {!loading && filtered.length === 0 ? (
-          <Alert variant="secondary">No recipes.</Alert>
+          <Alert variant="secondary" className="no-recipes-alert">No recipes.</Alert>
         ) : null}
 
         <RecipeList
           recipes={filtered}
-          onEdit={
-            isAuthenticated
-              ? r => {
-                  setEditing(r);
-                  setShowForm(true);
-                }
-              : undefined
-          }
-          onRequestDelete={
-            isAuthenticated ? r => setConfirmTarget(r) : undefined
-          }
-          canEdit={isAuthenticated}
+          onEdit={r => {
+            setEditing(r);
+            setShowForm(true);
+          }}
+          onRequestDelete={r => setConfirmTarget(r)}
+          canEdit={true}
         />
 
         <RecipeFormModal
@@ -294,7 +196,7 @@ const PlannerPage: React.FC & {
             <Modal.Title>Delete recipe</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            Delete <strong>{confirmTarget?.title}</strong>?
+            Delete <strong>{confirmTarget?.recipe_name}</strong>?
           </Modal.Body>
           <Modal.Footer>
             <Button variant="secondary" onClick={() => setConfirmTarget(null)}>
@@ -312,15 +214,6 @@ const PlannerPage: React.FC & {
           </Modal.Footer>
         </Modal>
 
-        <div className="mt-4">
-          <Button 
-            variant="link" 
-            onClick={seedStarter}
-            className="load-starter-data-text"
-          >
-            Load starter data
-          </Button>
-        </div>
       </div>
     </Container>
   );

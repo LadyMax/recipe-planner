@@ -1,4 +1,4 @@
-// 统一的API客户端，处理所有HTTP请求
+// Unified API client for handling all HTTP requests
 class ApiClient {
   private baseUrl: string;
 
@@ -6,7 +6,7 @@ class ApiClient {
     this.baseUrl = baseUrl;
   }
 
-  // 通用请求方法
+  // Generic request method
   private async request<T>(
     endpoint: string,
     options: RequestInit = {}
@@ -31,7 +31,7 @@ class ApiClient {
         throw new Error(`HTTP ${response.status}: ${errorText}`);
       }
 
-      // 检查响应是否有内容
+      // Check if response has content
       const contentType = response.headers.get('content-type');
       if (contentType && contentType.includes('application/json')) {
         return await response.json();
@@ -44,12 +44,12 @@ class ApiClient {
     }
   }
 
-  // GET请求
+  // GET request
   async get<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint, { method: 'GET' });
   }
 
-  // POST请求
+  // POST request
   async post<T>(endpoint: string, data?: any): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'POST',
@@ -57,7 +57,7 @@ class ApiClient {
     });
   }
 
-  // PUT请求
+  // PUT request
   async put<T>(endpoint: string, data?: any): Promise<T> {
     return this.request<T>(endpoint, {
       method: 'PUT',
@@ -65,12 +65,12 @@ class ApiClient {
     });
   }
 
-  // DELETE请求
+  // DELETE request
   async delete<T>(endpoint: string): Promise<T> {
     return this.request<T>(endpoint, { method: 'DELETE' });
   }
 
-  // 带查询参数的GET请求
+  // GET request with query parameters
   async getWithParams<T>(endpoint: string, params: Record<string, any>): Promise<T> {
     const searchParams = new URLSearchParams();
     Object.entries(params).forEach(([key, value]) => {
@@ -86,8 +86,8 @@ class ApiClient {
   }
 }
 
-// 创建默认的API客户端实例
+// Create default API client instance
 export const apiClient = new ApiClient();
 
-// 导出类以便自定义使用
+// Export class for custom usage
 export { ApiClient };

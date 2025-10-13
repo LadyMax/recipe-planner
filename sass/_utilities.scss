@@ -1,0 +1,207 @@
+// Utility Classes and Common Styles
+
+@use 'mixins' as *;
+
+// Loading spinner
+.spinner-border {
+  @include primary-color;
+}
+
+// Pagination styling
+.pagination .page-link {
+  border-radius: var(--border-radius);
+  margin: 0 0.25rem;
+  border: none;
+  color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.pagination .page-link:hover {
+  background-color: var(--primary-color);
+  color: #ffffff;
+  transform: translateY(-1px);
+}
+
+// Scrollbar styling
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--gray-100);
+  border-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--secondary-color);
+  border-radius: var(--border-radius);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--primary-color);
+}
+
+// Focus state styling
+.btn:focus,
+.form-control:focus,
+.form-select:focus,
+.nav-link:focus {
+  box-shadow: 0 0 0 0.2rem var(--primary-hover);
+}
+
+// Bootstrap utility classes are already available, adding custom ones below
+// Additional spacing utilities
+.custom-mb-4 {
+  margin-bottom: 2rem !important;
+}
+
+.custom-mt-4 {
+  margin-top: 2rem !important;
+}
+
+// Accessibility enhancements
+.btn:focus,
+.form-control:focus,
+.form-select:focus {
+  box-shadow: 0 0 0 0.2rem var(--primary-hover);
+}
+
+// Loading states
+.loading {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+// Animation classes
+.fade-in {
+  animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+// Smooth transitions
+.card,
+.btn,
+.modal {
+  transition: var(--transition-slow);
+}
+
+// Spacing utilities
+.space-y-3 > * + * {
+  margin-top: 1rem;
+}
+
+// Responsive breakpoints and mobile enhancements
+@media (min-width: 769px) and (max-width: 1024px) {
+  .card-columns {
+    column-count: 2;
+  }
+}
+
+@media (min-width: 1025px) {
+  .card-columns {
+    column-count: 3;
+  }
+}
+
+@media (max-width: 768px) {
+  // Improve touch targets
+  .btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  // Mobile-specific optimizations
+  .space-y-3 > li {
+    margin-bottom: 1rem;
+    padding: 1rem;
+  }
+
+  .advanced-search .row .col-md-4,
+  .advanced-search .row .col-md-6 {
+    margin-bottom: 1rem;
+  }
+
+  .badge {
+    margin: 0.2rem;
+    padding: 0.5rem 0.75rem;
+  }
+}
+
+// Print styles
+@media print {
+  .navbar,
+  .btn,
+  .modal,
+  .alert {
+    display: none !important;
+  }
+
+  .container {
+    max-width: 100% !important;
+    padding: 0 !important;
+  }
+
+  .card {
+    border: 1px solid var(--gray-900) !important;
+    box-shadow: none !important;
+    page-break-inside: avoid;
+    background-color: var(--light-color) !important;
+  }
+
+  body {
+    padding-top: 0 !important;
+  }
+}
+
+// Field completion styles
+.field-completed {
+  background-color: var(--primary-light) !important; /* Light green background */
+  border-color: var(--primary-color) !important; /* Slightly darker green border */
+  position: relative;
+}
+
+.field-completed::after {
+  content: "✓";
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  @include primary-color;
+  font-weight: bold;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 1;
+}
+
+// Special handling for dropdown toggles
+.dropdown-toggle-custom.field-completed::after {
+  right: 35px; /* Account for dropdown arrow */
+}
+
+// Special handling for form selects
+.form-select.field-completed::after {
+  right: 35px; /* Account for select arrow */
+}

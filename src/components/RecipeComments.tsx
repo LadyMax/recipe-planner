@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Card, Form, Button, Alert } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import type { RecipeComment } from '../types/recipe';
 
 interface RecipeCommentsProps {
@@ -78,7 +78,7 @@ export default function RecipeComments({
                 <div className="d-flex justify-content-between align-items-start mb-2">
                   <strong>{comment.userName}</strong>
                   <small className="text-muted">
-                    {new Date(comment.createdAt).toLocaleDateString('zh-CN')}
+                    Just now
                   </small>
                 </div>
                 <p className="mb-0 comment-content">

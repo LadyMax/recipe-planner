@@ -1,0 +1,27 @@
+// Modal Styles
+
+@use 'mixins' as *;
+
+// Modal component styling
+.modal-content {
+  @include primary-border;
+  border-radius: var(--border-radius) !important;
+  box-shadow: 0 8px 32px var(--rgba-overlay) !important;
+}
+
+.modal-header {
+  border-bottom: 2px solid var(--primary-color) !important;
+  background-color: var(--primary-light) !important;
+  border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+}
+
+.modal-title {
+  @include primary-hover-color;
+  @include font-weight-bold;
+}
+
+.modal-footer {
+  border-top: 2px solid var(--primary-color) !important;
+  background-color: var(--primary-light) !important;
+  border-radius: 0 0 var(--border-radius) var(--border-radius) !important;
+}

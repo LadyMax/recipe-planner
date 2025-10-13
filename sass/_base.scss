@@ -1,0 +1,56 @@
+// Base styles and global resets
+// ==========================================
+
+// Import mixins for use in this file
+@use 'mixins' as *;
+
+// Import fonts from Google Fonts
+@import url('https://fonts.googleapis.com/css2?family=Chewy&family=Inter:wght@300;400;500;600;700&family=Noto+Sans:ital,wght@0,100..900;1,100..900&display=swap');
+
+// Custom responsive styles
+* {
+  box-sizing: border-box;
+}
+
+html {
+  @include no-spacing;
+}
+
+body {
+  @include no-spacing;
+}
+
+// Remove all default spacing
+header, section, div {
+  @include no-spacing;
+}
+
+// Main element needs padding-top for fixed navbar
+main {
+  @include no-spacing;
+  padding-top: 0 !important; // No padding for main, banner will handle spacing
+}
+
+// Specifically target navbar and banner
+.navbar {
+  @include no-spacing;
+}
+
+// Banner should have no spacing to stick to navbar
+.banner-section {
+  @include no-spacing;
+  margin-top: 0 !important;
+  padding-top: 0 !important;
+}
+
+// Allow text selection globally (default behavior)
+// Only disable selection for specific UI elements that shouldn't be selectable
+
+body {
+  font-family: 'Inter', 'Noto Sans', sans-serif;
+  background: var(--theme-bg); // Use theme background color
+  line-height: 1.6;
+  color: var(--theme-text);
+  font-weight: 400;
+  transition: background-color 0.3s ease, color 0.3s ease; // Smooth theme transition
+}

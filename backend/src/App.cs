@@ -1,10 +1,15 @@
-// 简化的全局设置
+// Global settings
 Globals = Obj(new
 {
-    port = "5001",
-    serverName = "Simple Backend",
-    dbPath = "./db_template/_db.sqlite3"
+    debugOn = false,
+    detailedAclDebug = false,
+    aclOn = true,
+    isSpa = true,
+    port = args[0],
+    serverName = "Minimal API Backend",
+    frontendPath = args[1],
+    dbPath = args[2],
+    sessionLifeTimeHours = 2
 });
 
-// 启动服务器
-await Server.Start();
+Server.Start();

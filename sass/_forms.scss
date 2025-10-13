@@ -1,0 +1,163 @@
+// Form Styles
+
+@use 'mixins' as *;
+
+// Form control styling
+.form-control,
+.form-select {
+  @include form-control-style;
+  background-color: var(--theme-card-bg); // Use theme card background
+  color: var(--theme-text); // Use theme text color
+  border-color: var(--theme-border); // Use theme border color
+  @include font-weight-medium;
+  @include standard-padding; 
+  @include primary-hover-color;
+  --bs-form-select-bg-img: var(--form-select-arrow) !important;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease; // Smooth theme transition
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-hover) !important;
+  box-shadow: 0 0 0 0.2rem var(--rgba-focus) !important;
+}
+
+// Placeholder text color
+.form-control::placeholder,
+.form-select::placeholder {
+  color: var(--primary-hover) !important;
+  opacity: 0.7;
+}
+
+// File input styling
+.form-control[type="file"] {
+  color: var(--primary-hover) !important;
+}
+
+.form-control[type="file"]::file-selector-button {
+  background-color: var(--gray-50) !important;
+  color: var(--primary-color) !important;
+  border: 2px solid var(--primary-color) !important;
+  border-radius: 6px !important;
+  padding: 0.375rem 0.75rem !important;
+  margin: -0.375rem -0.75rem !important;
+  margin-inline-end: 0.75rem !important;
+  margin-right: 0.5rem !important;
+  cursor: pointer !important;
+  transition: var(--transition) !important;
+  font-weight: 600 !important;
+  pointer-events: auto !important;
+  border-width: 2px !important;
+  border-inline-end-width: 2px !important;
+  position: relative !important;
+}
+
+.form-control[type="file"]::file-selector-button::after {
+  content: "📁" !important;
+  margin-left: 0.25rem !important;
+  font-size: 0.9em !important;
+}
+
+.form-control[type="file"]:hover:not(:disabled):not([readonly])::file-selector-button {
+  background-color: var(--primary-color) !important;
+  color: var(--light-color) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 2px 4px var(--rgba-overlay) !important;
+}
+
+// Text muted color for help text
+.text-muted {
+  color: var(--primary-hover) !important;
+  opacity: 0.7;
+}
+
+// Search bar specific styling
+.search-bar {
+  position: relative;
+}
+
+.search-bar .form-control {
+  padding-left: 50px !important; // Space for search icon
+  border-radius: 25px !important;
+  border: 2px solid var(--primary-color) !important;
+  background-color: var(--theme-card-bg) !important;
+  font-size: 0.875rem !important; // Match button font size
+  color: var(--primary-hover) !important;
+  padding: 0.25rem 0.5rem !important; // Match button padding
+  height: auto !important; // Let it size naturally
+}
+
+.search-bar .form-control:focus {
+  background-color: var(--light-color);
+  border-color: var(--primary-hover) !important;
+  box-shadow: 0 0 0 0.2rem var(--rgba-focus) !important;
+}
+
+.search-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--gray-500);
+  font-size: 18px;
+  z-index: 2;
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--primary-hover) !important;
+  margin-bottom: 0.5rem;
+}
+
+// Compact form styles
+.form-control-sm,
+.form-select-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.375rem;
+  border: 2px solid var(--primary-color) !important;
+  color: var(--primary-hover) !important;
+}
+
+.form-control-sm:hover,
+.form-select-sm:hover {
+  border-color: var(--primary-hover) !important;
+}
+
+.form-control-sm:focus,
+.form-select-sm:focus {
+  border-color: var(--primary-hover) !important;
+  box-shadow: 0 0 0 0.2rem var(--rgba-focus) !important;
+}
+
+.form-label.small {
+  font-size: 0.875rem;
+  font-weight: 500;
+  margin-bottom: 0.25rem;
+  color: var(--primary-hover) !important;
+}
+
+// Form control hover effects (unified)
+.form-control:hover,
+.form-select:hover {
+  border-color: var(--primary-color) !important;
+  background-color: var(--rgba-overlay) !important;
+  transition: var(--transition);
+  
+  &:not(:focus) {
+    box-shadow: 0 1px 4px var(--rgba-overlay);
+  }
+}
+
+// Form select option effects (unified)
+.form-select option:hover,
+.form-select option:focus,
+.form-select option:checked {
+  background-color: var(--primary-color) !important;
+  color: var(--light-color) !important;
+}
+
+// File input styles
+.file-input-flex {
+  flex: 1;
+}

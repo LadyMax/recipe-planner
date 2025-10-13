@@ -21,6 +21,5 @@ export class LocalRecipeStore implements IRecipeStore {
   async remove(id: string) {
     const next = read().filter(x => x.id !== parseInt(id)); write(next);
   }
-  async importMany(rs: Recipe[]) { write(rs); }
   async clear() { write([]); }
 }

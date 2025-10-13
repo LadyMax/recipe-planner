@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 import Header from './partials/Header.tsx';
 import Main from './partials/Main.tsx';
 import Footer from './partials/Footer.tsx';
@@ -12,10 +13,12 @@ export default function App() {
   }, [loc.pathname]);
 
   return (
-    <AuthProvider>
-      <Header />
-      <Main />
-      <Footer />
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Header />
+        <Main />
+        <Footer />
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

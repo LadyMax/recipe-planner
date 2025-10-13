@@ -1,0 +1,75 @@
+// CSS Variables and Design Tokens
+
+:root {
+  // 默认浅色主题
+  --theme-bg: #f8fafc;
+  --theme-text: #1e293b;
+  --theme-card-bg: #ffffff;
+  --theme-border: #e2e8f0;
+  // Modern color palette - inspired by mobile app design
+  --primary-color: #6b950e;
+  --primary-hover: #4a660a;
+  --primary-light: #dcfce7;
+  --secondary-color: #64748b;
+  --secondary-hover: #475569;
+  --success-color: #10b981;
+  --success-hover: #059669;
+  --danger-color: #d04555;
+  --danger-hover: #f98693;
+  --bs-danger: #d04555;
+  --bs-danger-rgb: 208, 69, 85;
+  
+  --heart-favorited: #d04555;
+  --heart-unfavorited: #cdd8b5 ;
+  --heart-hover: #f98693;
+  --warning-color: #f59e0b;
+  --warning-hover: #d97706;
+  --info-color: #6b950e;
+  --info-hover: #4a660a;
+  --light-color: #f8fafc;
+  --dark-color: #1e293b;
+  --gray-50: #f8fafc;
+  --gray-100: #f1f5f9;
+  --gray-200: #e2e8f0;
+  --gray-300: #cbd5e1;
+  --gray-400: #94a3b8;
+  --gray-500: #64748b;
+  --gray-600: #475569;
+  --gray-700: #334155;
+  --gray-800: #1e293b;
+  --gray-900: #0f172a;
+  
+  // Design tokens
+  --border-radius: 0.75rem;
+  --border-radius-sm: 0.5rem;
+  --border-radius-lg: 1rem;
+  --box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  --box-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --box-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --box-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-slow: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-transform: transform 0.2s ease;
+  
+  // RGBA color variations (single variable)
+  --rgba-overlay: rgba(107, 149, 14, 0.2);          // Universal transparency overlay
+  --rgba-focus: rgba(107, 149, 14, 0.25);           // Focus ring transparency
+  
+  // SVG Icons with theme colors
+  --form-select-arrow: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b950e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+  
+  // Shadow effects
+  --text-shadow-light: 0 1px 2px rgba(0, 0, 0, 0.1);
+  --text-shadow-medium: 1px 1px 2px rgba(0, 0, 0, 0.3);
+  --text-shadow-heavy: 2px 2px 4px rgba(0, 0, 0, 0.3);
+  --drop-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  --white-overlay: rgba(255, 255, 255, 0.1);
+}
+
+// 深色主题变量
+[data-theme="dark"] {
+  --theme-bg: #0f172a;
+  --theme-text: #f8fafc;
+  --theme-card-bg: #1e293b;
+  --theme-border: #334155;
+}

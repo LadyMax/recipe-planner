@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { Card, Badge, Row, Col, Button } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import RecipeComments from './RecipeComments';
 import FavoriteButton from './FavoriteButton';
 import type { Recipe, RecipeComment } from '../types/recipe';
+import { getMealTypeName } from '../utils/mealTypeUtils';
 
 interface RecipeDetailProps {
   recipe: Recipe;
@@ -30,7 +31,6 @@ export default function RecipeDetail({
       userId: user.id,
       userName: user.name || user.email,
       content,
-      createdAt: new Date().toISOString(),
     };
 
     setComments(prev => [newComment, ...prev]);
@@ -42,22 +42,14 @@ export default function RecipeDetail({
       <Card.Header className="d-flex justify-content-between align-items-start">
         <div>
           <Card.Title className="mb-2">
-            {recipe.title}
+            {recipe.recipe_name}
           </Card.Title>
           <div className="d-flex flex-wrap gap-2 align-items-center">
-            {recipe.category && <Badge bg="primary">{recipe.category}</Badge>}
-            {recipe.tags?.map((tag, index) => (
-              <Badge key={`${tag}-${index}`} bg="secondary">
-                {tag}
+            {recipe.category && <Badge bg="primary" title="Recipe Type">{recipe.category}</Badge>}
+            {recipe.meal_type_id && (
+              <Badge bg="info" title="Meal Type">
+                {getMealTypeName(recipe.meal_type_id)}
               </Badge>
-            ))}
-            {recipe.servings && (
-              <small className="text-muted">{recipe.servings} servings</small>
-            )}
-            {(recipe.cook_time_min || recipe.durationMins) && (
-              <small className="text-muted">
-                {recipe.cook_time_min || recipe.durationMins} min
-              </small>
             )}
           </div>
         </div>
@@ -70,21 +62,7 @@ export default function RecipeDetail({
                   variant="outline-primary" 
                   size="sm" 
                   onClick={onEdit}
-                  style={{
-                    backgroundColor: 'transparent',
-                    borderColor: '#5a7d0c',
-                    color: '#5a7d0c',
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#6b950e';
-                    e.currentTarget.style.borderColor = '#6b950e';
-                    e.currentTarget.style.color = 'white';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent';
-                    e.currentTarget.style.borderColor = '#5a7d0c';
-                    e.currentTarget.style.color = '#5a7d0c';
-                  }}
+                  className="recipe-card-edit-btn"
                 >
                   Edit
                 </Button>
@@ -110,30 +88,33 @@ export default function RecipeDetail({
                   {ingredient.amount && (
                     <span className="text-muted"> - {ingredient.amount}</span>
                   )}
+                  {ingredient.unit && (
+                    <span className="text-muted"> {ingredient.unit}</span>
+                  )}
                 </li>
               ))}
             </ul>
           </Col>
           <Col md={6}>
             <h6>Description</h6>
-            <div style={{ whiteSpace: 'pre-wrap' }}>
-              {recipe.description || recipe.instructions}
+            <div className="recipe-description">
+              {recipe.description}
             </div>
           </Col>
         </Row>
 
-        {(recipe.image_url || recipe.imageUrl) && (
+        {recipe.image_url && (
           <div className="mt-3">
             <img
-              src={recipe.image_url || recipe.imageUrl}
-              alt={recipe.title}
-              className="img-fluid rounded"
-              style={{ maxHeight: '300px' }}
+              src={recipe.image_url}
+              alt={recipe.recipe_name}
+              className="img-fluid rounded recipe-detail-image"
             />
           </div>
         )}
 
       </Card.Body>
+
 
       <RecipeComments
         recipeId={recipe.id}

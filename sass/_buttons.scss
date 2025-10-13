@@ -1,38 +1,128 @@
-// Positioning of buttons in cards
-// (at the bottom of the column)
-.card:not(.advanced-search-card) {
-  .col:has(button) {
-    position: relative;
-    padding-bottom: 40px;
+// Button Styles
+// ==========================================
+
+@use 'mixins' as *;
+
+// Button component styling
+.btn {
+  border-radius: var(--border-radius);
+  @include font-weight-bold;
+  transition: var(--transition);
+  border: none;
+  @include standard-shadow;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, var(--rgba-overlay), transparent);
+  transition: left 0.5s;
+}
+
+.btn:hover::before {
+  left: 100%;
+}
+
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--box-shadow-lg);
+}
+
+.btn:active {
+  transform: translateY(0);
+}
+
+.btn-primary {
+  @include primary-button;
+  border: none;
+}
+
+// Note: Theme button aliases removed to avoid duplication
+// Use .btn-primary and .btn-outline-primary instead
+
+.btn-outline-primary {
+  @include primary-outline-button;
+  background-color: transparent !important;
+  
+  &:hover {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important; // Ensure white text on green background
   }
-
-  button {
-    position: absolute;
-    bottom: 1px;
-    width: calc(100% - 1.2rem);
+  
+  &:focus {
+    color: #ffffff !important;
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem var(--rgba-overlay) !important;
+  }
+  
+  &:active {
+    color: #ffffff !important;
+    background-color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
   }
 }
 
-// use green color when hovering light buttons
-.btn-light:hover {
-  background-color: #0c5c12;
-  color: white;
+.btn-outline-success {
+  background-color: transparent !important;
+  border-color: var(--success-color) !important;
+  color: var(--success-color) !important;
+  
+  &:focus {
+    color: #ffffff !important;
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem var(--rgba-overlay) !important;
+  }
+  
+  &:active {
+    color: #ffffff !important;
+    background-color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+  }
 }
 
-// Removed card hover effect on buttons for better UX
-// Buttons should only change color when directly hovered
-
-// Form-switch make bigger + witdh of text overlay
-.form-switch input {
-  width: calc(100% + 2.5em) !important;
-  height: 34.5px;
-  cursor: pointer;
+.btn-success {
+  background: var(--success-color);
+  border: none;
 }
 
-.form-switch-text {
-  cursor: pointer;
-  width: calc(100% - 3rem);
-  margin-top: 7px;
-  transition: color 0.2s;
-  height: 30px;
+.btn-danger {
+  background: var(--danger-color);
+  border: none;
+}
+
+.btn-danger:hover {
+  background: var(--danger-hover);
+  border: none;
+}
+
+.btn-outline-danger {
+  color: var(--danger-color) !important;
+  border-color: var(--danger-color) !important;
+}
+
+.btn-outline-danger:hover {
+  background: var(--danger-color) !important;
+  border-color: var(--danger-color) !important;
+  color: #ffffff !important;
+}
+
+// Button styles for modal
+.btn-outline-secondary {
+  color: var(--primary-hover) !important;
+  border-color: var(--primary-color) !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  color: #ffffff !important;
 }

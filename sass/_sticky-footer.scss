@@ -1,4 +1,5 @@
-// Sticky footer
+// Sticky footer layout
+@use 'mixins' as *;
 #root {
   display: flex;
   min-height: 100vh;
@@ -7,4 +8,22 @@
   main {
     flex: 1;
   }
+}
+
+// Footer component styling
+footer {
+  @include primary-background;
+  color: #ffffff !important; // Force white text color
+  margin-top: auto;
+}
+
+// Ensure all text in footer is white
+footer * {
+  color: #ffffff !important;
+}
+
+// Footer text styling
+footer .text-bg-primary {
+  @include primary-background;
+  color: #ffffff !important; // Force white text color
 }

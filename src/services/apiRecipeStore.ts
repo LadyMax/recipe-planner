@@ -8,31 +8,40 @@ export class ApiRecipeStore implements IRecipeStore {
   }
 
   async create(rec: Recipe) {
-    // Clean recipe data - only send database fields
+    // Clean recipe data - map to React-Rapide backend fields
     const cleanRecipe = {
-      user_id: rec.user_id,
-      title: rec.title,
-      description: rec.description,
-      category: rec.category,
-      cook_time_min: rec.cook_time_min,
-      difficulty: rec.difficulty,
-      image_url: rec.image_url,
+      created_by: rec.created_by || 3, // Default to user 3 (Thomas)
+      recipe_name: rec.recipe_name || '',
+      description: rec.description || '',
+      image_url: rec.image_url || '', // Default image
+      meal_type_id: rec.meal_type_id || 1, // Default meal type
+      category: rec.category || '',
+      difficulty: rec.difficulty || '',
     };
 
     return apiClient.post<Recipe>('/api/recipes', cleanRecipe);
   }
 
   async update(rec: Recipe) {
-    return apiClient.put<Recipe>(`/api/recipes/${rec.id}`, rec);
+    // Map to React-Rapide backend fields
+    const cleanRecipe = {
+      id: rec.id,
+      created_by: rec.created_by || 3,
+      recipe_name: rec.recipe_name || '',
+      description: rec.description || '',
+      image_url: rec.image_url || '',
+      meal_type_id: rec.meal_type_id || 1,
+      category: rec.category || '',
+      difficulty: rec.difficulty || '',
+    };
+
+    return apiClient.put<Recipe>(`/api/recipes/${rec.id}`, cleanRecipe);
   }
 
   async remove(id: string): Promise<void> {
     await apiClient.delete(`/api/recipes/${id}`);
   }
 
-  async importMany(rs: Recipe[]) {
-    await Promise.all(rs.map(x => this.create(x)));
-  }
 
   async clear() { 
     // Can be implemented as needed 

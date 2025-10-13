@@ -1,0 +1,156 @@
+// Dropdown Styles
+
+@use 'mixins' as *;
+
+// User dropdown menu
+.dropdown-menu {
+  border: none;
+  border-radius: var(--border-radius);
+  @include large-shadow;
+  @include white-background;
+  padding: 0.5rem 0;
+  min-width: 160px;
+  backdrop-filter: blur(10px); // Improved dropdown effect
+}
+
+.dropdown-item {
+  padding: 0.75rem 1rem;
+  color: var(--gray-700);
+  transition: var(--transition);
+  border-radius: 0;
+  font-size: 0.9rem;
+  @include font-weight-medium;
+  line-height: 1.4;
+}
+
+.dropdown-item:hover {
+  @include primary-background; // Banner background color
+  @include white-text;
+}
+
+.dropdown-item:active {
+  background: var(--primary-hover); // Darker green for active state
+  @include white-text;
+}
+
+.dropdown-item-text {
+  padding: 0.75rem 1rem;
+  color: var(--gray-600);
+  font-size: 0.8rem;
+  @include font-weight-medium;
+  line-height: 1.4;
+}
+
+.dropdown-divider {
+  margin: 0.5rem 0;
+  border-color: var(--gray-200);
+}
+
+
+// Dropdown styles
+.dropdown-toggle-custom {
+  padding-right: 30px;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%236b950e' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px 12px;
+  transition: var(--transition);
+  color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
+  background-color: transparent !important;
+}
+
+.dropdown-toggle-custom:hover {
+  border-color: var(--primary-color) !important;
+  background-color: var(--rgba-overlay) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234a660a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px var(--rgba-overlay);
+}
+
+.dropdown-toggle-custom:focus {
+  border-color: var(--primary-color) !important;
+  box-shadow: 0 0 0 0.25rem var(--rgba-overlay) !important;
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%234a660a' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m1 6 7 7 7-7'/%3e%3c/svg%3e");
+}
+
+.dropdown-menu-custom {
+  max-height: 300px;
+  overflow-y: auto;
+  border: none;
+  border-radius: var(--border-radius);
+  box-shadow: var(--box-shadow-lg);
+  background: var(--light-color);
+  padding: 0.5rem 0;
+}
+
+.dropdown-header-custom {
+  cursor: pointer;
+  user-select: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--rgba-overlay);
+  border-bottom: 1px solid var(--rgba-overlay);
+  padding: 12px 16px;
+  margin: 0;
+  font-weight: 600;
+  color: var(--primary-color);
+  transition: var(--transition);
+}
+
+.dropdown-header-custom:hover {
+  background: var(--rgba-overlay);
+  color: var(--primary-hover);
+}
+
+.dropdown-item-custom {
+  padding: 10px 16px 10px 32px;
+  font-size: 14px;
+  color: var(--primary-color);
+  transition: var(--transition);
+  border: none;
+  background: none;
+}
+
+.dropdown-item-custom:hover {
+  background: var(--rgba-overlay);
+  color: var(--primary-hover);
+  transform: translateX(4px);
+}
+
+.dropdown-divider-custom {
+  margin: 8px 0;
+  border-color: var(--gray-200);
+}
+
+.dropdown-header-custom-section {
+  background: var(--warning-color);
+  border-bottom: 1px solid var(--warning-hover);
+  padding: 12px 16px;
+  margin: 0;
+  font-weight: 600;
+  color: var(--warning-hover);
+}
+
+.dropdown-item-custom-section {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: var(--primary-color);
+  transition: var(--transition);
+  border: none;
+  background: none;
+}
+
+.dropdown-item-custom-section:hover {
+  background: var(--rgba-overlay);
+  color: var(--primary-hover);
+  transform: translateX(4px);
+}
+
+.dropdown-arrow {
+  font-size: 12px;
+  color: var(--primary-color);
+  transition: var(--transition);
+}

@@ -1,31 +1,35 @@
 export type Ingredient = {
-  id: number;
+  id: number | string;
   name: string;
-  amount?: string;
+  amount?: number;
   unit?: string;
+};
+
+export type RecipeIngredient = {
+  id: number;
+  recipe_id: number;
+  ingredient_category_id: number;
+  amount?: number;
+  unit?: string;
+  // Joined data from ingredient_categories
+  ingredient_name?: string;
+  ingredient_category?: string;
 };
 
 export type Recipe = {
   id: number;
-  title: string;
+  // Database fields
+  created_by?: number; // Database field name
+  recipe_name?: string; // Database field name
   description?: string;
-  category?: string;
-  cook_time_min?: number;
+  category?: string; // Category field (e.g., "Soup", "Main Course")
   difficulty?: string;
   image_url?: string;
-  user_id?: number;
-  created_at?: string;
-  updated_at?: string;
-  // Compatibility fields
+  meal_type_id?: number; // Database field name
+  recipe_ingredients?: RecipeIngredient[];
+  user_id?: number; // Maps to created_by
+  // For backward compatibility with old ingredients structure
   ingredients?: Ingredient[];
-  instructions?: string;
-  tags?: string[];
-  imageUrl?: string;
-  servings?: number;
-  durationMins?: number;
-  authorId?: number;
-  createdAt?: string;
-  updatedAt?: string;
 };
 
 export type RecipeComment = {
@@ -34,6 +38,6 @@ export type RecipeComment = {
   userId: number;
   userName: string;
   content: string;
-  createdAt: string;
 };
+
 

@@ -1,0 +1,127 @@
+// Banner Section Styles
+
+@use 'mixins' as *;
+
+// Banner Section
+.banner-section {
+  position: relative;
+  height: 300px;
+  @include primary-background;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -76px; // Negative margin to stick to navbar
+  padding-top: 76px; // Add padding to account for fixed navbar
+  overflow: hidden;
+  border: none; // Remove all borders
+  margin-bottom: 0; // Remove bottom margin
+  padding-left: 0; // Remove padding
+  padding-right: 0; // Remove padding
+  padding-bottom: 0; // Remove padding
+  line-height: 0; // Remove line height spacing
+  box-shadow: none; // Remove shadow
+}
+
+.banner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  @include primary-background;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.banner-content {
+  text-align: center;
+  @include white-text;
+  z-index: 2;
+  position: relative;
+}
+
+.banner-title {
+  font-family: 'Chewy', cursive;
+  font-size: 3.5rem;
+  font-weight: 400;
+  margin-bottom: 1rem;
+  text-shadow: var(--text-shadow-heavy);
+  animation: fadeInUp 1s ease-out;
+}
+
+.banner-subtitle {
+  font-size: 1.25rem;
+  font-weight: 300;
+  opacity: 0.95;
+  text-shadow: var(--text-shadow-medium);
+  animation: fadeInUp 1s ease-out 0.3s both;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+// Responsive banner
+@media (max-width: 768px) {
+  .banner-section {
+    height: 250px;
+  }
+  
+  .banner-title {
+    font-size: 2.5rem;
+  }
+  
+  .banner-subtitle {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .banner-section {
+    height: 200px;
+  }
+  
+  .banner-title {
+    font-size: 2rem;
+  }
+  
+  .banner-subtitle {
+    font-size: 1rem;
+  }
+}
+
+// Section headers with view all
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.section-title {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--primary-color);
+  margin: 0;
+}
+
+.view-all-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.view-all-link:hover {
+  color: var(--primary-hover);
+  text-decoration: underline;
+}

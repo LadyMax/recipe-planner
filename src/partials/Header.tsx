@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Container, Nav, Navbar, Button, Dropdown } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import LoginModal from '../components/LoginModal';
+import ThemeToggle from '../components/ThemeToggle';
 import routes from '../routes.ts';
 
 export default function Header() {
@@ -49,10 +50,11 @@ export default function Header() {
                 ))}
             </Nav>
             <Nav>
+              <ThemeToggle className="me-2" />
               {isAuthenticated ? (
                 <Dropdown align="end">
                   <Dropdown.Toggle variant="outline-light" id="user-dropdown">
-                    {user?.name || user?.email}
+                    {user?.name || user?.email || 'User'}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.ItemText>

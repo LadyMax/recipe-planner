@@ -17,14 +17,10 @@ public static class DbQuery
     private static dynamic ObjFromReader(SqliteDataReader reader)
     {
         var obj = Obj();
-        Console.WriteLine($"ObjFromReader: FieldCount = {reader.FieldCount}");
-        
         for (var i = 0; i < reader.FieldCount; i++)
         {
             var key = reader.GetName(i);
             var value = reader.GetValue(i);
-            
-            Console.WriteLine($"Field {i}: {key} = {value} (Type: {value?.GetType()})");
 
             // Handle NULL values
             if (value == DBNull.Value)
@@ -36,24 +32,22 @@ public static class DbQuery
             {
                 try
                 {
-                    // Remove "JSON:" prefix and parse the JSON using System.Text.Json
+                    // Remove "JSON:" prefix and parse the JSON
                     var jsonString = strValue.Substring(5);
-                    obj[key] = JsonSerializer.Deserialize<dynamic>(jsonString);
+                    obj[key] = JSON.Parse(jsonString);
                 }
                 catch
                 {
-                    // If parsing fails, keep the original value
-                    obj[key] = strValue;
+                    // If parsing fails, keep the original value and try to convert to number
+                    obj[key] = strValue.TryToNum();
                 }
             }
             else
             {
-                // Keep original value type - no automatic conversion
-                obj[key] = value;
+                // Normal handling - convert to string and try to parse as number
+                obj[key] = value.ToString().TryToNum();
             }
         }
-        
-        Console.WriteLine($"ObjFromReader result: {obj}");
         return obj;
     }
 
@@ -81,17 +75,10 @@ public static class DbQuery
             if (sql.StartsWith("SELECT ", true, null))
             {
                 var reader = command.ExecuteReader();
-                Console.WriteLine($"SQL Query: {sql}");
-                Console.WriteLine($"Reader has rows: {reader.HasRows}");
-                
-                int rowCount = 0;
                 while (reader.Read())
                 {
-                    Console.WriteLine($"Reading row {rowCount}");
                     rows.Push(ObjFromReader(reader));
-                    rowCount++;
                 }
-                Console.WriteLine($"Total rows read: {rowCount}");
             }
             else
             {

@@ -32,59 +32,18 @@ public static class Shared
 
     public static string FilePath(params string[] parts)
     {
-        // 更灵活的路径解析
-        var currentDir = Environment.CurrentDirectory;
-        
-        // 尝试找到项目根目录
-        var projectRoot = currentDir;
-        var searchDirs = new[] { "Backend", "backend", "example" };
-        
-        foreach (var searchDir in searchDirs)
-        {
-            var index = currentDir.LastIndexOf(searchDir, StringComparison.OrdinalIgnoreCase);
-            if (index >= 0)
-            {
-                projectRoot = currentDir.Substring(0, index + searchDir.Length);
-                break;
-            }
-        }
-        
-        // 构建完整路径
-        var path = projectRoot;
+        var c = Environment.CurrentDirectory;
+        var i = c.LastIndexOf("Backend");
+        var path = c.Substring(0, i + 7);
         foreach (var part in parts)
         {
             path = Path.Combine(path, part);
         }
-        
         return path;
     }
 
-    // Simple logging method
     public static void Log(params object[] args)
     {
-        var message = string.Join(" ", args.Select(arg => arg?.ToString() ?? "null"));
-        Console.WriteLine($"[{DateTime.Now:HH:mm:ss}] {message}");
-    }
-
-    // 公共的JSON解析方法，避免重复代码
-    public static Obj ParseJsonElement(JsonElement jsonElement)
-    {
-        var obj = Obj();
-        foreach (var prop in jsonElement.EnumerateObject())
-        {
-            // 只处理基本类型字段，跳过复杂对象
-            if (prop.Value.ValueKind == JsonValueKind.String)
-                obj[prop.Name] = prop.Value.ToString().Trim('"');
-            else if (prop.Value.ValueKind == JsonValueKind.Number)
-                obj[prop.Name] = prop.Value.GetDecimal();
-            else if (prop.Value.ValueKind == JsonValueKind.True)
-                obj[prop.Name] = true;
-            else if (prop.Value.ValueKind == JsonValueKind.False)
-                obj[prop.Name] = false;
-            else if (prop.Value.ValueKind == JsonValueKind.Null)
-                obj[prop.Name] = null;
-            // 跳过复杂对象数组（如ingredients）
-        }
-        return obj;
+        Console.WriteLine($"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {string.Join(" ", args)}");
     }
 }

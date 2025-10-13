@@ -1,0 +1,230 @@
+// Dark Mode Support
+// Bootstrap 5 has limited dark mode support, requires custom enhancements
+
+// Use data-theme attribute for manual theme switching
+[data-theme="dark"] {
+  // Base background and text colors
+  .bg-light {
+    background-color: var(--gray-800) !important;
+    color: var(--gray-50);
+  }
+
+  .text-muted {
+    color: var(--gray-400) !important;
+  }
+
+  .border {
+    border-color: var(--gray-600) !important;
+  }
+
+  // Card dark mode
+  .card {
+    background-color: var(--gray-800) !important;
+    border-color: var(--gray-600) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .card-title,
+  .card-text {
+    color: var(--gray-50) !important;
+  }
+
+  // Form dark mode
+  .form-control,
+  .form-select {
+    background-color: var(--gray-700) !important;
+    border-color: var(--gray-600) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .form-control:focus,
+  .form-select:focus {
+    background-color: var(--gray-600) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .form-control::placeholder,
+  .form-select::placeholder {
+    color: var(--gray-400) !important;
+  }
+
+  // Dropdown dark mode
+  .dropdown-menu {
+    background-color: var(--gray-800) !important;
+    border-color: var(--gray-600) !important;
+  }
+
+  .dropdown-item {
+    color: var(--gray-50) !important;
+  }
+
+  .dropdown-item:hover {
+    background-color: var(--gray-700) !important;
+    color: var(--gray-50) !important;
+  }
+
+  // Modal dark mode
+  .modal-content {
+    background-color: var(--gray-800) !important;
+    border-color: var(--gray-600) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .modal-header {
+    background-color: var(--gray-700) !important;
+    border-bottom-color: var(--gray-600) !important;
+  }
+
+  .modal-footer {
+    background-color: var(--gray-700) !important;
+    border-top-color: var(--gray-600) !important;
+  }
+
+  // Badge dark mode
+  .badge {
+    background-color: var(--gray-700) !important;
+    color: var(--gray-50) !important;
+  }
+
+  // Alert dark mode
+  .alert {
+    background-color: var(--gray-700) !important;
+    border-color: var(--gray-600) !important;
+    color: var(--gray-50) !important;
+  }
+
+  // Table dark mode
+  .table {
+    color: var(--gray-50) !important;
+  }
+
+  .table th,
+  .table td {
+    border-color: var(--gray-600) !important;
+  }
+
+  .table-striped > tbody > tr:nth-of-type(odd) > td,
+  .table-striped > tbody > tr:nth-of-type(odd) > th {
+    background-color: var(--gray-700) !important;
+  }
+
+  // Pagination dark mode
+  .pagination .page-link {
+    background-color: var(--gray-700) !important;
+    border-color: var(--gray-600) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .pagination .page-link:hover {
+    background-color: var(--gray-600) !important;
+    border-color: var(--gray-500) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .pagination .page-item.active .page-link {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+  }
+
+  // Navbar dark mode (keep green theme)
+  .navbar {
+    background-color: var(--primary-color) !important;
+  }
+
+  .navbar-brand,
+  .navbar-nav .nav-link {
+    color: #ffffff !important;
+  }
+
+  // Button dark mode
+  .btn-outline-secondary {
+    border-color: var(--gray-600) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .btn-outline-secondary:hover {
+    background-color: var(--gray-600) !important;
+    border-color: var(--gray-500) !important;
+    color: var(--gray-50) !important;
+  }
+
+  // Ensure outline-primary buttons work correctly in dark mode
+  .btn-outline-primary {
+    border-color: var(--primary-hover) !important;
+    color: var(--primary-hover) !important;
+    background-color: transparent !important;
+  }
+
+  .btn-outline-primary:hover {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important; // Always white text on green background
+  }
+
+  // Search bar dark mode
+  .search-bar .form-control {
+    background-color: var(--gray-700) !important;
+    border-color: var(--gray-600) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .search-bar .form-control:focus {
+    background-color: var(--gray-600) !important;
+    border-color: var(--primary-color) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .search-icon {
+    color: var(--gray-400) !important;
+  }
+
+  // Category tag dark mode
+  .category-tag {
+    background-color: var(--gray-700) !important;
+    border-color: var(--gray-600) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .category-tag:hover {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+  }
+
+  // Image preview dark mode
+  .image-preview {
+    border-color: var(--gray-600) !important;
+  }
+
+  // Comment area dark mode
+  .comment-item {
+    background-color: var(--gray-700) !important;
+    border-left-color: var(--primary-color) !important;
+  }
+
+  // Filter badge dark mode
+  .filter-badge {
+    background-color: var(--gray-700) !important;
+    border-color: var(--gray-600) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .filter-badge:hover {
+    background-color: var(--gray-600) !important;
+    border-color: var(--gray-500) !important;
+    color: var(--gray-50) !important;
+  }
+
+  .filter-badge.bg-primary {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+  }
+
+  // Footer dark mode (keep green theme)
+  footer {
+    background-color: var(--primary-color) !important;
+    color: #ffffff !important;
+  }
+}

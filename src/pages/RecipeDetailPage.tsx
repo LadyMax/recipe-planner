@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { Container, Button, Alert, Spinner, Modal } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import { useRecipes } from '../hooks/useRecipes';
 import RecipeDetail from '../components/RecipeDetail';
 import RecipeFormModal from '../components/RecipeFormModal';
@@ -91,27 +91,25 @@ const RecipeDetailPage: React.FC & {
             ← Back to Recipes
           </Button>
         </Link>
-        {isAuthenticated && (
-          <div className="d-flex gap-2">
-            <Button 
-              variant="outline-primary" 
-              onClick={handleEdit}
-              className="recipe-detail-edit-button-page"
-            >
-              Edit Recipe
-            </Button>
-            <Button variant="outline-danger" onClick={handleDelete}>
-              Delete Recipe
-            </Button>
-          </div>
-        )}
+        <div className="d-flex gap-2">
+          <Button 
+            variant="outline-primary" 
+            onClick={handleEdit}
+            className="recipe-detail-edit-button-page"
+          >
+            Edit Recipe
+          </Button>
+          <Button variant="outline-danger" onClick={handleDelete}>
+            Delete Recipe
+          </Button>
+        </div>
       </div>
 
       <RecipeDetail
         recipe={recipe}
         onEdit={handleEdit}
         onDelete={handleDelete}
-        canEdit={isAuthenticated}
+        canEdit={true}
       />
 
       <RecipeFormModal
@@ -142,7 +140,7 @@ const RecipeDetailPage: React.FC & {
           <Modal.Title>Delete recipe</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          Delete <strong>{confirmTarget?.title}</strong>?
+          Delete <strong>{confirmTarget?.recipe_name}</strong>?
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setConfirmTarget(null)}>

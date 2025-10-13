@@ -15,7 +15,13 @@ public static partial class Session
         if (cookieValue == null)
         {
             cookieValue = Guid.NewGuid().ToString();
-            context.Response.Cookies.Append("session", cookieValue);
+            context.Response.Cookies.Append("session", cookieValue, new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = false, // Set to true in production with HTTPS
+                SameSite = SameSiteMode.Lax,
+                Expires = DateTimeOffset.UtcNow.AddHours(2)
+            });
         }
 
         // Get the session data from the database if it stored there
@@ -40,16 +46,17 @@ public static partial class Session
 
     public static void Start()
     {
-        // 简化的会话启动 - 不需要特殊逻辑
+        // Simplified session startup - no special logic needed
     }
 
-    public static dynamic Get(HttpContext context, string key)
+
+    public static Obj Get(HttpContext context, string key)
     {
         var session = GetRawSession(context);
-        // Convert the data from JSON using System.Text.Json
+        // Convert the data from JSON using Dyndata
         try
         {
-            var data = JsonSerializer.Deserialize<dynamic>(session.data);
+            var data = JSON.Parse(session.data);
             return data[key];
         }
         catch
@@ -62,10 +69,10 @@ public static partial class Session
     {
         var session = GetRawSession(context);
         // Parse existing data using System.Text.Json
-        dynamic data;
+        Obj data;
         try
         {
-            data = JsonSerializer.Deserialize<dynamic>(session.data);
+            data = JSON.Parse(session.data);
         }
         catch
         {
@@ -74,6 +81,7 @@ public static partial class Session
         // Set the property in data
         data[key] = value;
         // Save to DB, with the data converted to JSON
+        var jsonData = System.Text.Json.JsonSerializer.Serialize(data);
         SQLQuery(
             @"UPDATE sessions 
               SET modified = DATETIME('now'), data = $data
@@ -81,7 +89,7 @@ public static partial class Session
             new
             {
                 session.id,
-                data = JsonSerializer.Serialize(data)
+                data = jsonData
             }
        );
     }

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
 import type { LoginCredentials } from '../types/user';
 import RegisterModal from './RegisterModal';
 import BaseModal from './BaseModal';
@@ -31,6 +31,7 @@ export default function LoginModal({ show, onHide }: LoginModalProps) {
       setCredentials({ email: '', password: '' });
     } catch (error) {
       // Error is handled in AuthContext
+      console.warn('Login error handled by AuthContext:', error);
     } finally {
       setIsLoading(false);
     }

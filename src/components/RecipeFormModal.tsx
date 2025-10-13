@@ -2,7 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { Modal, Button, Form, Row, Col, Dropdown } from 'react-bootstrap';
 import type { Ingredient, Recipe } from '../types/recipe.ts';
 import { uuid } from '../utils/ids.ts';
-import { useAuth } from '../contexts/AuthContext';
+import { useAuth } from '../hooks/useAuth';
+import { getMealTypeOptions } from '../utils/mealTypeUtils';
 
 type Props = {
   show: boolean;
@@ -18,25 +19,22 @@ const RecipeFormModal: React.FC<Props> = ({
   onClose,
 }) => {
   const { user } = useAuth();
-  const [title, setTitle] = useState('');
+  const [recipeName, setRecipeName] = useState('');
   const [description, setDescription] = useState('');
   const [ingredients, setIngredients] = useState<Ingredient[]>([
-    { id: uuid(), name: '', amount: '' },
+    { id: uuid(), name: '', amount: 0 },
   ]);
   const [category, setCategory] = useState('');
-  const [tags, setTags] = useState('');
-  const [servings, setServings] = useState<number | undefined>(undefined);
-  const [cookTimeMin, setCookTimeMin] = useState<number | undefined>(undefined);
+  const [mealType, setMealType] = useState<string>('');
   const [difficulty, setDifficulty] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [customIngredients, setCustomIngredients] = useState<string[]>([]);
   const [newCustomIngredient, setNewCustomIngredient] = useState('');
-  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(
-    new Set()
-  );
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [focusedField, setFocusedField] = useState<string>('');
+  const [ingredientCategories, setIngredientCategories] = useState<{[key: string]: {id: number, name: string}[]}>({});
+  const [expandedCategories, setExpandedCategories] = useState<Set<string>>(new Set());
 
   // Check if there is a local file upload
   const hasLocalFile = imageFile !== null;
@@ -80,175 +78,53 @@ const RecipeFormModal: React.FC<Props> = ({
     'dash',
   ];
 
-  // Common ingredients by category
-  const INGREDIENT_CATEGORIES = {
-    Vegetables: [
-      'Tomato',
-      'Onion',
-      'Garlic',
-      'Carrot',
-      'Potato',
-      'Bell Pepper',
-      'Cucumber',
-      'Lettuce',
-      'Spinach',
-      'Broccoli',
-      'Cauliflower',
-      'Mushroom',
-      'Zucchini',
-      'Eggplant',
-      'Celery',
-      'Cabbage',
-      'Corn',
-      'Green Beans',
-      'Peas',
-    ],
-    Fruits: [
-      'Apple',
-      'Banana',
-      'Orange',
-      'Lemon',
-      'Lime',
-      'Strawberry',
-      'Blueberry',
-      'Raspberry',
-      'Mango',
-      'Pineapple',
-      'Grape',
-      'Peach',
-      'Pear',
-      'Cherry',
-      'Kiwi',
-      'Avocado',
-      'Coconut',
-      'Pomegranate',
-    ],
-    Proteins: [
-      'Chicken Breast',
-      'Ground Beef',
-      'Pork',
-      'Salmon',
-      'Tuna',
-      'Shrimp',
-      'Eggs',
-      'Tofu',
-      'Beans',
-      'Lentils',
-      'Chickpeas',
-      'Turkey',
-      'Lamb',
-      'Bacon',
-      'Ham',
-      'Sausage',
-      'Fish',
-      'Crab',
-      'Lobster',
-    ],
-    Dairy: [
-      'Milk',
-      'Cheese',
-      'Butter',
-      'Yogurt',
-      'Cream',
-      'Sour Cream',
-      'Cottage Cheese',
-      'Mozzarella',
-      'Cheddar',
-      'Parmesan',
-      'Ricotta',
-      'Feta',
-      'Goat Cheese',
-    ],
-    'Grains & Starches': [
-      'Rice',
-      'Pasta',
-      'Bread',
-      'Quinoa',
-      'Oats',
-      'Barley',
-      'Couscous',
-      'Noodles',
-      'Flour',
-      'Cornmeal',
-      'Breadcrumbs',
-      'Crackers',
-      'Tortilla',
-    ],
-    'Herbs & Spices': [
-      'Salt',
-      'Black Pepper',
-      'Basil',
-      'Oregano',
-      'Thyme',
-      'Rosemary',
-      'Parsley',
-      'Cilantro',
-      'Ginger',
-      'Cumin',
-      'Paprika',
-      'Cinnamon',
-      'Nutmeg',
-      'Bay Leaves',
-      'Red Pepper Flakes',
-      'Garlic Powder',
-      'Onion Powder',
-      'Chili Powder',
-    ],
-    'Oils & Condiments': [
-      'Olive Oil',
-      'Vegetable Oil',
-      'Sesame Oil',
-      'Vinegar',
-      'Soy Sauce',
-      'Worcestershire Sauce',
-      'Ketchup',
-      'Mustard',
-      'Mayonnaise',
-      'Hot Sauce',
-      'Honey',
-      'Maple Syrup',
-      'Sugar',
-      'Brown Sugar',
-    ],
-    'Nuts & Seeds': [
-      'Almonds',
-      'Walnuts',
-      'Pecans',
-      'Cashews',
-      'Pistachios',
-      'Sunflower Seeds',
-      'Pumpkin Seeds',
-      'Sesame Seeds',
-      'Chia Seeds',
-      'Flax Seeds',
-      'Peanuts',
-    ],
-  };
 
+
+        // Load ingredient categories from database
+        useEffect(() => {
+          const loadIngredientCategories = async () => {
+            try {
+              const response = await fetch('/api/ingredient_categories');
+              if (response.ok) {
+                const data = await response.json();
+                const categories: {[key: string]: {id: number, name: string}[]} = {};
+                
+                data.forEach((item: {id: number; name: string; category: string}) => {
+                  if (!categories[item.category]) {
+                    categories[item.category] = [];
+                  }
+                  categories[item.category].push({id: item.id, name: item.name});
+                });
+                
+                setIngredientCategories(categories);
+              }
+            } catch (error) {
+              console.warn('Failed to load ingredient categories:', error);
+            }
+          };
+          
+          loadIngredientCategories();
+        }, []);
 
   useEffect(() => {
     if (initial) {
-      setTitle(initial.title ?? '');
-      setDescription(initial.description ?? initial.instructions ?? '');
+      setRecipeName(initial.recipe_name ?? '');
+      setDescription(initial.description ?? '');
       setIngredients(
         initial.ingredients?.length
           ? initial.ingredients
-          : [{ id: uuid(), name: '', amount: '' }]
+          : [{ id: uuid(), name: '', amount: 0 }]
       );
       setCategory(initial.category ?? '');
-      setTags(initial.tags?.join(', ') ?? '');
-      setServings(initial.servings);
-      setCookTimeMin(initial.cook_time_min ?? initial.durationMins);
+      setMealType(initial.meal_type_id?.toString() ?? '');
       setDifficulty(initial.difficulty ?? '');
-      setImageUrl(initial.image_url ?? initial.imageUrl ?? '');
+      setImageUrl(initial.image_url ?? '');
     } else {
-      setTitle('');
+      setRecipeName('');
       setDescription('');
-      setIngredients([{ id: uuid(), name: '', amount: '', unit: '' }]);
+      setIngredients([{ id: uuid(), name: '', amount: 0, unit: '' }]);
       setCategory('');
-      setTags('');
-      setServings(undefined);
-      setCookTimeMin(undefined);
+      setMealType('');
       setDifficulty('');
       setImageUrl('');
       setImageFile(null);
@@ -257,20 +133,20 @@ const RecipeFormModal: React.FC<Props> = ({
   }, [initial, show]);
 
   const addIngredient = () => {
-    const newIngredient = { id: uuid(), name: '', amount: '', unit: '' };
+    const newIngredient = { id: uuid(), name: '', amount: 0, unit: '' };
     setIngredients(prev => [...prev, newIngredient]);
   };
 
   const updateIngredient = (
-    id: number,
+    id: number | string,
     field: keyof Ingredient,
-    value: string
+    value: string | number
   ) =>
     setIngredients(prev =>
       prev.map(i => (i.id === id ? { ...i, [field]: value } : i))
     );
 
-  const removeIngredient = (id: number) =>
+  const removeIngredient = (id: number | string) =>
     setIngredients(prev => prev.filter(i => i.id !== id));
 
   const toggleCategory = (category: string) => {
@@ -284,6 +160,16 @@ const RecipeFormModal: React.FC<Props> = ({
       return newSet;
     });
   };
+
+  const selectIngredient = (ingredientId: number, ingredientName: string, currentIngredientId: number | string) => {
+    // Find the ingredient by its current ID and update it
+    setIngredients(prev => prev.map(ing => 
+      ing.id === currentIngredientId 
+        ? { ...ing, name: ingredientName, id: ingredientId }
+        : ing
+    ));
+  };
+
 
   const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -327,19 +213,15 @@ const RecipeFormModal: React.FC<Props> = ({
     }
   };
 
-  const selectIngredient = (ingredientName: string, ingredientId: number) => {
-    updateIngredient(ingredientId, 'name', ingredientName);
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const trimmedTitle = title.trim();
+    const trimmedRecipeName = recipeName.trim();
     const trimmedCategory = category.trim();
-    if (!trimmedTitle || !trimmedCategory) return;
+    if (!trimmedRecipeName || !trimmedCategory || !mealType) return;
 
     // Validate ingredients - all fields are required
     const invalidIngredients = ingredients.filter(i => 
-      !i.name?.trim() || (i.amount !== '0' && !i.amount) || !i.unit?.trim()
+      !i.name?.trim() || (i.amount !== 0 && !i.amount) || !i.unit?.trim()
     );
     
     if (invalidIngredients.length > 0) {
@@ -351,16 +233,16 @@ const RecipeFormModal: React.FC<Props> = ({
       .filter(i => i.name?.trim())
       .map(i => ({ 
         ...i, 
-        amount: i.amount === '0' ? '0' : String(i.amount || '')
+        amount: i.amount || 0
       }));
 
     // Create simple recipe object for API call - only database fields
     const recipeForApi = {
-      user_id: user?.id || 0,
-      title: trimmedTitle,
+      created_by: user?.id || 3, // Use default user ID 3 (Thomas)
+      recipe_name: trimmedRecipeName,
       description: description.trim() || undefined,
       category: trimmedCategory,
-      cook_time_min: cookTimeMin !== undefined ? cookTimeMin : undefined,
+      meal_type_id: mealType ? parseInt(mealType) : undefined,
       difficulty: difficulty || 'Easy',
       image_url: hasLocalFile ? imagePreview : imageUrl.trim() || undefined,
     };
@@ -371,16 +253,6 @@ const RecipeFormModal: React.FC<Props> = ({
       ...recipeForApi,
       // Keep compatibility fields for ingredient handling
       ingredients: clean,
-      instructions: description.trim(),
-      tags: tags.trim()
-        ? tags
-            .split(',')
-            .map(t => t.trim())
-            .filter(t => t)
-        : undefined,
-      servings: servings || undefined,
-      durationMins: cookTimeMin || undefined,
-      imageUrl: imagePreview || imageUrl.trim() || undefined,
     };
 
     onSubmit(recipe);
@@ -395,13 +267,13 @@ const RecipeFormModal: React.FC<Props> = ({
 
         <Modal.Body>
           <Form.Group className="mb-3">
-            <Form.Label>Title *</Form.Label>
+            <Form.Label>Recipe Name *</Form.Label>
             <Form.Control
-              className={getFieldClassName('title', title, true)}
+              className={getFieldClassName('recipeName', recipeName, true)}
               placeholder="E.g. Tomato Pasta"
-              value={title}
-              onChange={e => setTitle(e.target.value)}
-              onFocus={() => setFocusedField('title')}
+              value={recipeName}
+              onChange={e => setRecipeName(e.target.value)}
+              onFocus={() => setFocusedField('recipeName')}
               onBlur={() => setFocusedField('')}
               required
             />
@@ -426,7 +298,7 @@ const RecipeFormModal: React.FC<Props> = ({
                       onBlur={() => setFocusedField('')}
                     />
                      <Dropdown.Menu className="dropdown-menu-custom">
-                       {Object.entries(INGREDIENT_CATEGORIES).map(
+                       {Object.entries(ingredientCategories).map(
                          ([category, items]) => (
                           <React.Fragment key={category}>
                             <Dropdown.Header
@@ -445,11 +317,11 @@ const RecipeFormModal: React.FC<Props> = ({
                              {expandedCategories.has(category) &&
                                items.map(item => (
                                  <Dropdown.Item
-                                   key={item}
-                                   onClick={() => selectIngredient(item, i.id)}
+                                   key={item.id}
+                                   onClick={() => selectIngredient(item.id, item.name, i.id)}
                                    className="dropdown-item-custom"
                                 >
-                                  {item}
+                                  {item.name}
                                 </Dropdown.Item>
                               ))}
                           </React.Fragment>
@@ -464,7 +336,7 @@ const RecipeFormModal: React.FC<Props> = ({
                           {customIngredients.map(item => (
                             <Dropdown.Item
                               key={item}
-                              onClick={() => selectIngredient(item, i.id)}
+                                   onClick={() => selectIngredient(0, item, i.id)}
                               className="dropdown-item-custom-section"
                             >
                               {item}
@@ -482,10 +354,10 @@ const RecipeFormModal: React.FC<Props> = ({
                   min="0"
                   step="1"
                   placeholder="Amount *"
-                  value={i.amount === '0' ? '' : (i.amount ?? '')}
+                  value={i.amount === 0 ? '' : (i.amount ?? '')}
                   onChange={e => {
                     const value = e.target.value;
-                    updateIngredient(i.id, 'amount', value === '' ? '0' : value);
+                    updateIngredient(i.id, 'amount', value === '' ? 0 : parseInt(value) || 0);
                   }}
                   onFocus={() => setFocusedField(`ingredient-amount-${i.id}`)}
                   onBlur={() => setFocusedField('')}
@@ -572,10 +444,11 @@ const RecipeFormModal: React.FC<Props> = ({
                 >
                   <option value="">-- Select Category --</option>
                   <option value="Main Course">Main Course</option>
+                  <option value="Appetizer">Appetizer</option>
+                  <option value="Salad">Salad</option>
                   <option value="Soup">Soup</option>
-                  <option value="Dessert">Dessert</option>
+                  <option value="Side Dish">Side Dish</option>
                   <option value="Beverage">Beverage</option>
-                  <option value="Snack">Snack</option>
                   <option value="Other">Other</option>
                 </Form.Select>
               </Form.Group>
@@ -598,59 +471,25 @@ const RecipeFormModal: React.FC<Props> = ({
                 </Form.Select>
               </Form.Group>
             </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Tags</Form.Label>
-                <Form.Control
-                  placeholder="Separate with commas, e.g.: Simple,Vegetarian,Quick"
-                  value={tags}
-                  onChange={e => setTags(e.target.value)}
-                  onFocus={() => setFocusedField('tags')}
-                  onBlur={() => setFocusedField('')}
-                  className={getFieldClassName('tags', tags)}
-                />
-              </Form.Group>
-            </Col>
           </Row>
 
           <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
-                <Form.Label>Servings</Form.Label>
-                <Form.Control
-                  type="number"
-                  min="0"
-                  placeholder="How many servings"
-                  value={servings !== undefined ? servings : ''}
-                  onChange={e =>
-                    setServings(
-                      e.target.value !== '' ? parseInt(e.target.value) : undefined
-                    )
-                  }
-                  onFocus={() => setFocusedField('servings')}
+                <Form.Label>Meal Type *</Form.Label>
+                <Form.Select
+                  value={mealType}
+                  onChange={e => setMealType(e.target.value)}
+                  onFocus={() => setFocusedField('mealType')}
                   onBlur={() => setFocusedField('')}
-                  className={getFieldClassName('servings', servings)}
-                />
-              </Form.Group>
-            </Col>
-            <Col md={6}>
-              <Form.Group className="mb-3">
-                <Form.Label>Cooking Time (minutes) *</Form.Label>
-                <Form.Control
-                  type="number"
-                  min="0"
-                  placeholder="Cooking time"
-                  value={cookTimeMin !== undefined ? cookTimeMin : ''}
-                  onChange={e =>
-                    setCookTimeMin(
-                      e.target.value !== '' ? parseInt(e.target.value) : undefined
-                    )
-                  }
-                  onFocus={() => setFocusedField('cookTime')}
-                  onBlur={() => setFocusedField('')}
-                  className={getFieldClassName('cookTime', cookTimeMin, true)}
+                  className={getFieldClassName('mealType', mealType, true)}
                   required
-                />
+                >
+                  <option value="">Select meal type</option>
+                  {getMealTypeOptions().map(({ value, label }) => (
+                    <option key={value} value={value}>{label}</option>
+                  ))}
+                </Form.Select>
               </Form.Group>
             </Col>
           </Row>
@@ -684,7 +523,7 @@ const RecipeFormModal: React.FC<Props> = ({
                 type="file"
                 accept="image/*"
                 onChange={handleImageUpload}
-                style={{ flex: 1 }}
+                className="file-input-flex"
               />
               <span className="text-muted align-self-center">or</span>
             </div>

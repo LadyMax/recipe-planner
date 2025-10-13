@@ -3,14 +3,14 @@ public static class ErrorHandler
 {
     public static void Start()
     {
-        // 简化的错误处理
-        App.UseExceptionHandler(exceptionApp =>
+        App.UseExceptionHandler(errorApp =>
         {
-            exceptionApp.Run(async context =>
+            errorApp.Run(async context =>
             {
-                var feature = context.Features.Get<IExceptionHandlerPathFeature>();
-                var error = new { error = feature?.Error?.Message ?? "Unknown error" };
                 context.Response.StatusCode = 500;
+                context.Response.ContentType = "application/json";
+                
+                var error = new { error = "Internal server error" };
                 await context.Response.WriteAsJsonAsync(error);
             });
         });

@@ -5,11 +5,15 @@ public static class RequestBodyParser
     {
         // Always remove "role" for users table
         var keys = body.GetKeys().Filter(key => table != "users" || key != "role");
-        // Keep original values - no automatic type conversion
+        // Clean up the body by converting strings to numbers when possible
         var cleaned = Obj();
         body.GetKeys().ForEach(key
-            => cleaned[key] = body[key]);
-        // Keep password as plain text (no encryption)
+            => cleaned[key] = ((object)(body[key])).TryToNumber());
+        // Encrypt password field if it exists
+        if (cleaned.HasKey("password"))
+        {
+            cleaned.password = Password.Encrypt(cleaned.password);
+        }
         // Return parts to use when building the SQL query + the cleaned body
         return Obj(new
         {
