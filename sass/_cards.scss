@@ -21,7 +21,7 @@
 
 // Recipe card component styling
 .recipe-card {
-  @include white-background;
+  background-color: var(--primary-light); // Light green background from primary color family
   border: none;
   border-radius: 20px; // More rounded like mobile apps
   box-shadow: 0 4px 20px var(--rgba-overlay);
@@ -33,7 +33,7 @@
 .recipe-card:hover {
   transform: translateY(-8px);
   box-shadow: 0 12px 40px var(--rgba-overlay);
-  background: var(--primary-light); // Light green hover background matching #6b950e
+  background-color: #c7f0d0; // Slightly darker green on hover, still in same color family
 }
 
 .recipe-card .card-img-top {

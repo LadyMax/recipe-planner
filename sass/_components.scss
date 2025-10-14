@@ -1,13 +1,11 @@
 // Component-specific styles
-// ==========================================
 
 @use 'mixins' as *;
 // Component-specific styles for recipe management application
 
 // Note: Button styles moved to _buttons.scss for consistency
 
-// Common Utility Classes
-// ==========================================
+// Common utility classes
 .no-select {
   user-select: none;
 }
@@ -57,8 +55,7 @@
   min-height: 200px;
 }
 
-// Recipe List Component
-// ==========================================
+// Recipe list component
 // Main recipe-card styles are defined in index.scss to avoid duplication
 
 .recipe-card-title {
@@ -98,7 +95,7 @@
 .category-tag:hover {
   background-color: var(--primary-color) !important;  
   border-color: var(--primary-color) !important;
-  color: #ffffff !important;
+  color: var(--white) !important;
   text-decoration: none;
   box-shadow: 0 4px 12px var(--rgba-overlay) !important;
 }
@@ -108,21 +105,39 @@
 .category-tag:focus {
   background: var(--primary-hover) !important;  
   border-color: var(--primary-hover) !important;
-  color: #ffffff !important;
+  color: var(--white) !important;
   text-decoration: none;
   box-shadow: 0 4px 12px var(--rgba-overlay) !important;
 }
 
-// Advanced Search Component
-// ==========================================
+// Advanced search component
 .advanced-search-header {
   @extend .bg-primary-theme;
-  color: #ffffff; // White text on green background
+  color: var(--white); // White text on green background
 }
 
 .search-button {
   @extend .flex-button-layout;
   @include primary-button;
+  
+  &:hover {
+    background-color: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--primary-color) !important; // Green text on white background
+  }
+  
+  &:focus {
+    background-color: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem var(--rgba-overlay) !important;
+  }
+  
+  &:active {
+    background-color: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--primary-color) !important;
+  }
 }
 
 .clear-button {
@@ -170,41 +185,42 @@
 
 .filter-badge.bg-primary {
   background-color: var(--primary-color) !important;
-  color: #ffffff !important;
+  color: var(--white) !important;
   border-color: var(--primary-hover);
 }
 
 .filter-badge.bg-primary:hover {
   background-color: var(--primary-hover) !important;
-  color: #ffffff !important;
+  color: var(--white) !important;
 }
 
 // Recipe Comments Component
 // ==========================================
 .post-comment-button {
   @include primary-button;
+  margin-top: 1rem; // Add spacing between textarea and button
 }
 
 // Text color consistency
 // ==========================================
 .no-recipes-text {
-  color: var(--primary-hover) !important; // #4a660a
+  color: var(--text-primary) !important;
   text-align: center;
   font-size: 1.1rem;
   margin: 2rem 0;
 }
 
 .no-recipes-alert {
-  color: var(--primary-hover) !important; // #4a660a
+  color: var(--text-primary) !important;
   background-color: var(--primary-light) !important;
   border-color: var(--primary-hover) !important;
 }
 
 .checkbox-with-image-label {
-  color: var(--primary-hover) !important; // #4a660a
+  color: var(--text-primary) !important;
   
   .form-check-label {
-    color: var(--primary-hover) !important; // #4a660a
+    color: var(--text-primary) !important;
   }
 }
 
@@ -335,6 +351,45 @@
     path {
       fill: var(--heart-favorited);
     }
+  }
+}
+
+// Favorite Button Tooltip
+// ==========================================
+.favorite-button-tooltip {
+  .tooltip-inner {
+    background-color: var(--primary-color) !important; 
+    color: var(--white) !important; 
+    border: 1px solid var(--primary-hover) !important; 
+    border-radius: var(--border-radius-sm) !important;
+    box-shadow: var(--box-shadow-md) !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 0.75rem !important;
+    max-width: 200px !important;
+    text-align: center !important;
+  }
+  
+  .tooltip-arrow {
+    &::before {
+      border-top-color: var(--primary-color) !important;
+    }
+  }
+  
+  &.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: var(--primary-color) !important;
+  }
+  
+  &.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: var(--primary-color) !important;
+  }
+  
+  &.bs-tooltip-start .tooltip-arrow::before {
+    border-left-color: var(--primary-color) !important;
+  }
+  
+  &.bs-tooltip-end .tooltip-arrow::before {
+    border-right-color: var(--primary-color) !important;
   }
 }
 

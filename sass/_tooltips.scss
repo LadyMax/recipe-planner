@@ -1,0 +1,39 @@
+// Tooltip styles with green theme
+
+.tooltip {
+  .tooltip-inner {
+    background-color: var(--tooltip-bg) !important;
+    color: var(--tooltip-text) !important;
+    border: 1px solid var(--tooltip-border) !important;
+    border-radius: var(--border-radius-sm) !important;
+    box-shadow: var(--box-shadow-md) !important;
+    font-size: 0.875rem !important;
+    font-weight: 500 !important;
+    padding: 0.5rem 0.75rem !important;
+    max-width: 200px !important;
+    text-align: center !important;
+  }
+  
+  .tooltip-arrow {
+    &::before {
+      border-top-color: var(--tooltip-bg) !important;
+    }
+  }
+  
+  &.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: var(--tooltip-bg) !important;
+  }
+  
+  &.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: var(--tooltip-bg) !important;
+  }
+  
+  &.bs-tooltip-start .tooltip-arrow::before {
+    border-left-color: var(--tooltip-bg) !important;
+  }
+  
+  &.bs-tooltip-end .tooltip-arrow::before {
+    border-right-color: var(--tooltip-bg) !important;
+  }
+}
+

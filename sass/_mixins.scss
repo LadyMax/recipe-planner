@@ -4,7 +4,7 @@
 @mixin primary-button {
   background-color: var(--primary-color);
   border-color: var(--primary-color);
-  color: #ffffff; // Always use white text on green background for better contrast
+  color: var(--white); // Always use white text on green background for better contrast
   
   &:hover {
     background-color: var(--primary-hover);
@@ -20,7 +20,7 @@
   &:hover {
     background-color: var(--primary-color);
     border-color: var(--primary-color);
-    color: #ffffff; // Always use white text on green background for better contrast
+    color: var(--white); // Always use white text on green background for better contrast
   }
 }
 
@@ -77,7 +77,7 @@
 }
 
 @mixin white-text {
-  color: #ffffff;
+  color: var(--white);
 }
 
 @mixin white-background {

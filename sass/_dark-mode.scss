@@ -81,10 +81,53 @@
     border-top-color: var(--gray-600) !important;
   }
 
-  // Badge dark mode
-  .badge {
+  // Badge dark mode - more specific selectors to override Bootstrap
+  .badge:not(.bg-primary):not(.bg-info):not(.category-badge):not(.meal-type-badge) {
     background-color: var(--gray-700) !important;
     color: var(--gray-50) !important;
+  }
+
+  // Keep category and meal type badges with their original colors in dark mode
+  .category-badge {
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
+  }
+
+  .meal-type-badge {
+    background-color: var(--info-color) !important;
+    color: var(--white) !important;
+  }
+
+  // Bootstrap badge variants in dark mode - ensure they override the general badge rule
+  .badge.bg-primary {
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
+  }
+
+  .badge.bg-info {
+    background-color: var(--info-color) !important;
+    color: var(--white) !important;
+  }
+
+  // Force badge colors with maximum specificity
+  [data-theme="dark"] .badge.bg-primary {
+    background-color: #6b950e !important;
+    color: #ffffff !important;
+  }
+
+  [data-theme="dark"] .badge.bg-info {
+    background-color: #0dcaf0 !important;
+    color: #ffffff !important;
+  }
+
+  [data-theme="dark"] .category-badge {
+    background-color: #6b950e !important;
+    color: #ffffff !important;
+  }
+
+  [data-theme="dark"] .meal-type-badge {
+    background-color: #0dcaf0 !important;
+    color: #ffffff !important;
   }
 
   // Alert dark mode
@@ -125,7 +168,7 @@
   .pagination .page-item.active .page-link {
     background-color: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
-    color: #ffffff !important;
+    color: var(--white) !important;
   }
 
   // Navbar dark mode (keep green theme)
@@ -135,7 +178,7 @@
 
   .navbar-brand,
   .navbar-nav .nav-link {
-    color: #ffffff !important;
+    color: var(--white) !important;
   }
 
   // Button dark mode
@@ -160,7 +203,7 @@
   .btn-outline-primary:hover {
     background-color: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
-    color: #ffffff !important; // Always white text on green background
+    color: var(--white) !important; // Always white text on green background
   }
 
   // Search bar dark mode
@@ -190,7 +233,7 @@
   .category-tag:hover {
     background-color: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
-    color: #ffffff !important;
+    color: var(--white) !important;
   }
 
   // Image preview dark mode
@@ -219,12 +262,58 @@
 
   .filter-badge.bg-primary {
     background-color: var(--primary-color) !important;
-    color: #ffffff !important;
+    color: var(--white) !important;
+  }
+
+  // Recipe card dark mode
+  .recipe-card {
+    background-color: var(--gray-700) !important; // Dark background for dark mode
+  }
+
+  .recipe-card:hover {
+    background-color: var(--gray-600) !important; // Slightly lighter on hover
   }
 
   // Footer dark mode (keep green theme)
   footer {
     background-color: var(--primary-color) !important;
-    color: #ffffff !important;
+    color: var(--white) !important;
+  }
+
+  // Advanced Search dark mode
+  .advanced-filters-section {
+    background-color: var(--gray-700) !important;
+    border-color: var(--gray-600) !important;
+  }
+
+  .active-filters-display {
+    background-color: var(--gray-700) !important;
+    border-color: var(--gray-600) !important;
+  }
+
+  // Active filter badges in dark mode
+  .badge.active-filter-badge,
+  .active-filter-badge {
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
+    border: 1px solid var(--primary-color) !important;
+    text-decoration: none !important;
+    transition: all 0.2s ease !important;
+    
+    // Default state - green background, white text
+    &:focus, &:active, &:visited {
+      background-color: var(--primary-color) !important;
+      color: var(--white) !important;
+      border: 1px solid var(--primary-color) !important;
+      text-decoration: none !important;
+    }
+    
+    // Hover state - green background, white text (like theme toggle button)
+    &:hover {
+      background-color: var(--primary-color) !important;
+      color: var(--white) !important;
+      border: 1px solid var(--primary-color) !important;
+      text-decoration: none !important;
+    }
   }
 }

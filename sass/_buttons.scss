@@ -1,5 +1,4 @@
 // Button Styles
-// ==========================================
 
 @use 'mixins' as *;
 
@@ -41,10 +40,28 @@
 .btn-primary {
   @include primary-button;
   border: none;
+  
+  &:hover {
+    background-color: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--primary-color) !important; // Green text on white background
+  }
+  
+  &:focus {
+    background-color: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem var(--rgba-overlay) !important;
+  }
+  
+  &:active {
+    background-color: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--primary-color) !important;
+  }
 }
 
-// Note: Theme button aliases removed to avoid duplication
-// Use .btn-primary and .btn-outline-primary instead
+// Use .btn-primary and .btn-outline-primary for theme buttons
 
 .btn-outline-primary {
   @include primary-outline-button;
@@ -53,18 +70,18 @@
   &:hover {
     background-color: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
-    color: #ffffff !important; // Ensure white text on green background
+    color: var(--white) !important; // Ensure white text on green background
   }
   
   &:focus {
-    color: #ffffff !important;
+    color: var(--white) !important;
     background-color: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
     box-shadow: 0 0 0 0.25rem var(--rgba-overlay) !important;
   }
   
   &:active {
-    color: #ffffff !important;
+    color: var(--white) !important;
     background-color: var(--primary-hover) !important;
     border-color: var(--primary-hover) !important;
   }
@@ -76,14 +93,14 @@
   color: var(--success-color) !important;
   
   &:focus {
-    color: #ffffff !important;
+    color: var(--white) !important;
     background-color: var(--primary-color) !important;
     border-color: var(--primary-color) !important;
     box-shadow: 0 0 0 0.25rem var(--rgba-overlay) !important;
   }
   
   &:active {
-    color: #ffffff !important;
+    color: var(--white) !important;
     background-color: var(--primary-hover) !important;
     border-color: var(--primary-hover) !important;
   }
@@ -112,10 +129,10 @@
 .btn-outline-danger:hover {
   background: var(--danger-color) !important;
   border-color: var(--danger-color) !important;
-  color: #ffffff !important;
+  color: var(--white) !important;
 }
 
-// Button styles for modal
+// Modal button styles
 .btn-outline-secondary {
   color: var(--primary-hover) !important;
   border-color: var(--primary-color) !important;
@@ -124,5 +141,31 @@
 .btn-outline-secondary:hover {
   background-color: var(--primary-color) !important;
   border-color: var(--primary-color) !important;
-  color: #ffffff !important;
+  color: var(--white) !important;
+}
+
+// Custom outline-light button styling
+.btn-outline-light {
+  color: var(--white) !important;
+  border-color: var(--white) !important;
+  background-color: transparent !important;
+  
+  &:hover {
+    background-color: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--primary-color) !important; // Green text on white background
+  }
+  
+  &:focus {
+    background-color: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem var(--rgba-overlay) !important;
+  }
+  
+  &:active {
+    background-color: var(--white) !important;
+    border-color: var(--white) !important;
+    color: var(--primary-color) !important;
+  }
 }

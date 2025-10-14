@@ -1,7 +1,7 @@
 // CSS Variables and Design Tokens
 
 :root {
-  // 默认浅色主题
+  // Default light theme
   --theme-bg: #f8fafc;
   --theme-text: #1e293b;
   --theme-card-bg: #ffffff;
@@ -24,8 +24,8 @@
   --heart-hover: #f98693;
   --warning-color: #f59e0b;
   --warning-hover: #d97706;
-  --info-color: #6b950e;
-  --info-hover: #4a660a;
+  --info-color: #0dcaf0;
+  --info-hover: #0aa2c0;
   --light-color: #f8fafc;
   --dark-color: #1e293b;
   --gray-50: #f8fafc;
@@ -64,12 +64,31 @@
   --text-shadow-heavy: 2px 2px 4px rgba(0, 0, 0, 0.3);
   --drop-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   --white-overlay: rgba(255, 255, 255, 0.1);
+  
+  // Tooltip colors - use primary color matching banner
+  --tooltip-bg: var(--primary-color);
+  --tooltip-text: var(--white);
+  --tooltip-border: var(--primary-hover);
+  
+  // Common colors
+  --white: #ffffff;
+  --black: #000000;
+  
+  // Text colors
+  --text-white: #ffffff;
+  --text-primary: var(--primary-hover);
 }
 
-// 深色主题变量
+// Dark theme variables
 [data-theme="dark"] {
   --theme-bg: #0f172a;
   --theme-text: #f8fafc;
   --theme-card-bg: #1e293b;
   --theme-border: #334155;
+  
+  // Ensure info-color is available in dark mode
+  --info-color: #0dcaf0;
+  --info-hover: #0aa2c0;
+  
+  // Tooltip colors - inherit light theme settings
 }

@@ -13,17 +13,17 @@
 // Footer component styling
 footer {
   @include primary-background;
-  color: #ffffff !important; // Force white text color
+  color: var(--white) !important; // Force white text color
   margin-top: auto;
 }
 
 // Ensure all text in footer is white
 footer * {
-  color: #ffffff !important;
+  color: var(--white) !important;
 }
 
 // Footer text styling
 footer .text-bg-primary {
   @include primary-background;
-  color: #ffffff !important; // Force white text color
+  color: var(--white) !important; // Force white text color
 }

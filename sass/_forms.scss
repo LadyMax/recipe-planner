@@ -161,3 +161,58 @@
 .file-input-flex {
   flex: 1;
 }
+
+// Advanced Search Layout Styles
+.advanced-filters-section {
+  background: var(--theme-card-bg);
+  border-radius: var(--border-radius-sm);
+  padding: 1rem;
+  border: 1px solid var(--theme-border);
+}
+
+.active-filters-display {
+  background: var(--theme-card-bg);
+  border-radius: var(--border-radius-sm);
+  padding: 0.75rem;
+  border: 1px solid var(--theme-border);
+}
+
+.advanced-search-toggle-button {
+  border-radius: var(--border-radius-sm);
+  font-weight: 500;
+}
+
+.active-filter-badge {
+  font-size: 0.75rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: var(--border-radius-sm);
+  background-color: var(--primary-color) !important;
+  color: var(--white) !important;
+  border: 1px solid var(--primary-color) !important;
+  transition: all 0.2s ease !important;
+  
+  // Default state - green background, white text
+  &, &:focus, &:active, &:visited {
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
+    border: 1px solid var(--primary-color) !important;
+    text-decoration: none !important;
+  }
+  
+  // Hover state - green background, white text (like theme toggle button)
+  &:hover {
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
+    border: 1px solid var(--primary-color) !important;
+    text-decoration: none !important;
+  }
+  
+  // Override any link-like behavior
+  a.active-filter-badge, 
+  a.active-filter-badge:hover, 
+  a.active-filter-badge:focus, 
+  a.active-filter-badge:active, 
+  a.active-filter-badge:visited {
+    text-decoration: none !important;
+  }
+}
