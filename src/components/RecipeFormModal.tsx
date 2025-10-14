@@ -26,7 +26,6 @@ const RecipeFormModal: React.FC<Props> = ({
   ]);
   const [category, setCategory] = useState('');
   const [mealType, setMealType] = useState<string>('');
-  const [difficulty, setDifficulty] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [customIngredients, setCustomIngredients] = useState<string[]>([]);
   const [newCustomIngredient, setNewCustomIngredient] = useState('');
@@ -117,7 +116,6 @@ const RecipeFormModal: React.FC<Props> = ({
       );
       setCategory(initial.category ?? '');
       setMealType(initial.meal_type_id?.toString() ?? '');
-      setDifficulty(initial.difficulty ?? '');
       setImageUrl(initial.image_url ?? '');
     } else {
       setRecipeName('');
@@ -125,7 +123,6 @@ const RecipeFormModal: React.FC<Props> = ({
       setIngredients([{ id: uuid(), name: '', amount: 0, unit: '' }]);
       setCategory('');
       setMealType('');
-      setDifficulty('');
       setImageUrl('');
       setImageFile(null);
       setImagePreview('');
@@ -243,7 +240,6 @@ const RecipeFormModal: React.FC<Props> = ({
       description: description.trim() || undefined,
       category: trimmedCategory,
       meal_type_id: mealType ? parseInt(mealType) : undefined,
-      difficulty: difficulty || 'Easy',
       image_url: hasLocalFile ? imagePreview : imageUrl.trim() || undefined,
     };
 
@@ -431,7 +427,7 @@ const RecipeFormModal: React.FC<Props> = ({
           </div>
 
           <Row>
-            <Col md={4}>
+            <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Category *</Form.Label>
                 <Form.Select
@@ -453,27 +449,6 @@ const RecipeFormModal: React.FC<Props> = ({
                 </Form.Select>
               </Form.Group>
             </Col>
-            <Col md={4}>
-              <Form.Group className="mb-3">
-                <Form.Label>Difficulty *</Form.Label>
-                <Form.Select
-                  value={difficulty}
-                  onChange={e => setDifficulty(e.target.value)}
-                  onFocus={() => setFocusedField('difficulty')}
-                  onBlur={() => setFocusedField('')}
-                  className={getFieldClassName('difficulty', difficulty, true)}
-                  required
-                >
-                  <option value="">-- Select Difficulty --</option>
-                  <option value="Easy">Easy</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Hard">Hard</option>
-                </Form.Select>
-              </Form.Group>
-            </Col>
-          </Row>
-
-          <Row>
             <Col md={6}>
               <Form.Group className="mb-3">
                 <Form.Label>Meal Type *</Form.Label>

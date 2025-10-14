@@ -186,7 +186,6 @@ export function useRecipes() {
         instructions: r.description || '',
         meal_type_id: r.meal_type_id || 1,
         category: r.category || '',
-        difficulty: r.difficulty || '',
         image_url: r.image_url || ''
       };
       

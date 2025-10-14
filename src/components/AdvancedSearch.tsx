@@ -10,7 +10,6 @@ export interface SearchFilters {
   query: string;
   category?: string;
   mealType?: string;
-  difficulty?: string;
   hasImage?: boolean;
 }
 
@@ -33,13 +32,6 @@ const MEAL_TYPES = [
   { value: '4', label: 'Snack' },
   { value: '5', label: 'Dessert' },
 ];
-
-const DIFFICULTIES = [
-  'Easy',
-  'Medium',
-  'Hard',
-];
-
 
 export default function AdvancedSearch({
   onSearch,
@@ -90,7 +82,6 @@ export default function AdvancedSearch({
     filters.query ||
     filters.category ||
     filters.mealType ||
-    filters.difficulty ||
     filters.hasImage;
 
   return (
@@ -103,21 +94,21 @@ export default function AdvancedSearch({
       </Card.Header>
       <Card.Body>
         <Form onSubmit={handleSubmit}>
-          <Row className="mb-3">
-            <Col md={6}>
+          <Row className="mb-3 align-items-center">
+            <Col md={7}>
               <div className="search-bar">
                 <Form.Control
                   type="text"
-                  placeholder="Search anything here..."
+                  placeholder="Search recipes by name, ingredients, or description..."
                   value={filters.query}
                   onChange={handleInputChange('query')}
-                  size="sm"
+                  className="search-input"
                 />
                 <i className="bi bi-search search-icon"></i>
               </div>
             </Col>
-            <Col md={6}>
-              <div className="d-flex gap-2">
+            <Col md={5}>
+              <div className="d-flex gap-2 justify-content-end">
                 <Button
                   type="submit"
                   variant="primary"
@@ -145,7 +136,7 @@ export default function AdvancedSearch({
           
           <Row className="mb-0">
             <Col>
-              <div className="d-flex justify-content-start">
+              <div className="d-flex justify-content-center">
                 <Button
                   type="button"
                   variant="outline-primary"
@@ -156,17 +147,17 @@ export default function AdvancedSearch({
                   <i
                     className={`bi bi-chevron-${showAdvanced ? 'up' : 'down'} me-1`}
                   ></i>
-                  {showAdvanced ? 'Collapse' : 'Advanced Search'}
+                  {showAdvanced ? 'Hide Advanced Filters' : 'Show Advanced Filters'}
                 </Button>
               </div>
             </Col>
           </Row>
 
           {showAdvanced && (
-            <>
-              <Row className="mb-3 g-3">
-                <Col md={6} lg={4}>
-                  <Form.Label className="small">Category</Form.Label>
+            <div className="advanced-filters-section mt-3">
+              <Row className="g-3">
+                <Col md={6} lg={3}>
+                  <Form.Label className="small fw-semibold">Category</Form.Label>
                   <Form.Select
                     value={filters.category || ''}
                     onChange={handleInputChange('category')}
@@ -180,8 +171,8 @@ export default function AdvancedSearch({
                     ))}
                   </Form.Select>
                 </Col>
-                <Col md={6} lg={4}>
-                  <Form.Label className="small">Meal Type</Form.Label>
+                <Col md={6} lg={3}>
+                  <Form.Label className="small fw-semibold">Meal Type</Form.Label>
                   <Form.Select
                     value={filters.mealType || ''}
                     onChange={handleInputChange('mealType')}
@@ -195,65 +186,45 @@ export default function AdvancedSearch({
                     ))}
                   </Form.Select>
                 </Col>
-                <Col md={6} lg={4}>
-                  <Form.Label className="small">Difficulty</Form.Label>
-                  <Form.Select
-                    value={filters.difficulty || ''}
-                    onChange={handleInputChange('difficulty')}
-                    size="sm"
-                  >
-                    <option value="">All Difficulties</option>
-                    {DIFFICULTIES.map(diff => (
-                      <option key={diff} value={diff}>
-                        {diff}
-                      </option>
-                    ))}
-                  </Form.Select>
-                </Col>
-              </Row>
-
-
-              <Row className="mb-3">
-                <Col>
+                <Col md={6} lg={3} className="d-flex align-items-end">
                   <Form.Check
                     type="checkbox"
-                    label="Only show recipes with images"
+                    label="With Images Only"
                     checked={filters.hasImage || false}
                     onChange={handleCheckboxChange('hasImage')}
                     className="small checkbox-with-image-label"
                   />
                 </Col>
               </Row>
-            </>
+            </div>
           )}
 
           {hasActiveFilters && (
-            <div className="mt-3 mb-0">
-              <small className="text-muted">Active filters:</small>
+            <div className="active-filters-display mt-3">
+              <small className="text-muted fw-semibold">Active filters:</small>
               <div className="d-flex flex-wrap gap-1 mt-1">
                 {filters.query && (
                   <Badge className="active-filter-badge">
-                    Search: {filters.query}
+                    <i className="bi bi-search me-1"></i>
+                    {filters.query}
                   </Badge>
                 )}
                 {filters.category && (
                   <Badge className="active-filter-badge">
-                    Category: {filters.category}
+                    <i className="bi bi-tag me-1"></i>
+                    {filters.category}
                   </Badge>
                 )}
                 {filters.mealType && (
                   <Badge className="active-filter-badge">
-                    Meal: {MEAL_TYPES.find(m => m.value === filters.mealType)?.label}
-                  </Badge>
-                )}
-                {filters.difficulty && (
-                  <Badge className="active-filter-badge">
-                    Difficulty: {filters.difficulty}
+                    <i className="bi bi-clock me-1"></i>
+                    {MEAL_TYPES.find(m => m.value === filters.mealType)?.label}
                   </Badge>
                 )}
                 {filters.hasImage && (
                   <Badge className="active-filter-badge">
-                    With Image
+                    <i className="bi bi-image me-1"></i>
+                    With Images
                   </Badge>
                 )}
               </div>

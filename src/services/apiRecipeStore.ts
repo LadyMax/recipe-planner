@@ -16,7 +16,6 @@ export class ApiRecipeStore implements IRecipeStore {
       image_url: rec.image_url || '', // Default image
       meal_type_id: rec.meal_type_id || 1, // Default meal type
       category: rec.category || '',
-      difficulty: rec.difficulty || '',
     };
 
     return apiClient.post<Recipe>('/api/recipes', cleanRecipe);
@@ -32,7 +31,6 @@ export class ApiRecipeStore implements IRecipeStore {
       image_url: rec.image_url || '',
       meal_type_id: rec.meal_type_id || 1,
       category: rec.category || '',
-      difficulty: rec.difficulty || '',
     };
 
     return apiClient.put<Recipe>(`/api/recipes/${rec.id}`, cleanRecipe);

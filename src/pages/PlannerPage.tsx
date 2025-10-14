@@ -78,9 +78,6 @@ const PlannerPage: React.FC & {
       list = list.filter(r => r.meal_type_id?.toString() === searchFilters.mealType);
     }
 
-    if (searchFilters.difficulty) {
-      list = list.filter(r => r.difficulty === searchFilters.difficulty);
-    }
 
 
 
@@ -119,35 +116,31 @@ const PlannerPage: React.FC & {
         />
 
         <Row className="align-items-end g-2 mb-3">
-          <Col md={8}>
-            <Form.Label className="small">Sort by</Form.Label>
+          <Col md={6}>
+            <Button
+              onClick={() => {
+                setEditing(null);
+                setShowForm(true);
+              }}
+              className="btn-primary"
+            >
+              <i className="bi bi-plus-circle me-2"></i>
+              Create New Recipe
+            </Button>
+          </Col>
+          <Col md={6} className="d-flex align-items-end justify-content-end gap-2">
+            <Form.Label className="small mb-0">Sort by</Form.Label>
             <Form.Select
               value={sort}
               onChange={e => setSort(e.target.value as SortKey)}
               size="sm"
+              style={{ maxWidth: '200px' }}
             >
               <option value="newest-first">Newest First</option>
               <option value="name-asc">Name (A → Z)</option>
               <option value="name-desc">Name (Z → A)</option>
               <option value="ingr-count">Ingredients (Most → Least)</option>
             </Form.Select>
-          </Col>
-          <Col
-            md={4}
-            className="text-md-end d-flex gap-2 justify-content-end mt-2 mt-md-0"
-          >
-            <>
-              <Button
-                onClick={() => {
-                  setEditing(null);
-                  setShowForm(true);
-                }}
-                size="sm"
-              >
-                <i className="bi bi-plus-circle me-1"></i>
-                New
-              </Button>
-            </>
           </Col>
         </Row>
 

@@ -23,7 +23,6 @@ export type Recipe = {
   recipe_name?: string; // Database field name
   description?: string;
   category?: string; // Category field (e.g., "Soup", "Main Course")
-  difficulty?: string;
   image_url?: string;
   meal_type_id?: number; // Database field name
   recipe_ingredients?: RecipeIngredient[];
