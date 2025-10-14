@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import type { Recipe, RecipeIngredient } from '../types/recipe.ts';
+import type { Recipe, RecipeIngredient, Ingredient } from '../types/recipe.ts';
 import { recipeStore } from '../services/store.ts';
 import { validateRecipe } from '../utils/validation.ts';
 import { useAuth } from './useAuth';
@@ -25,7 +25,12 @@ export function useRecipes() {
               localStorage.removeItem('demo-recipes');
               setRecipes([]);
             } else {
-              setRecipes(parsedRecipes);
+              // Deep copy parsed recipes to avoid reference issues
+              const deepCopiedRecipes = parsedRecipes.map((recipe: Recipe) => ({
+                ...recipe,
+                ingredients: recipe.ingredients ? recipe.ingredients.map((ing: Ingredient) => ({ ...ing })) : undefined
+              }));
+              setRecipes(deepCopiedRecipes);
             }
           } catch {
             localStorage.removeItem('demo-recipes');
@@ -66,8 +71,7 @@ export function useRecipes() {
 
       // Get ingredients data for each recipe
       const recipesWithIngredients = await Promise.all(
-        validData.map(async (recipe: Recipe, index: number) => {
-          console.log(`Processing recipe ${index}:`, recipe);
+        validData.map(async (recipe: Recipe) => {
           
           // Validate recipe has required fields
           if (!recipe || typeof recipe !== 'object' || !recipe.id) {
@@ -140,6 +144,7 @@ export function useRecipes() {
       
       // Filter out null recipes
       const validRecipes = recipesWithIngredients.filter((recipe): recipe is Recipe => recipe !== null);
+      
       
       setRecipes(validRecipes);
     } catch (e: unknown) {
@@ -235,8 +240,15 @@ export function useRecipes() {
           }
         }
         
-        // Update local state
-        setRecipes(prev => prev.map(x => (x.id === r.id ? r : x)));
+        // Update local state - create a new object to avoid reference issues
+        setRecipes(prev => prev.map(x => 
+          x.id === r.id 
+            ? { 
+                ...r, 
+                ingredients: r.ingredients ? r.ingredients.map(ing => ({ ...ing })) : undefined 
+              } 
+            : x
+        ));
       } catch (error) {
         console.error('Failed to update recipe:', error);
         throw error;

@@ -157,7 +157,12 @@ const PlannerPage: React.FC & {
         <RecipeList
           recipes={filtered}
           onEdit={r => {
-            setEditing(r);
+            // Create a deep copy to avoid reference issues
+            const deepCopiedRecipe = {
+              ...r,
+              ingredients: r.ingredients ? r.ingredients.map(ing => ({ ...ing })) : undefined
+            };
+            setEditing(deepCopiedRecipe);
             setShowForm(true);
           }}
           onRequestDelete={r => setConfirmTarget(r)}

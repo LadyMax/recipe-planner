@@ -111,7 +111,7 @@ const RecipeFormModal: React.FC<Props> = ({
       setDescription(initial.description ?? '');
       setIngredients(
         initial.ingredients?.length
-          ? initial.ingredients
+          ? initial.ingredients.map(ing => ({ ...ing })) // Deep copy each ingredient object
           : [{ id: uuid(), name: '', amount: 0 }]
       );
       setCategory(initial.category ?? '');
@@ -504,8 +504,8 @@ const RecipeFormModal: React.FC<Props> = ({
             </div>
 
             <Form.Control
-              type="url"
-              placeholder="https://example.com/image.jpg"
+              type="text"
+              placeholder="https://example.com/image.jpg (optional)"
               value={imageUrl}
               onChange={e => {
                 setImageUrl(e.target.value);
@@ -521,7 +521,7 @@ const RecipeFormModal: React.FC<Props> = ({
             />
 
             <Form.Text className="text-muted">
-              Upload an image file (max 5MB) or enter an image URL
+              Upload an image file (max 5MB) or enter an image URL. Image is optional.
             </Form.Text>
           </Form.Group>
 

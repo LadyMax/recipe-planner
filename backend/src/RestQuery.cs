@@ -17,6 +17,19 @@ public static class RestQuery
                 whereConditions.Push($"{field} = ${field}");
                 parameters[field] = value;
             }
+            else if (key == "where")
+            {
+                // Handle where=field=value format
+                var whereValue = query[key].ToString();
+                var parts = whereValue.Split('=');
+                if (parts.Length == 2)
+                {
+                    var field = parts[0];
+                    var value = parts[1];
+                    whereConditions.Push($"{field} = ${field}");
+                    parameters[field] = value;
+                }
+            }
         }
 
         if (whereConditions.Length > 0)
