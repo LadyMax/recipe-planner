@@ -241,6 +241,39 @@
     border-color: var(--gray-600) !important;
   }
 
+  // Image placeholder dark mode
+  .image-placeholder {
+    border-color: var(--gray-600) !important;
+    background-color: var(--gray-700) !important;
+    
+    &:hover {
+      border-color: var(--primary-color) !important;
+      background-color: var(--gray-600) !important;
+    }
+  }
+
+  // Recipe detail image placeholder dark mode
+  .recipe-image-placeholder {
+    border-color: var(--gray-600) !important;
+    background-color: var(--gray-700) !important;
+    
+    &:hover {
+      border-color: var(--primary-color) !important;
+      background-color: var(--gray-600) !important;
+    }
+  }
+
+  // Recipe card placeholder dark mode
+  .recipe-card-placeholder {
+    border-color: var(--gray-600) !important;
+    background-color: var(--gray-700) !important;
+    
+    &:hover {
+      border-color: var(--primary-color) !important;
+      background-color: var(--gray-600) !important;
+    }
+  }
+
   // Comment area dark mode
   .comment-item {
     background-color: var(--gray-700) !important;
@@ -267,11 +300,13 @@
 
   // Recipe card dark mode
   .recipe-card {
-    background-color: var(--gray-700) !important; // Dark background for dark mode
+    background-color: var(--gray-800) !important; // Darker background to match other cards
+    border-color: var(--gray-600) !important;
   }
 
   .recipe-card:hover {
-    background-color: var(--gray-600) !important; // Slightly lighter on hover
+    background-color: var(--gray-700) !important; // Slightly lighter on hover
+    border-color: var(--gray-500) !important;
   }
 
   // Footer dark mode (keep green theme)

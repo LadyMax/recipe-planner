@@ -200,6 +200,7 @@ const RecipeFormModal: React.FC<Props> = ({
   const clearImage = () => {
     setImageFile(null);
     setImagePreview('');
+    setImageUrl('');
   };
 
   const addCustomIngredient = () => {
@@ -473,24 +474,31 @@ const RecipeFormModal: React.FC<Props> = ({
             <Form.Label>Recipe Image</Form.Label>
 
             {/* Image Preview */}
-            {(imagePreview || imageUrl) && (
-              <div className="mb-3">
-                       <img
-                         src={imagePreview || imageUrl}
-                         alt="Recipe preview"
-                         className="image-preview"
-                       />
-                <div className="mt-2">
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={clearImage}
-                  >
-                    Remove Image
-                  </Button>
+            <div className="mb-3">
+              {(imagePreview || imageUrl) ? (
+                <>
+                  <img
+                    src={imagePreview || imageUrl}
+                    alt="Recipe preview"
+                    className="image-preview"
+                  />
+                  <div className="mt-2">
+                    <Button
+                      variant="outline-danger"
+                      size="sm"
+                      onClick={clearImage}
+                    >
+                      Remove Image
+                    </Button>
+                  </div>
+                </>
+              ) : (
+                <div className="image-placeholder" style={{width: '100%', maxWidth: '300px', height: '200px', border: '2px dashed #ccc', borderRadius: '8px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8f9fa'}}>
+                  <i className="bi bi-image text-muted" style={{fontSize: '3rem'}}></i>
+                  <p className="text-muted mt-2 mb-0">No image selected</p>
                 </div>
-              </div>
-            )}
+              )}
+            </div>
 
             {/* Upload Options */}
             <div className="d-flex gap-2 mb-2">

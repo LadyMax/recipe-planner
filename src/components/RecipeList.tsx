@@ -95,12 +95,17 @@ export default function RecipeList({
                 >
                   <FavoriteButton recipeId={r.id} size="sm" />
                 </div>
-              {r.image_url && (
+              {r.image_url ? (
                 <img
                   src={r.image_url}
                   className="card-img-top recipe-card-image"
                   alt={r.recipe_name}
                 />
+              ) : (
+                <div className="recipe-card-placeholder">
+                  <i className="bi bi-image text-muted" style={{fontSize: '3rem'}}></i>
+                  <p className="text-muted mt-2 mb-0 small">No image</p>
+                </div>
               )}
               <div className="card-body d-flex flex-column">
                 <div className="mb-2 d-flex gap-2">

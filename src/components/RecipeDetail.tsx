@@ -32,7 +32,7 @@ export default function RecipeDetail({
 
 
   return (
-    <Card className="mb-4">
+    <Card className="mb-4 recipe-detail-card">
       <Card.Header className="d-flex justify-content-between align-items-start">
         <div>
           <Card.Title className="mb-2">
@@ -53,41 +53,64 @@ export default function RecipeDetail({
       </Card.Header>
 
       <Card.Body>
-        <Row>
-          <Col md={6}>
-            <h6>Ingredients</h6>
-            <ul className="list-unstyled">
-              {(recipe.ingredients || []).map((ingredient, index) => (
-                <li key={`${ingredient.name}-${index}`} className="mb-1">
-                  <strong>{ingredient.name}</strong>
-                  {ingredient.amount && (
-                    <span className="text-muted"> - {ingredient.amount}</span>
-                  )}
-                  {ingredient.unit && (
-                    <span className="text-muted"> {ingredient.unit}</span>
-                  )}
-                </li>
-              ))}
-            </ul>
+        <Row className="align-items-start">
+          {/* 图片在左边 */}
+          <Col lg={6} className="mb-4 mb-lg-0">
+            <div className="recipe-image-container">
+              {recipe.image_url ? (
+                <img
+                  src={recipe.image_url}
+                  alt={recipe.recipe_name}
+                  className="img-fluid rounded recipe-detail-image"
+                />
+              ) : (
+                <div className="recipe-image-placeholder">
+                  <i className="bi bi-image text-muted" style={{fontSize: '4rem'}}></i>
+                  <p className="text-muted mt-2 mb-0">No image available</p>
+                </div>
+              )}
+            </div>
           </Col>
-          <Col md={6}>
-            <h6>Description</h6>
-            <div className="recipe-description">
-              {recipe.description}
+          
+          {/* 内容在右边 */}
+          <Col lg={6}>
+            <div className="recipe-content">
+              {/* Ingredients */}
+              <div className="mb-4">
+                <h6 className="recipe-section-title">
+                  <i className="bi bi-list-ul me-2"></i>
+                  Ingredients
+                </h6>
+                <div className="recipe-ingredients">
+                  <ul className="list-unstyled">
+                    {(recipe.ingredients || []).map((ingredient, index) => (
+                      <li key={`${ingredient.name}-${index}`} className="ingredient-item">
+                        <span className="ingredient-name">{ingredient.name}</span>
+                        {(ingredient.amount || ingredient.unit) && (
+                          <span className="ingredient-amount">
+                            {ingredient.amount && ` - ${ingredient.amount}`}
+                            {ingredient.unit && ` ${ingredient.unit}`}
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {/* Description */}
+              <div className="mb-4">
+                <h6 className="recipe-section-title">
+                  <i className="bi bi-card-text me-2"></i>
+                  Description
+                </h6>
+                <div className="recipe-description">
+                  {recipe.description}
+                </div>
+              </div>
             </div>
           </Col>
         </Row>
-
-        {recipe.image_url && (
-          <div className="mt-3">
-            <img
-              src={recipe.image_url}
-              alt={recipe.recipe_name}
-              className="img-fluid rounded recipe-detail-image"
-            />
-          </div>
-        )}
-
       </Card.Body>
 
 
