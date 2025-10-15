@@ -33,7 +33,7 @@ export default function startBackend(app) {
   const dbPath = path.join(import.meta.dirname, 'db_template', '_db.sqlite3');
 
   // Port to start the backend on
-  let startPort = 5001;
+  let startPort = 3001;
 
   // Start .NET backend from Node.js
   setTimeout(async function starter(initialStart = true) {

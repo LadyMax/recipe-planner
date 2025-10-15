@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node node_modules/react-rapide dev",
+    "dev:no-hmr": "cross-env VITE_HMR=false node node_modules/react-rapide dev",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "node node_modules/react-rapide preview",

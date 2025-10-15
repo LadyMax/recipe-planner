@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Card, Badge, Row, Col, Button } from 'react-bootstrap';
+import { Card, Badge, Row, Col } from 'react-bootstrap';
 import { useAuth } from '../hooks/useAuth';
 import RecipeComments from './RecipeComments';
 import FavoriteButton from './FavoriteButton';
@@ -8,16 +8,10 @@ import { getMealTypeName } from '../utils/mealTypeUtils';
 
 interface RecipeDetailProps {
   recipe: Recipe;
-  onEdit?: () => void;
-  onDelete?: () => void;
-  canEdit?: boolean;
 }
 
 export default function RecipeDetail({
   recipe,
-  onEdit,
-  onDelete,
-  canEdit = false,
 }: RecipeDetailProps) {
   const { user } = useAuth();
   const [comments, setComments] = useState<RecipeComment[]>([]);
@@ -55,25 +49,6 @@ export default function RecipeDetail({
         </div>
         <div className="d-flex gap-2">
           <FavoriteButton recipeId={recipe.id} size="sm" />
-          {canEdit && (onEdit || onDelete) && (
-            <>
-              {onEdit && (
-                <Button 
-                  variant="outline-primary" 
-                  size="sm" 
-                  onClick={onEdit}
-                  className="recipe-card-edit-btn"
-                >
-                  Edit
-                </Button>
-              )}
-              {onDelete && (
-                <Button variant="outline-danger" size="sm" onClick={onDelete}>
-                  Delete
-                </Button>
-              )}
-            </>
-          )}
         </div>
       </Card.Header>
 

@@ -16,13 +16,13 @@ interface ThemeProviderProps {
 
 export function ThemeProvider({ children }: ThemeProviderProps) {
   const [theme, setThemeState] = useState<Theme>(() => {
-    // 从localStorage获取保存的主题，如果没有则根据系统偏好设置
+    // Get saved theme from localStorage, fallback to system preference
     const savedTheme = localStorage.getItem('theme') as Theme;
     if (savedTheme) {
       return savedTheme;
     }
     
-    // 检查系统偏好设置
+    // Check system preference
     if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
       return 'dark';
     }
@@ -34,10 +34,10 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
     setThemeState(newTheme);
     localStorage.setItem('theme', newTheme);
     
-    // 更新HTML元素的data-theme属性
+    // Update HTML data-theme attribute
     document.documentElement.setAttribute('data-theme', newTheme);
     
-    // 更新body的class
+    // Update body class
     document.body.className = newTheme === 'dark' ? 'dark-theme' : 'light-theme';
   };
 
@@ -46,13 +46,13 @@ export function ThemeProvider({ children }: ThemeProviderProps) {
   };
 
   useEffect(() => {
-    // 初始化时设置主题
+    // Initialize theme on mount
     setTheme(theme);
     
-    // 监听系统主题变化
+    // Listen for system theme changes
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
-      // 只有在没有手动设置主题时才跟随系统
+      // Only follow system if no manual theme is set
       if (!localStorage.getItem('theme')) {
         setTheme(e.matches ? 'dark' : 'light');
       }

@@ -19,6 +19,17 @@ export default function Header() {
   const isActive = (path: string) =>
     path === currentRoute?.path || path === currentRoute?.parent;
 
+  // Function to format username with proper capitalization
+  const formatDisplayName = (user: { name?: string; username?: string; email?: string } | null) => {
+    if (user?.name) return user.name;
+    if (user?.username) return user.username;
+    if (user?.email) {
+      const username = user.email.split('@')[0];
+      return username.charAt(0).toUpperCase() + username.slice(1).toLowerCase();
+    }
+    return 'User';
+  };
+
   return (
     <header>
       <Navbar
@@ -54,7 +65,7 @@ export default function Header() {
               {isAuthenticated ? (
                 <Dropdown align="end">
                   <Dropdown.Toggle variant="outline-light" id="user-dropdown">
-                    {user?.name || user?.email || 'User'}
+                    {formatDisplayName(user)}
                   </Dropdown.Toggle>
                   <Dropdown.Menu>
                     <Dropdown.ItemText>

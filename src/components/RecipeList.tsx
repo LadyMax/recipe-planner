@@ -63,7 +63,6 @@ export default function RecipeList({
       {showTitle && (
         <div className="section-header">
           <h2 className="section-title">Popular Recipes</h2>
-          <a href="#" className="view-all-link">View All</a>
         </div>
       )}
 

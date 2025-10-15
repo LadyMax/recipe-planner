@@ -18,14 +18,14 @@ public static class LoginRoutes
             var user = GetUser(context);
             var body = JSON.Parse(bodyJson.ToString());
 
-            // If there is a user logged in already
+            // Check if user already logged in
             if (user != null)
             {
                 var already = new { error = "A user is already logged in." };
                 return RestResult.Parse(context, already);
             }
 
-            // Find the user in the DB
+            // Query user from database
             var dbUser = SQLQueryOne(
                 "SELECT * FROM users WHERE email = $email",
                 new { body.email }
@@ -35,14 +35,14 @@ public static class LoginRoutes
                 return RestResult.Parse(context, new { error = "No such user." });
             }
 
-            // Verify password
+            // Validate password input
             if (body.password == null)
             {
                 return RestResult.Parse(context,
                     new { error = "Password is required." });
             }
 
-            // Check if password matches
+            // Validate user password exists
             if (dbUser.password == null)
             {
                 return RestResult.Parse(context,
@@ -53,7 +53,7 @@ public static class LoginRoutes
             // The password field in database appears to be 'long' type instead of 'string'
             // This needs to be fixed in the database schema
 
-            // Add the user to the session, without password
+            // Store user in session without password
             var userForSession = Obj();
             foreach (var key in dbUser.GetKeys())
             {
@@ -64,7 +64,7 @@ public static class LoginRoutes
             }
             Session.Set(context, "user", userForSession);
 
-            // Return the user
+            // Return user data
             return RestResult.Parse(context, dbUser!);
         });
 
@@ -77,7 +77,7 @@ public static class LoginRoutes
             }
             else
             {
-                // Return 200 with no user info instead of 500 error
+                // Return 200 with message when no user logged in
                 return Results.Text(
                     JSON.Stringify(new { message = "No user is logged in." }),
                     "application/json; charset=utf-8",
@@ -91,7 +91,7 @@ public static class LoginRoutes
         {
             var user = GetUser(context);
 
-            // Delete the user from the session
+            // Clear user session
             Session.Set(context, "user", null);
 
             if (user != null)
@@ -100,7 +100,7 @@ public static class LoginRoutes
             }
             else
             {
-                // Return 200 with no user info instead of 500 error
+                // Return 200 with message when no user logged in
                 return Results.Text(
                     JSON.Stringify(new { message = "No user was logged in." }),
                     "application/json; charset=utf-8",

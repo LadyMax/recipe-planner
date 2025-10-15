@@ -11,6 +11,34 @@ public static class DbQuery
         db.Open(); 
         Console.WriteLine($"Database opened: {Globals.dbPath}");
         Console.WriteLine($"Database state: {db.State}");
+        InitializeTables();
+    }
+
+    // Initialize database tables if they don't exist
+    private static void InitializeTables()
+    {
+        try
+        {
+            // Create favorites table if it doesn't exist
+            var createFavoritesTable = @"
+                CREATE TABLE IF NOT EXISTS favorites (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    recipe_id INTEGER NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(user_id, recipe_id)
+                )";
+            
+            var command = db.CreateCommand();
+            command.CommandText = createFavoritesTable;
+            command.ExecuteNonQuery();
+            
+            Console.WriteLine("Database tables initialized successfully");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error initializing tables: {ex.Message}");
+        }
     }
 
     // Helper to create an object from the DataReader

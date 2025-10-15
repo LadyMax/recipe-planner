@@ -75,7 +75,7 @@ const FavoritesPage: React.FC & {
             </p>
           </Alert>
         ) : (
-          <RecipeList recipes={favoriteRecipes} canEdit={isAuthenticated} showTitle={false} />
+          <RecipeList recipes={favoriteRecipes} showTitle={false} />
         )}
       </div>
     </Container>

@@ -105,12 +105,7 @@ const RecipeDetailPage: React.FC & {
         </div>
       </div>
 
-      <RecipeDetail
-        recipe={recipe}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-        canEdit={true}
-      />
+      <RecipeDetail recipe={recipe} />
 
       <RecipeFormModal
         show={showForm}

@@ -63,6 +63,11 @@ async function cacher(request) {
     return fetch(request).catch(() => new Response('', { status: 404 }));
   }
 
+  // Skip API requests - let them go directly to the network
+  if (request.url.includes('/api/')) {
+    return fetch(request);
+  }
+
   // Open the cache, if not done already
   cache = cache || await caches.open('recipe-cache-v2');
 
@@ -105,7 +110,7 @@ async function fallbackResponses(request) {
     key = cacheKeys.find(({ url }) => url == base);
   }
 
-  if (['.jpg', '.png', '.gif', '.jpeg', '.webp'].includes(extension)) {
+  if (['.jpg', '.png', '.gif', '.jpeg', '.webp', '.avif'].includes(extension)) {
     // Probably an image we are missing
     // so send our 'missing image' image
     let img = base + missingImageUrl;
