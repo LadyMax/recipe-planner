@@ -5,7 +5,7 @@ import { validateRecipe } from '../utils/validation.ts';
 import { useAuth } from './useAuth';
 
 export function useRecipes() {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -43,10 +43,8 @@ export function useRecipes() {
         return;
       }
 
-      const data = await recipeStore.list();
-      console.log('Raw API response:', data);
-      console.log('Data type:', typeof data);
-      console.log('Data length:', Array.isArray(data) ? data.length : 'Not an array');
+      // Pass user role and ID to recipeStore
+      const data = await recipeStore.list(user?.role, user?.id);
       
       // Ensure data is an array
       if (!Array.isArray(data)) {
@@ -69,7 +67,7 @@ export function useRecipes() {
         return;
       }
 
-      // Get ingredients data for each recipe
+      // Retrieve ingredients data for each recipe
       const recipesWithIngredients = await Promise.all(
         validData.map(async (recipe: Recipe) => {
           
@@ -89,7 +87,7 @@ export function useRecipes() {
           };
           
           try {
-            // Fetch recipe ingredients from the new recipe_ingredients table
+            // Load recipe ingredients from the recipe_ingredients table
             const ingredientsResponse = await fetch(`/api/recipe_ingredients?where=recipe_id=${recipe.id}`, {
               credentials: 'include'
             });
@@ -98,7 +96,7 @@ export function useRecipes() {
               mappedRecipe.recipe_ingredients = ingredientsData;
               
               // Also populate legacy ingredients field for backward compatibility
-              // fetch ingredient names from ingredient_categories table
+              // load ingredient names from ingredient_categories table
               const ingredientsWithNames = await Promise.all(
                 ingredientsData.map(async (ri: RecipeIngredient) => {
                   try {
@@ -117,7 +115,7 @@ export function useRecipes() {
                   } catch (error) {
                     console.warn(`Failed to fetch ingredient name for ID ${ri.ingredient_category_id}:`, error);
                   }
-                  // Fallback if we can't fetch the ingredient name
+                  // Fallback if we can't load the ingredient name
                   return {
                     id: ri.ingredient_category_id,
                     name: `Ingredient ${ri.ingredient_category_id}`,
@@ -256,9 +254,7 @@ export function useRecipes() {
     } else {
       // New recipe - create via API first
       try {
-        console.log('Creating new recipe via API...');
-        const createdRecipe = await recipeStore.create(r);
-        console.log('Recipe created successfully:', createdRecipe);
+        const createdRecipe = await recipeStore.create(r, user?.id);
         
         // Add ingredients if they exist
         if (r.ingredients && r.ingredients.length > 0) {

@@ -54,7 +54,7 @@ export default function RecipeDetail({
 
       <Card.Body>
         <Row className="align-items-start">
-          {/* 图片在左边 */}
+          {/* Image on the left */}
           <Col lg={6} className="mb-4 mb-lg-0">
             <div className="recipe-image-container">
               {recipe.image_url ? (
@@ -72,7 +72,7 @@ export default function RecipeDetail({
             </div>
           </Col>
           
-          {/* 内容在右边 */}
+          {/* Content on the right */}
           <Col lg={6}>
             <div className="recipe-content">
               {/* Ingredients */}

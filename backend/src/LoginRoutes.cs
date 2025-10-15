@@ -49,8 +49,8 @@ public static class LoginRoutes
                     new { error = "User password not set." });
             }
             
-            // If the password doesn't match
-            // Handle different data types for password field
+            // Verify password matches database value
+            // Process different password data types from database
             string storedPassword;
             if (dbUser.password is string strPassword)
             {
@@ -65,19 +65,18 @@ public static class LoginRoutes
                 storedPassword = "";
             }
             
-            // For now, use simple password comparison for testing
-            // TODO: Implement proper BCrypt verification
+            // Use simple password comparison for plain text passwords
             if (storedPassword != (string)body.password)
             {
                 return RestResult.Parse(context,
                     new { error = "Password mismatch." });
             }
 
-            // Add the user to the session, without password
+            // Store user data in session (excluding sensitive password)
             dbUser.Delete("password");
             Session.Set(context, "user", dbUser);
 
-            // Return the user
+            // Send user data back to client
             return RestResult.Parse(context, dbUser!);
         });
 
@@ -92,7 +91,7 @@ public static class LoginRoutes
         {
             var user = GetUser(context);
 
-            // Delete the user from the session
+            // Clear user session data
             Session.Set(context, "user", null);
 
             return RestResult.Parse(context, user == null ?

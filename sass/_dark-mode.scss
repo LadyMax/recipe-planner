@@ -111,23 +111,23 @@
 
   // Force badge colors with maximum specificity
   [data-theme="dark"] .badge.bg-primary {
-    background-color: #6b950e !important;
-    color: #ffffff !important;
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
   }
 
   [data-theme="dark"] .badge.bg-info {
-    background-color: #0dcaf0 !important;
-    color: #ffffff !important;
+    background-color: var(--info-color) !important;
+    color: var(--white) !important;
   }
 
   [data-theme="dark"] .category-badge {
-    background-color: #6b950e !important;
-    color: #ffffff !important;
+    background-color: var(--primary-color) !important;
+    color: var(--white) !important;
   }
 
   [data-theme="dark"] .meal-type-badge {
-    background-color: #0dcaf0 !important;
-    color: #ffffff !important;
+    background-color: var(--info-color) !important;
+    color: var(--white) !important;
   }
 
   // Alert dark mode

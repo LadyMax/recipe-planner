@@ -3,14 +3,24 @@ import type { Recipe } from "../types/recipe.ts";
 import { apiClient } from "./apiClient.ts";
 
 export class ApiRecipeStore implements IRecipeStore {
-  async list() {
-    return apiClient.get<Recipe[]>('/api/recipes');
+  async list(userRole?: string, userId?: number) {
+    // Determine query parameters based on user role
+    if (userRole === 'admin') {
+      // Admin can see all recipes
+      return apiClient.get<Recipe[]>('/api/recipes');
+    } else if (userId) {
+      // Regular users can only see their own recipes
+      return apiClient.get<Recipe[]>(`/api/recipes?where=created_by=${userId}`);
+    } else {
+      // Unauthenticated users see no recipes
+      return [];
+    }
   }
 
-  async create(rec: Recipe) {
-    // Clean recipe data - map to React-Rapide backend fields
+  async create(rec: Recipe, userId?: number) {
+    // Prepare recipe data for backend storage
     const cleanRecipe = {
-      created_by: rec.created_by || 3, // Default to user 3 (Thomas)
+      created_by: userId || rec.created_by || 3, // Use current user ID or default to user 3 (Thomas)
       recipe_name: rec.recipe_name || '',
       description: rec.description || '',
       image_url: rec.image_url || '', // Default image

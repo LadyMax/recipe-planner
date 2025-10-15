@@ -27,7 +27,7 @@ export default function RecipeList({
     return uniqueCategories.sort();
   }, [recipes]);
 
-  // Filter recipes
+  // Apply recipe filtering logic
   const filteredRecipes = useMemo(() => {
     return recipes.filter(recipe => {
       const matchesCategory = !selectedCategory || recipe.category === selectedCategory;
