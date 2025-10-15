@@ -37,7 +37,7 @@ public static class RestResult
             // 200 = OK
             statusCode =
                 result == null ? 404 :
-                r.HasKey("error") ? 500 :
+                r.HasKey("error") ? (r.error == "No user is logged in." ? 200 : 500) :
                 r.HasKey("rowsAffected") && r.rowsAffected == 0 ? 404 :
                 200;
 

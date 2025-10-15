@@ -1,47 +1,24 @@
-import { StrictMode } from 'react';
-import { createRoot } from 'react-dom/client';
-import {
-  createBrowserRouter,
-  RouterProvider,
-  type RouteObject,
-  Navigate,
-} from 'react-router-dom';
-import '../sass/index.scss';
-import routes from './routes.ts';
-import App from './App.tsx';
+import type { RouteObject } from "react-router-dom";
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import "../sass/index.scss";
+import routes from "./routes";
+import App from "./App";
 
-// Register Service Worker
-if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then((registration) => {
-        console.log('SW registered: ', registration);
-      })
-      .catch((registrationError) => {
-        console.log('SW registration failed: ', registrationError);
-      });
-  });
-}
-
+// Create a router using settings/content from 'routes.tsx'
 const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <App />,
-    children: [
-      { index: true, element: <Navigate to="/recipes" replace /> },
-      ...(routes as RouteObject[]),
-      {
-        path: '/__ping',
-        element: <div className="padding-16">OK /__ping</div>,
-      },
-    ],
+    children: routes as RouteObject[],
+    HydrateFallback: App,
   },
 ]);
 
-createRoot(document.getElementById('root')!).render(
+// Create the React root element
+createRoot(document.querySelector("#root")!).render(
   <StrictMode>
     <RouterProvider router={router} />
   </StrictMode>
 );
-
-console.log('routes = ', routes);

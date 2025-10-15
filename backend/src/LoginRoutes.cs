@@ -49,65 +49,56 @@ public static class LoginRoutes
                     new { error = "User password not set." });
             }
             
-            // TODO: Fix password field type in database - currently disabled for testing
-            // The password field in database appears to be 'long' type instead of 'string'
-            // This needs to be fixed in the database schema
-
-            // Store user in session without password
-            var userForSession = Obj();
-            foreach (var key in dbUser.GetKeys())
+            // If the password doesn't match
+            // Handle different data types for password field
+            string storedPassword;
+            if (dbUser.password is string strPassword)
             {
-                if (key != "password")
-                {
-                    userForSession[key] = dbUser[key];
-                }
+                storedPassword = strPassword;
             }
-            Session.Set(context, "user", userForSession);
+            else if (dbUser.password != null)
+            {
+                storedPassword = dbUser.password.ToString();
+            }
+            else
+            {
+                storedPassword = "";
+            }
+            
+            // For now, use simple password comparison for testing
+            // TODO: Implement proper BCrypt verification
+            if (storedPassword != (string)body.password)
+            {
+                return RestResult.Parse(context,
+                    new { error = "Password mismatch." });
+            }
 
-            // Return user data
+            // Add the user to the session, without password
+            dbUser.Delete("password");
+            Session.Set(context, "user", dbUser);
+
+            // Return the user
             return RestResult.Parse(context, dbUser!);
         });
 
         App.MapGet("/api/login", (HttpContext context) =>
         {
             var user = GetUser(context);
-            if (user != null)
-            {
-                return RestResult.Parse(context, user);
-            }
-            else
-            {
-                // Return 200 with message when no user logged in
-                return Results.Text(
-                    JSON.Stringify(new { message = "No user is logged in." }),
-                    "application/json; charset=utf-8",
-                    null,
-                    200
-                );
-            }
+            return RestResult.Parse(context, user != null ?
+                user : new { error = "No user is logged in." });
         });
 
         App.MapDelete("/api/login", (HttpContext context) =>
         {
             var user = GetUser(context);
 
-            // Clear user session
+            // Delete the user from the session
             Session.Set(context, "user", null);
 
-            if (user != null)
-            {
-                return RestResult.Parse(context, new { status = "Successful logout." });
-            }
-            else
-            {
-                // Return 200 with message when no user logged in
-                return Results.Text(
-                    JSON.Stringify(new { message = "No user was logged in." }),
-                    "application/json; charset=utf-8",
-                    null,
-                    200
-                );
-            }
+            return RestResult.Parse(context, user == null ?
+                new { error = "No user is logged in." } :
+                new { status = "Successful logout." }
+            );
         });
     }
 }

@@ -1,8 +1,6 @@
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
 import { useAuth } from '../hooks/useAuth';
 import type { LoginCredentials } from '../types/user';
-import RegisterModal from './RegisterModal';
 import BaseModal from './BaseModal';
 import FormInput from './FormInput';
 
@@ -18,7 +16,6 @@ export default function LoginModal({ show, onHide }: LoginModalProps) {
     password: '',
   });
   const [isLoading, setIsLoading] = useState(false);
-  const [showRegister, setShowRegister] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -85,25 +82,10 @@ export default function LoginModal({ show, onHide }: LoginModalProps) {
 
         <div className="text-center mb-3">
           <small className="text-muted text-muted-no-select">
-            Don't have an account?{' '}
-            <Button
-              variant="link"
-              className="p-0 text-decoration-none"
-              onClick={() => {
-                onHide();
-                setShowRegister(true);
-              }}
-            >
-              Create one here
-            </Button>
+            Please contact administrator for account access
           </small>
         </div>
       </BaseModal>
-
-      <RegisterModal
-        show={showRegister}
-        onHide={() => setShowRegister(false)}
-      />
     </>
   );
 }

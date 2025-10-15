@@ -25,7 +25,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
         if (response.ok) {
           const user = await response.json();
-          if (!user.error && !user.message) {
+          // Check if the response contains user data (not an error message)
+          if (user && user.id && !user.error) {
             setAuthState({
               user,
               isAuthenticated: true,
@@ -36,10 +37,13 @@ export function AuthProvider({ children }: AuthProviderProps) {
           }
         }
       } catch (error) {
-        console.warn('Auth check failed:', error);
+        // Only log actual network errors, not "no user logged in" responses
+        if (error instanceof TypeError && error.message.includes('fetch')) {
+          console.warn('Network error during auth check:', error);
+        }
       }
       
-      // No valid session
+      // No valid session - this is normal, not an error
       setAuthState(prev => ({ ...prev, isLoading: false }));
     };
 
