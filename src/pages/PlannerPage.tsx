@@ -13,6 +13,7 @@ import RecipeList from '../components/RecipeList.tsx';
 import AdvancedSearch, {
   type SearchFilters,
 } from '../components/AdvancedSearch.tsx';
+import { useAuth } from '../hooks/useAuth';
 import type { Recipe } from '../types/recipe.ts';
 import { useRecipes } from '../hooks/useRecipes.ts';
 
@@ -22,6 +23,7 @@ type SortKey = 'newest-first' | 'name-asc' | 'name-desc' | 'ingr-count';
 const PlannerPage: React.FC & {
   route?: { path: string; index?: number; menuLabel?: string };
 } = () => {
+  const { isAuthenticated } = useAuth();
   const {
     recipes,
     loading,
@@ -117,16 +119,23 @@ const PlannerPage: React.FC & {
 
         <Row className="align-items-end g-2 mb-3">
           <Col md={6}>
-            <Button
-              onClick={() => {
-                setEditing(null);
-                setShowForm(true);
-              }}
-              className="btn-primary"
-            >
-              <i className="bi bi-plus-circle me-2"></i>
-              Create New Recipe
-            </Button>
+            {isAuthenticated ? (
+              <Button
+                onClick={() => {
+                  setEditing(null);
+                  setShowForm(true);
+                }}
+                className="btn-primary"
+              >
+                <i className="bi bi-plus-circle me-2"></i>
+                Create New Recipe
+              </Button>
+            ) : (
+              <div className="text-muted">
+                <i className="bi bi-lock me-2"></i>
+                Please log in to create recipes
+              </div>
+            )}
           </Col>
           <Col md={6} className="d-flex align-items-end justify-content-end gap-2">
             <Form.Label className="small mb-0">Sort by</Form.Label>
@@ -166,7 +175,7 @@ const PlannerPage: React.FC & {
             setShowForm(true);
           }}
           onRequestDelete={r => setConfirmTarget(r)}
-          canEdit={true}
+          canEdit={isAuthenticated}
         />
 
         <RecipeFormModal

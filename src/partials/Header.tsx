@@ -53,7 +53,7 @@ export default function Header() {
                     as={Link}
                     key={i}
                     to={path}
-                    className={isActive(path) ? 'active' : ''}
+                    className={`btn btn-outline-light ${isActive(path) ? 'active' : ''}`}
                     onClick={() => setTimeout(() => setExpanded(false), 200)}
                   >
                     {menuLabel}

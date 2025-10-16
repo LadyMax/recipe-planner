@@ -44,8 +44,7 @@
 // Focus state styling
 .btn:focus,
 .form-control:focus,
-.form-select:focus,
-.nav-link:focus {
+.form-select:focus {
   box-shadow: 0 0 0 0.2rem var(--primary-hover);
 }
 

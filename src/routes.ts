@@ -1,5 +1,6 @@
 import type Route from './interfaces/Route.ts';
 import { createElement, type ComponentType } from 'react';
+import HomePage from './pages/HomePage.tsx';
 import PlannerPage from './pages/PlannerPage.tsx';
 import ShoppingListPage from './pages/ShoppingListPage.tsx';
 import RecipeDetailPage from './pages/RecipeDetailPage.tsx';
@@ -8,6 +9,7 @@ import FavoritesPage from './pages/FavoritesPage.tsx';
 type RoutedComponent = ComponentType & { route?: Omit<Route, 'element'> };
 
 const pages: RoutedComponent[] = [
+  HomePage as RoutedComponent,
   PlannerPage as RoutedComponent,
   ShoppingListPage as RoutedComponent,
   RecipeDetailPage as RoutedComponent,

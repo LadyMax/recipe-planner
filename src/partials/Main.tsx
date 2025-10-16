@@ -1,7 +1,10 @@
-import { Outlet } from 'react-router-dom';
+import { Outlet, useLocation } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 
 export default function Main() {
+  const location = useLocation();
+  const isHomePage = location.pathname === '/';
+
   return (
     <main>
       {/* Banner Section */}
@@ -17,9 +20,13 @@ export default function Main() {
       </div>
 
       {/* Main Content */}
-      <Container className="py-4">
+      {isHomePage ? (
         <Outlet />
-      </Container>
+      ) : (
+        <Container className="py-4">
+          <Outlet />
+        </Container>
+      )}
     </main>
   );
 }

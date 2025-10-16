@@ -7,7 +7,10 @@ A recipe management app with React frontend and .NET backend.
 - Add/edit/delete recipes
 - Search recipes
 - User login
-- Mobile and desktop support
+- Dark/Light mode toggle
+- Favorites system
+- Shopping list generation
+
 
 ## Limitations
 
@@ -33,16 +36,6 @@ Go to http://localhost:5173
 | thomas@nodehill.com | 12345678 | Admin | Full access to all features |
 | olle@nodehill.com | 12345678 | User | Can view and create recipes |
 | maria@nodehill.com | 12345678 | User | Can view and create recipes |
-
-## API
-
-- GET /api/recipes - list recipes
-- POST /api/recipes - create recipe
-- PUT /api/recipes/{id} - update recipe
-- DELETE /api/recipes/{id} - delete recipe
-- POST /api/login - login
-- GET /api/login - current user
-- DELETE /api/login - logout
 
 ## Tech
 
