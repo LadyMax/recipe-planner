@@ -5,6 +5,9 @@
 # create it from db_template/_db.sqlite3
 backend/_db.sqlite3
 
+# Allow tracking the template database used to initialize runtime DB
+!backend/db_template/_db.sqlite3
+
 # Do not git control build related .NET folders
 backend/obj
 backend/bin
